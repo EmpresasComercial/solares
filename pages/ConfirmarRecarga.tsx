@@ -238,12 +238,12 @@ export default function ConfirmarRecarga() {
       </header>
 
       {/* ═════════════════════════════════════════════════════
-          2. CONTEÚDO PRINCIPAL (Arredondamento 0px / rounded-none)
+          2. CONTEÚDO PRINCIPAL (Arredondamento 4px / rounded-[4px])
       ══════════════════════════════════════════════════════ */}
       <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-2.5">
         
-        {/* CARD UNIFICADO DE DADOS BANCÁRIOS (rounded-none) */}
-        <div className="bg-[#FFFFFF] rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
+        {/* CARD UNIFICADO DE DADOS BANCÁRIOS (rounded-[4px]) */}
+        <div className="bg-[#FFFFFF] rounded-[4px] shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
           
           {/* 1. IBAN com ícone de copiar */}
           <div className="flex items-center justify-between py-2.5 px-3.5">
@@ -343,7 +343,7 @@ export default function ConfirmarRecarga() {
 
         </div>
 
-        {/* 5. ÁREA COMPACTA PARA SUBMETER COMPROVATIVO (rounded-none) */}
+        {/* 5. ÁREA COMPACTA PARA SUBMETER COMPROVATIVO (rounded-[4px]) */}
         <form onSubmit={handleSubmit} id="confirm-recharge-form">
           <input 
             type="file" 
@@ -355,13 +355,13 @@ export default function ConfirmarRecarga() {
 
           <div 
             onClick={() => !isSubmitting && document.getElementById('proofInput')?.click()}
-            className="bg-[#FFFFFF] rounded-none px-3.5 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="bg-[#FFFFFF] rounded-[4px] px-3.5 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors"
           >
             <div className="flex items-center gap-2">
               {previewUrl ? (
                 <img 
                   src={previewUrl} 
-                  className="w-5 h-5 object-cover border border-gray-200" 
+                  className="w-5 h-5 object-cover rounded-[2px] border border-gray-200" 
                   alt="preview" 
                 />
               ) : null}
@@ -383,7 +383,7 @@ export default function ConfirmarRecarga() {
       </main>
 
       {/* ═════════════════════════════════════════════════════
-          3. BARRA INFERIOR FIXA COM BOTÃO "Enviar" (rounded-none)
+          3. BARRA INFERIOR FIXA COM BOTÃO "Enviar" (rounded-[4px])
       ══════════════════════════════════════════════════════ */}
       <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-3.5 z-40 flex justify-center border-t border-gray-200/50">
         <div className="w-full max-w-[480px]">
@@ -391,7 +391,7 @@ export default function ConfirmarRecarga() {
             type="submit"
             form="confirm-recharge-form"
             disabled={isSubmitting || !proofFile || isOptimizing}
-            className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
+            className="w-full h-[40px] rounded-[4px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-1.5">
