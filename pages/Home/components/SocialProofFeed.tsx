@@ -140,6 +140,19 @@ export function SocialProofFeed() {
     }
   };
 
+  const formatRpcMessage = (msg: string): string => {
+    if (!msg) return msg;
+    const dateMatch = msg.match(/\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:?\d{2}|Z)?/);
+    if (dateMatch) {
+      const d = new Date(dateMatch[0]);
+      if (!isNaN(d.getTime())) {
+        const formatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        return `Disponível em ${formatted}`;
+      }
+    }
+    return msg;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount || !comment || !image) {
@@ -178,7 +191,7 @@ export function SocialProofFeed() {
         setImage(null);
         fetchProofs();
       } else {
-        showToast(result?.message || 'Falha ao enviar comprovativo.', 'error');
+        showToast(formatRpcMessage(result?.message) || 'Falha ao enviar comprovativo.', 'error');
       }
     } catch (err: any) {
       showToast(err.message || 'Erro ao enviar.', 'error');

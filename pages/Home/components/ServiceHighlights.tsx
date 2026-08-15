@@ -22,8 +22,7 @@ export const ServiceHighlights: React.FC = () => {
         if (data) {
           setProducts(data.slice(0, 4));
         }
-      } catch (err) {
-        console.error('Falhou, recarregue a pagina', err);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -53,7 +52,6 @@ export const ServiceHighlights: React.FC = () => {
               onClick={() => navigate(`/produtos/${product.id}`)}
               className="bg-white rounded-[16px] p-3.5 flex items-center gap-4 border border-[#F5F5F5] cursor-pointer transition-all active:scale-[0.98]"
             >
-              {/* Small Image */}
               <div className="w-10 h-10 shrink-0 flex items-center justify-center">
                 {product.imagem_url ? (
                   <SmartImage 
@@ -67,7 +65,6 @@ export const ServiceHighlights: React.FC = () => {
                 )}
               </div>
 
-              {/* Info Details */}
               <div className="flex-1 min-w-0">
                 <h3 className="text-[14px] font-medium text-[#333333] truncate mb-0.5">{product.nome}</h3>
                 

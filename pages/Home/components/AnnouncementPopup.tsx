@@ -1,9 +1,8 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, ExternalLink } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ExternalLink, X } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { APP_CONFIG } from '../../../constants/config';
-import { cn } from '../../../lib/utils';
 
 interface AnnouncementPopupProps {
   isOpen: boolean;
@@ -17,58 +16,64 @@ export const AnnouncementPopup: React.FC<AnnouncementPopupProps> = ({ isOpen, on
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white w-full max-w-[360px] rounded-[32px] shadow-2xl relative overflow-hidden"
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 60 }}
+            transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }}
+            className="bg-[#F2F2F2] w-full max-w-[480px] rounded-none relative overflow-hidden select-none font-sans antialiased"
           >
-            <div className="px-8 pt-10 pb-6 flex flex-col items-center text-center">
-              {/* Header Title - Brand Gradient & Light */}
-              <h2 className="text-[24px] font-light bg-gradient-to-r from-[#C62828] to-[#1A237E] bg-clip-text text-transparent mb-4 tracking-tight">
+            <div className="bg-white px-4 pt-4 pb-3 flex items-center justify-between border-b border-[#F2F2F2]">
+              <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
                 {t('home.announcement.tips')}
-              </h2>
-              
-              {/* Content Body - Ultra Light */}
-              <div className="max-h-[35vh] overflow-y-auto pr-1 custom-scrollbar mb-6">
-                 <p className="text-[13px] text-gray-400 font-light leading-relaxed text-center">
-                   {t('home.announcement.reward_notice')}
-                   <br /><br />
-                   {t('home.announcement.invite_notice')}
-                   <br /><br />
-                   {t('home.announcement.promo_notice')}
-                 </p>
-              </div>
-
-              {/* Action Buttons - Light Weight */}
-              <div className="w-full flex flex-col gap-2">
-                <button
-                  onClick={() => window.open(communityLink || APP_CONFIG.WHATSAPP_COMMUNITY_LINK, '_blank')}
-                  className="w-full h-[42px] bg-gradient-to-r from-[#C62828] to-[#1A237E] text-white font-light text-[14px] rounded-[21px] transition-all active:scale-[0.98] shadow-lg shadow-blue-900/10 flex items-center justify-center gap-2"
-                >
-                  <ExternalLink className="w-3.5 h-3.5 stroke-[1.5px]" />
-                  {t('home.community_btn')}
-                </button>
-                
-                <button
-                  onClick={onClose}
-                  className="w-full h-[42px] bg-[#F5F5F5] text-gray-500 font-light text-[14px] rounded-[21px] hover:bg-gray-100 transition-all active:scale-[0.98]"
-                >
-                  {t('common.close')}
-                </button>
-              </div>
+              </h1>
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1 text-[#AAAAAA] hover:text-[#202020] active:scale-95 transition-transform"
+                aria-label="Fechar"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
             </div>
 
-            {/* Subtle Brand Progress Bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-50">
-               <motion.div 
-                  key={`progress-${isOpen}`}
-                  initial={{ width: "100%" }}
-                  animate={{ width: "0%" }}
-                  transition={{ duration: APP_CONFIG.POPUP_AUTO_CLOSE_TIME / 1000, ease: "linear" }}
-                  className="h-full bg-gradient-to-r from-[#C62828] to-[#1A237E]"
-                />
+            <div className="px-4 pt-3 pb-4 max-h-[50vh] overflow-y-auto">
+              <p className="text-[13px] text-[#555555] font-normal leading-relaxed">
+                {t('home.announcement.reward_notice')}
+              </p>
+              <p className="text-[13px] text-[#555555] font-normal leading-relaxed mt-3">
+                {t('home.announcement.invite_notice')}
+              </p>
+              <p className="text-[13px] text-[#555555] font-normal leading-relaxed mt-3">
+                {t('home.announcement.promo_notice')}
+              </p>
+            </div>
+
+            <div className="px-4 pb-6 pt-1 flex flex-col gap-2">
+              <button
+                onClick={() => window.open(communityLink || APP_CONFIG.WHATSAPP_COMMUNITY_LINK, '_blank')}
+                className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <ExternalLink className="w-3.5 h-3.5 stroke-[1.8]" />
+                {t('home.community_btn')}
+              </button>
+              <button
+                onClick={onClose}
+                className="w-full h-[44px] rounded-none bg-white text-[#555555] font-normal text-[13.5px] hover:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer"
+              >
+                {t('common.close')}
+              </button>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#F2F2F2]">
+              <motion.div
+                key={`progress-${isOpen}`}
+                initial={{ width: '100%' }}
+                animate={{ width: '0%' }}
+                transition={{ duration: APP_CONFIG.POPUP_AUTO_CLOSE_TIME / 1000, ease: 'linear' }}
+                className="h-full bg-[#FE384F]"
+              />
             </div>
           </motion.div>
         </div>
