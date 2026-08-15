@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aliexpress24-v1';
+const CACHE_NAME = 'aliexpress24-v2';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -19,9 +19,18 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first
+  // Para requisições de navegação do browser (recarregar página/F5), usar network e fallback se necessário
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('/index.html') || fetch('/');
+      })
+    );
+    return;
+  }
+
+  // Network first para todos os outros recursos
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
   );
 });
-
