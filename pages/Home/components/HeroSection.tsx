@@ -1,16 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CAROUSEL_IMAGES } from '../../../constants/images';
 
 export const HeroSection: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(1); // 1 = direita para esquerda
+  const [direction, setDirection] = useState(1);
+  const preloadedRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (!preloadedRef.current && typeof window !== 'undefined') {
+      preloadedRef.current = true;
+      CAROUSEL_IMAGES.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
@@ -29,9 +40,15 @@ export const HeroSection: React.FC = () => {
     }),
   };
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    if (target.src !== CAROUSEL_IMAGES[0]) {
+      target.src = CAROUSEL_IMAGES[0];
+    }
+  };
+
   return (
-    <section className="relative w-full overflow-hidden bg-[#f4f4f4] aspect-[16/9] max-h-[240px]">
-      {/* Slides Container */}
+    <section className="relative w-full overflow-hidden bg-[#FAFAFA] aspect-[16/9] max-h-[240px] select-none border-b border-gray-100">
       <div className="relative w-full h-full overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
@@ -42,40 +59,37 @@ export const HeroSection: React.FC = () => {
             animate="center"
             exit="exit"
             transition={{
-              x: { type: 'tween', ease: 'easeInOut', duration: 0.6 },
-              opacity: { duration: 0.3 }
+              x: { type: 'tween', ease: 'easeInOut', duration: 0.45 },
+              opacity: { duration: 0.2 }
             }}
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full flex items-center justify-center bg-[#FAFAFA]"
           >
             <img
               src={CAROUSEL_IMAGES[currentIndex]}
               alt={`Slide ${currentIndex + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
+              loading="eager"
+              fetchPriority="high"
+              decoding="sync"
+              onError={handleImageError}
+              style={{ imageRendering: '-webkit-optimize-contrast' }}
             />
-            {/* Gradiente sutil para acabamento elegante */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
-
-            {/* Logo / Tag AliExpress24 sobreposta no banner */}
-            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-md">
-              <img src="/update_logo_AliExpress24.png" alt="Logo" className="w-5 h-5 rounded object-cover" />
-              <span className="text-white text-[11px] font-medium tracking-wide">AliExpress24</span>
-            </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Indicadores / Pontos de Navegação */}
-      <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-xs">
         {CAROUSEL_IMAGES.map((_, idx) => (
           <button
             key={idx}
+            type="button"
             onClick={() => {
               setDirection(idx > currentIndex ? 1 : -1);
               setCurrentIndex(idx);
             }}
-            className={`transition-all rounded-full h-1.5 ${
+            className={`transition-all h-1.5 cursor-pointer rounded-full ${
               idx === currentIndex
-                ? 'w-5 bg-[#C62828]'
+                ? 'w-4 bg-[#FE384F]'
                 : 'w-1.5 bg-white/70 hover:bg-white'
             }`}
             aria-label={`Slide ${idx + 1}`}
@@ -85,8 +99,3 @@ export const HeroSection: React.FC = () => {
     </section>
   );
 };
-
-
-
-
-
