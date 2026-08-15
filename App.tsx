@@ -33,7 +33,6 @@ import ProductDetails from './pages/ProductDetails';
 import AboutMicrosoft from './pages/AboutMicrosoft';
 import HelpFAQ from './pages/HelpFAQ';
 import SupportFeedback from './pages/SupportFeedback';
-import SocialProof from './pages/SocialProof';
 import ConfirmarRecarga from './pages/ConfirmarRecarga';
 import SupportTickets from './pages/SupportTickets';
 import { ConnectivityOverlay } from './components/ConnectivityOverlay';
@@ -109,13 +108,14 @@ export default function App() {
                 <Route path="registro-transnacionais" element={<WithdrawalHistory />} />
                 <Route path="registro-transacoes" element={<WithdrawalHistory />} />
                 <Route path="historico-atividades" element={<GeneralHistory />} />
+                <Route path="historico-geral" element={<GeneralHistory />} />
                 <Route path="resgate" element={<RedeemCoupon />} />
                 <Route path="minhas-compras" element={<PurchaseHistory />} />
                 <Route path="operacoes" element={<Operations />} />
                 <Route path="sobre-microsoft" element={<AboutMicrosoft />} />
                 <Route path="help-faq" element={<HelpFAQ />} />
                 <Route path="suporte/feedback" element={<SupportFeedback />} />
-                <Route path="provas-social" element={<SocialProof />} />
+                <Route path="provas-social" element={<Navigate to="/home?postarProva=true" replace />} />
                 <Route path="confirmar-recarga" element={<ConfirmarRecarga />} />
                 <Route path="chat-comunidade" element={<SupportTickets />} />
               </Route>

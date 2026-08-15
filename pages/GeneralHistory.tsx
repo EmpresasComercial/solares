@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/Toast';
-import { useLanguage } from '../contexts/LanguageContext';
-import { PlusCircle, MinusCircle, TrendingUp, Users, Ticket, History, Filter, ArrowUpRight, ArrowDownRight, Award } from 'lucide-react';
+import { ChevronLeft, ArrowUpRight, ArrowDownRight, TrendingUp, Users, Ticket, History, Gift, Shield, UserPlus } from 'lucide-react';
 
-type HistoryType = 'recargas' | 'retiradas' | 'renda_diaria' | 'bonus_equipe' | 'cupom' | '';
+type HistoryType = 'recargas' | 'retiradas' | 'renda_diaria' | 'bonus_equipe' | 'cupom' | 'tarefas' | 'banimento' | 'convite' | '';
 
 interface HistoryItem {
   id: string;
@@ -15,13 +12,23 @@ interface HistoryItem {
   amount: number;
   date: string;
   description: string;
-  status: 'completed' | 'pending' | 'failed' | 'confirmado' | 'pendente' | 'rejeitado';
+  status: string;
 }
+
+const TABS: { label: string; value: HistoryType }[] = [
+  { label: 'Ver tudo', value: '' },
+  { label: 'Retirada', value: 'retiradas' },
+  { label: 'Recarga', value: 'recargas' },
+  { label: 'Equipe', value: 'bonus_equipe' },
+  { label: 'Tarefas', value: 'tarefas' },
+  { label: 'Banimento', value: 'banimento' },
+  { label: 'Convite', value: 'convite' },
+  { label: 'Resgate de códigos', value: 'cupom' },
+];
 
 export default function GeneralHistory() {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { t } = useLanguage();
   const [filter, setFilter] = useState<HistoryType>('');
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,13 +38,11 @@ export default function GeneralHistory() {
       setLoading(true);
       try {
         const { data, error } = await supabase.rpc('get_general_history_mcpn');
-
         if (error) throw error;
-
         if (data) {
           const mapped: HistoryItem[] = data.map((item: any) => ({
             id: item.id,
-            type: item.type as any,
+            type: item.type as HistoryType,
             amount: Number(item.amount),
             date: new Date(item.created_at).toLocaleString('pt-AO', {
               day: '2-digit',
@@ -45,16 +50,14 @@ export default function GeneralHistory() {
               year: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
-              second: '2-digit'
             }),
             description: item.description,
-            status: item.status as any
+            status: item.status,
           }));
           setHistory(mapped);
         }
-      } catch (err: any) {
-        showToast('Falha, recarregue a pagina', 'error');
-        console.error('Erro:', err.message);
+      } catch {
+        showToast('Falha ao carregar histórico', 'error');
       } finally {
         setLoading(false);
       }
@@ -66,149 +69,138 @@ export default function GeneralHistory() {
 
   const getIcon = (type: HistoryType) => {
     switch (type) {
-      case 'recargas': return <ArrowUpRight size={18} />;
-      case 'retiradas': return <ArrowDownRight size={18} />;
-      case 'renda_diaria': return <TrendingUp size={18} />;
-      case 'bonus_equipe': return <Users size={18} />;
-      case 'cupom': return <Ticket size={18} />;
-      default: return <History size={18} />;
+      case 'recargas': return <ArrowUpRight size={16} />;
+      case 'retiradas': return <ArrowDownRight size={16} />;
+      case 'renda_diaria': return <TrendingUp size={16} />;
+      case 'bonus_equipe': return <Users size={16} />;
+      case 'cupom': return <Ticket size={16} />;
+      case 'tarefas': return <Gift size={16} />;
+      case 'banimento': return <Shield size={16} />;
+      case 'convite': return <UserPlus size={16} />;
+      default: return <History size={16} />;
     }
   };
 
-  const getIconContainerStyle = (type: HistoryType) => {
-    if (type === 'retiradas') return 'bg-red-50 border-red-100 text-[#e81123]';
-    if (type === 'recargas') return 'bg-red-50 border-red-100 text-[#C62828]';
-    if (type === 'renda_diaria') return 'bg-blue-50 border-blue-100 text-[#0067b8]';
-    if (type === 'bonus_equipe') return 'bg-indigo-50 border-indigo-100 text-[#3f51b5]';
-    return 'bg-purple-50 border-purple-100 text-[#9c27b0]';
+  const getIconBg = (type: HistoryType) => {
+    if (type === 'retiradas') return 'bg-red-50 text-[#FE384F]';
+    if (type === 'recargas') return 'bg-green-50 text-[#16a34a]';
+    if (type === 'renda_diaria') return 'bg-blue-50 text-[#2563eb]';
+    if (type === 'bonus_equipe') return 'bg-indigo-50 text-[#4f46e5]';
+    if (type === 'cupom') return 'bg-purple-50 text-[#9333ea]';
+    if (type === 'tarefas') return 'bg-yellow-50 text-[#d97706]';
+    if (type === 'banimento') return 'bg-gray-100 text-[#555555]';
+    if (type === 'convite') return 'bg-pink-50 text-[#db2777]';
+    return 'bg-gray-100 text-[#444444]';
   };
 
   const getStatusStyle = (status: string) => {
     const s = status.toLowerCase();
-    if (s === 'aprovado' || s === 'confirmado' || s === 'completed' || s === 'completo') return 'text-[#C62828] bg-red-50 border border-red-100';
-    if (s === 'pendente' || s === 'pending') return 'text-[#e1a32a] bg-yellow-50 border border-yellow-100';
-    if (s === 'recarregando') return 'text-[#0067b8] bg-blue-50 border border-blue-100';
-    return 'text-[#e81123] bg-red-50 border border-red-100';
+    if (s === 'aprovado' || s === 'confirmado' || s === 'completed' || s === 'completo') {
+      return 'text-[#16a34a] bg-green-50';
+    }
+    if (s === 'pendente' || s === 'pending') {
+      return 'text-[#d97706] bg-yellow-50';
+    }
+    if (s === 'rejeitado' || s === 'failed') {
+      return 'text-[#FE384F] bg-red-50';
+    }
+    return 'text-[#555555] bg-gray-100';
   };
 
-  const getStatusLabel = (status: string) => {
-    return status;
-  };
+  const isCredit = (type: HistoryType) =>
+    type !== 'retiradas' && type !== 'banimento';
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] flex flex-col relative overflow-hidden pb-10">
-      <div className="absolute inset-x-0 top-0 h-[180px] bg-[#E9EDF6]" />
+    <div className="w-full min-h-screen bg-[#F2F2F2] font-sans antialiased text-[#191919] select-none flex flex-col items-center pb-10">
 
-      <header className="relative z-20 w-full px-6 py-4 flex items-center justify-between sticky top-0 bg-transparent">
-        <button 
-          onClick={() => navigate('/perfil')} 
-          className="w-10 h-10 flex items-center justify-start text-[#2D2324] active:opacity-50 transition-opacity"
-          aria-label={t('common.back')}
-          title={t('common.back')}
-        >
-          ‹
-        </button>
-        <h1 className="text-[16px] font-medium text-[#2D2324] absolute left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
-          {t('history.general_title')}
-        </h1>
-
-        <div className="flex items-center space-x-2 bg-[#FFFFFF] border border-[#F4F4F4] rounded-[28px] px-3 py-2 shadow-[0_8px_20px_rgba(242,240,242,0.55)] relative z-10">
-          <Filter size={14} className="text-[#5A1089]" />
-          <select 
-            className="bg-transparent text-[13px] font-medium text-[#2D2324] outline-none cursor-pointer appearance-none pr-6"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value as HistoryType)}
-            title="Filtrar Categoria"
+      <div className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 border-b border-[#F2F2F2]">
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            onClick={() => navigate('/perfil')}
+            className="p-1 text-[#191919] active:opacity-50 transition-opacity"
+            aria-label="Voltar"
           >
-            <option value="">{t('history.filter_all').split(' ')[0]}</option>
-            <option value="recargas">{t('history.filter_recharge')}</option>
-            <option value="retiradas">{t('history.filter_withdraw')}</option>
-            <option value="renda_diaria">{t('history.filter_income')}</option>
-            <option value="bonus_equipe">{t('history.filter_team')}</option>
-            <option value="cupom">{t('history.filter_coupon')}</option>
-          </select>
-          <div className="absolute right-3 pointer-events-none text-[#5A1089]">
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
+            <ChevronLeft className="w-5 h-5 stroke-[2]" />
+          </button>
+          <h1 className="text-[15px] font-medium text-[#191919]">Registros</h1>
         </div>
-      </header>
 
-      <main className="w-full max-w-[420px] px-6 pt-6 mx-auto relative z-10">
+        <div
+          className="flex gap-2 overflow-x-auto pb-1 no-scrollbar [&::-webkit-scrollbar]:hidden touch-pan-x select-none"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+        >
+          {TABS.map(tab => (
+            <button
+              key={tab.value}
+              onClick={() => setFilter(tab.value)}
+              className={`flex-shrink-0 h-[32px] px-3.5 text-[12px] font-normal transition-all whitespace-nowrap border ${
+                filter === tab.value
+                  ? 'bg-[#FE384F] text-white border-[#FE384F]'
+                  : 'bg-white text-[#555555] border-[#E8E8E8]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <main className="w-full max-w-[480px] px-4 pt-3">
         {loading ? (
-          <div className="text-center py-20 text-[#4E4B53] font-normal tracking-widest text-[10px] italic">
-            {t('history.syncing')}
+          <div className="flex flex-col gap-3 mt-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white p-4 animate-pulse space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-gray-200" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3.5 w-3/4 bg-gray-200" />
+                    <div className="h-3 w-1/2 bg-gray-200" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredData.length === 0 ? (
-          <div className="bg-[#FFFFFF] rounded-[28px] p-16 text-center border border-[#F4F4F4] flex flex-col items-center shadow-[0_8px_20px_rgba(242,240,242,0.55)]">
-             <History size={40} className="text-[#5A1089] mb-3" />
-             <p className="text-[12px] text-[#4E4B53] font-light tracking-wider">
-               {t('history.empty_cat')}
-             </p>
+          <div className="bg-white mt-2 p-12 flex flex-col items-center text-center">
+            <History size={36} className="text-[#CCCCCC] mb-3" />
+            <p className="text-[13px] text-[#888888] font-normal">Sem registos nesta categoria</p>
           </div>
         ) : (
-          <div className="space-y-4 pb-6">
-            <AnimatePresence mode="popLayout">
-              {filteredData.map((item, idx) => {
-                const Icon = getIcon(item.type);
-                return (
-                  <motion.div 
-                    key={item.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-[#FFFFFF] border border-[#F4F4F4] rounded-[28px] p-5 shadow-[0_8px_20px_rgba(242,240,242,0.55)] space-y-4"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center space-x-3">
-                        <div className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center border",
-                          getIconContainerStyle(item.type)
-                        )}>
-                          {Icon}
-                        </div>
-                        <div>
-                          <p className="text-[14px] font-semibold text-[#2D2324] leading-tight">
-                            {item.description}
-                          </p>
-                          <p className="text-[11px] text-[#4E4B53] font-light mt-0.5">
-                            {item.date}
-                          </p>
-                        </div>
-                      </div>
-                      <div className={cn(
-                        "px-2 py-0.5 rounded-[4px] text-[8px] font-bold tracking-wider",
-                        getStatusStyle(item.status)
-                      )}>
-                        {getStatusLabel(item.status)}
-                      </div>
+          <div className="flex flex-col gap-2.5 mt-1">
+            {filteredData.map(item => (
+              <div key={item.id} className="bg-white p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-9 h-9 flex-shrink-0 flex items-center justify-center ${getIconBg(item.type)}`}>
+                      {getIcon(item.type)}
                     </div>
-
-                    <div className="flex justify-between items-center pt-3 border-t border-[#F4F4F4] text-[12px]">
-                      <span className="text-[#4E4B53] font-light">Valor</span>
-                      <span className={cn(
-                        "font-semibold text-[15px]",
-                        item.type === 'retiradas' ? "text-[#e81123]" : "text-[#C62828]"
-                      )}>
-                        {item.type === 'retiradas' ? '-' : '+'}{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} Kz
-                      </span>
+                    <div className="min-w-0">
+                      <p className="text-[13.5px] font-medium text-[#191919] leading-tight truncate">
+                        {item.description}
+                      </p>
+                      <p className="text-[11px] text-[#888888] font-normal mt-0.5">
+                        {item.date}
+                      </p>
                     </div>
+                  </div>
+                  <span className={`flex-shrink-0 text-[10px] font-normal px-2 py-0.5 ${getStatusStyle(item.status)}`}>
+                    {item.status}
+                  </span>
+                </div>
 
-                    <div className="flex items-center justify-between text-[9px] text-[#4E4B53] font-light pt-1">
-                      <span>Tipo: {item.type.replace('_', ' ').toUpperCase()}</span>
-                      <span className="truncate max-w-[150px]">ID: {item.id.toString().toUpperCase()}</span>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+                <div className="flex items-center justify-between border-t border-[#F5F5F5] pt-3">
+                  <span className="text-[11.5px] text-[#888888]">
+                    {item.type.replace('_', ' ').toUpperCase()}
+                  </span>
+                  <span className={`text-[14px] font-medium ${isCredit(item.type) ? 'text-[#16a34a]' : 'text-[#FE384F]'}`}>
+                    {isCredit(item.type) ? '+' : '-'}{item.amount.toLocaleString('pt-AO', { minimumFractionDigits: 2 })} Kz
+                  </span>
+                </div>
+              </div>
+            ))}
 
-            <div className="text-center pt-8 pb-4 text-[12px] font-medium tracking-wide text-[#4E4B53]">
-              <span className="text-[#5A1089] opacity-80">
-                ~ Sem mais dados ~
-              </span>
+            <div className="text-center py-6 text-[11.5px] text-[#AAAAAA]">
+              Sem mais registos
             </div>
           </div>
         )}
@@ -216,3 +208,6 @@ export default function GeneralHistory() {
     </div>
   );
 }
+
+
+

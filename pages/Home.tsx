@@ -11,6 +11,7 @@ import { APP_CONFIG } from '../constants/config';
 import { supabase } from '../lib/supabase';
 import { HeroSection } from './Home/components/HeroSection';
 import { AnnouncementPopup } from './Home/components/AnnouncementPopup';
+import { SocialProofFeed } from './Home/components/SocialProofFeed';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -123,6 +124,8 @@ export default function Home() {
             />
           </div>
         </div>
+
+        <SocialProofFeed />
 
       </div>
     </div>
