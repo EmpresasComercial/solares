@@ -1,10 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Button } from '../../../components/Button';
-import { useLanguage } from '../../../contexts/LanguageContext';
 import { formatCurrency } from '../../../lib/currency';
 import { SmartImage } from '../../../components/SmartImage';
-import { ChevronRight, Clock, ShieldCheck } from 'lucide-react';
 
 export interface Product {
   id: string;
@@ -12,10 +9,10 @@ export interface Product {
   descricao: string;
   priceValue: number;
   durationDays: number;
-  size: string;
-  icon?: React.ReactNode;
+  size?: string;
   imagem_url?: string;
   renda_diaria: string | number;
+  comprados_count?: number;
 }
 
 interface ProductCardProps {
@@ -25,78 +22,101 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index, onBuy }) => {
-  const { t } = useLanguage();
+  const priceAOA = formatCurrency(product.priceValue, 'KZ');
+  const promoAOA = formatCurrency(product.priceValue * 0.982, 'KZ');
+  const dailyAOA = formatCurrency(Number(product.renda_diaria), 'KZ');
+
+  const salesRaw = product.comprados_count ?? (1000 + (index * 2731) % 11000);
+  const salesLabel = salesRaw >= 1000
+    ? `${Math.floor(salesRaw / 1000)}.000+ vendido(s)`
+    : `${salesRaw}+ vendido(s)`;
+  const rating = (4.6 + ((index * 0.07) % 0.4)).toFixed(1);
+
+  const hasPromo = index % 3 !== 1;
+  const hasChoice = index % 4 !== 3;
+  const hasFrete = index % 2 === 0;
+  const isAnuncio = index % 5 === 3;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-      className="group bg-white rounded-[24px] p-5 flex flex-col border border-[#F1F5F9] hover:border-[#0067b8]/20 transition-all hover:shadow-sm"
+      transition={{ delay: index * 0.03, duration: 0.18 }}
+      onClick={() => onBuy(product.id)}
+      className="bg-white flex flex-col cursor-pointer select-none active:opacity-80 transition-opacity"
     >
-      <div className="flex items-start gap-5">
-        {/* Product Image / Icon - Elevated & Clean */}
-        <div className="w-20 h-20 shrink-0 flex items-center justify-center transition-transform group-hover:scale-105 duration-500">
-          {product.imagem_url ? (
-            <SmartImage 
-              src={product.imagem_url} 
-              alt={product.nome} 
-              className="w-full h-full object-contain !bg-transparent"
-              style={{ background: 'transparent' }}
-            />
-          ) : (
-            <div className="text-[#0067b8]/30">
-              <ShieldCheck size={32} strokeWidth={1} />
-            </div>
+      {/* Imagem — Full bleed, sem padding, proporção ~1:1 */}
+      <div className="w-full aspect-square bg-[#F2F2F2] relative overflow-hidden flex-shrink-0">
+        {product.imagem_url ? (
+          <SmartImage
+            src={product.imagem_url}
+            alt={product.nome}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100">
+            <span className="text-5xl">☀️</span>
+          </div>
+        )}
+
+        {/* Badge "Anúncio" canto superior direito */}
+        {isAnuncio && (
+          <div className="absolute top-1.5 right-1.5 bg-[#1A1A1A]/70 text-white text-[9px] font-medium px-1.5 py-[2px] rounded-[3px]">
+            Anúncio
+          </div>
+        )}
+      </div>
+
+      {/* Info abaixo da imagem */}
+      <div className="px-1.5 pt-1.5 pb-2 flex flex-col gap-[3px] flex-1">
+
+        {/* Preço Principal — Vermelho coral grande */}
+        <div className="text-[15px] font-bold text-[#FF2442] leading-tight">
+          {priceAOA}
+        </div>
+
+        {/* Linha "Em breve" com raio (promoção) */}
+        {hasPromo && (
+          <div className="flex items-center gap-0.5 text-[10.5px] text-[#FF2442] font-medium leading-tight">
+            <span>⚡</span>
+            <span>Em breve {promoAOA}</span>
+          </div>
+        )}
+
+        {/* Badges Choice + Promo */}
+        <div className="flex items-center gap-1 flex-wrap">
+          {hasChoice && (
+            <span className="bg-[#1A1A1A] text-white text-[9px] font-bold px-[5px] py-[1.5px] rounded-[3px] leading-none">
+              Choice
+            </span>
+          )}
+          {hasPromo && (
+            <span className="bg-[#FF2442] text-white text-[9px] font-bold px-[5px] py-[1.5px] rounded-[3px] leading-none">
+              Promo
+            </span>
           )}
         </div>
 
-        {/* Product Details - Light Typography */}
-        <div className="flex-1 min-w-0 pt-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-[16px] font-medium text-[#111827] tracking-tight truncate">
-              {product.nome}
-            </h3>
-          </div>
-          
-          <p className="text-[12px] text-[#94A3B8] font-light leading-snug line-clamp-2">
-            {product.descricao}
-          </p>
-
-          <div className="mt-4 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-[18px] font-normal bg-gradient-to-r from-[#C62828] to-[#1A237E] bg-clip-text text-transparent">
-                  {formatCurrency(product.priceValue, 'KZ')}
-                </span>
-                <span className="text-[11px] text-[#94A3B8] font-light tracking-tighter">
-                  Kz
-                </span>
-              </div>
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] font-medium text-[#C62828] tracking-wide">
-                  +{formatCurrency(Number(product.renda_diaria), 'KZ')}
-                </span>
-                <span className="text-[9px] text-[#94A3B8] font-light">Diários</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-3 border-t border-[#F1F5F9]">
-              <div className="flex items-center gap-1.5">
-                <Clock size={12} className="text-[#94A3B8]" />
-                <span className="text-[11px] text-[#94A3B8] font-light">
-                  Duração: {product.durationDays}/Dias
-                </span>
-              </div>
-              <button 
-                onClick={() => onBuy(product.id)}
-                className="h-7 px-5 rounded-full bg-gradient-to-r from-[#C62828] to-[#1A237E] flex items-center justify-center text-white text-[11px] font-medium shadow-sm transition-all hover:shadow-md active:scale-95"
-              >
-                Comprar
-              </button>
-            </div>
-          </div>
+        {/* Vendidos + Estrela + Avaliação */}
+        <div className="flex items-center gap-1 text-[10.5px] text-[#666666] leading-tight">
+          <span>{salesLabel}</span>
+          <span className="text-amber-400">★</span>
+          <span>{rating}</span>
         </div>
+
+        {/* Título / Descrição do produto (2 linhas) */}
+        <p className="text-[11.5px] text-[#1A1A1A] font-normal leading-snug line-clamp-2">
+          {product.descricao || product.nome}
+        </p>
+
+        {/* Frete grátis / Renda diária em verde */}
+        {hasFrete && (
+          <div className="flex items-center gap-1 text-[10.5px] text-[#00A058] font-medium leading-tight">
+            <span>🚚</span>
+            <span>Renda: {dailyAOA}/dia</span>
+          </div>
+        )}
+
       </div>
     </motion.div>
   );

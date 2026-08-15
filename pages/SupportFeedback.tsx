@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ChevronLeft, Loader2 } from 'lucide-react';
+import { ChevronLeft, ShieldCheck, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function SupportFeedback() {
@@ -43,7 +42,7 @@ export default function SupportFeedback() {
         mensagem: feedback
       });
       if (error) throw error;
-      showToast('Enviado!', 'success');
+      showToast('Enviado com sucesso!', 'success');
       setFeedback('');
       setTimeout(() => navigate('/suporte'), 1500);
     } catch (err: any) {
@@ -54,61 +53,73 @@ export default function SupportFeedback() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center">
-      {/* Header Compacto */}
-      <header className="w-full px-6 py-4 flex items-center justify-between sticky top-0 bg-white z-50">
-        <button onClick={() => navigate('/suporte')} className="w-10 h-10 flex items-center justify-start text-[#333333] active:opacity-50 transition-opacity">
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-[16px] font-medium text-[#333333] absolute left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
-          Comentarios
-        </h1>
-        <div className="w-10" />
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      
+      {/* 1. HEADER (Design AddBank) */}
+      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/suporte')} 
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
+            aria-label={t('common.back')}
+          >
+            <ChevronLeft className="w-6 h-6 stroke-[2.2]" />
+          </button>
+          <h1 className="text-[18px] font-bold text-[#202020] tracking-tight">
+            Comentários e Sugestões
+          </h1>
+        </div>
+
+        {/* Subtítulo verde com ícone de escudo */}
+        <div className="flex items-center gap-1.5 mt-1.5 ml-8 text-[13px] text-[#38A98B] font-medium">
+          <ShieldCheck className="w-4 h-4 text-[#38A98B] shrink-0" />
+          <span>Sua opinião nos ajuda a melhorar a plataforma.</span>
+        </div>
       </header>
 
-      <main className="flex-1 w-full max-w-[400px] px-6 py-8">
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          className="flex flex-col"
-        >
-          <form onSubmit={handleSubmit} className="w-full">
-            <div className="mb-8">
-              <label className="block text-[14px] text-[#333333] mb-3 font-normal ml-1">
-                Escreva o seu comentário
-              </label>
-              <div className="relative">
-                <textarea
-                  ref={textareaRef}
-                  className="w-full min-h-[42px] px-5 py-[10px] bg-[#F5F5F5] rounded-[21px] text-[15px] text-[#333333] font-normal placeholder-gray-400 border-none outline-none focus:ring-0 transition-all resize-none overflow-hidden"
-                  placeholder="Escreva aqui..."
-                  value={feedback}
-                  onChange={handleFeedbackChange}
-                  disabled={isSubmitting}
-                  rows={1}
-                />
-                <div className="flex justify-end mt-2 px-1">
-                  <span className={cn("text-[10px] font-medium", feedback.length >= 480 ? "text-[#C62828]" : "text-gray-300")}>
-                    {feedback.length} / 500
-                  </span>
-                </div>
-              </div>
+      {/* 2. CONTEÚDO PRINCIPAL (CAMPO TEXTAREA BRANCO ELEVADO) */}
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
+        <form onSubmit={handleSubmit} id="feedback-form" className="space-y-3">
+          <div className="bg-[#FFFFFF] rounded-[10px] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-2">
+            <label className="block text-[12px] font-normal text-[#A6A6A6]">
+              Escreva o seu comentário ou sugestão
+            </label>
+            <textarea
+              ref={textareaRef}
+              className="w-full min-h-[120px] bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium border-none resize-none"
+              placeholder="Digite aqui o que você gostaria de nos dizer..."
+              value={feedback}
+              onChange={handleFeedbackChange}
+              disabled={isSubmitting}
+              rows={4}
+            />
+            <div className="flex justify-end pt-1 border-t border-gray-100">
+              <span className={cn("text-[11px] font-medium", feedback.length >= 480 ? "text-[#FE384F]" : "text-[#A6A6A6]")}>
+                {feedback.length} / 500
+              </span>
             </div>
-
-            <button 
-              type="submit" 
-              disabled={isSubmitting || feedback.length < 10}
-              className="w-full h-[50px] rounded-[25px] bg-gradient-to-r from-[#C62828] to-[#1A237E] text-white font-medium text-[16px] transition-opacity hover:opacity-90 disabled:opacity-30 flex items-center justify-center shadow-lg shadow-blue-900/10"
-            >
-              {isSubmitting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                'Enviar'
-              )}
-            </button>
-          </form>
-        </motion.div>
+          </div>
+        </form>
       </main>
+
+      {/* 3. BARRA INFERIOR FIXA COM BOTÃO "Salvar e confirmar" (#FE384F) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
+        <div className="w-full max-w-[480px]">
+          <button
+            type="submit"
+            form="feedback-form"
+            disabled={isSubmitting || feedback.length < 10}
+            className="w-full h-[48px] rounded-full bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-bold text-[16px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin h-5 w-5 text-[#FFFFFF]" />
+            ) : (
+              "Enviar Comentário"
+            )}
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }

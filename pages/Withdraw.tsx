@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
 import {
   ChevronLeft,
-  Wallet,
-  Lock,
-  Banknote,
+  ShieldCheck,
   Info,
-  ChevronRight,
   Loader2,
-  CheckCircle2,
-  AlertCircle,
   Eye,
-  EyeOff,
-  Landmark
+  EyeOff
 } from 'lucide-react';
 
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { formatCurrency } from '../lib/currency';
 import { useLanguage } from '../contexts/LanguageContext';
-import { cn } from '../lib/utils';
 import { Skeleton } from '../components/Skeleton';
 
 export default function Withdraw() {
@@ -170,153 +162,138 @@ export default function Withdraw() {
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans select-none">
-        <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-16 px-5">
-          <div className="flex items-center justify-between max-w-[430px] mx-auto">
-            <Skeleton className="w-8 h-8 opacity-40" rounded="rounded-full" />
-            <Skeleton className="w-28 h-5 opacity-40" />
-            <div className="w-8" />
+      <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans select-none flex flex-col items-center">
+        <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-6 h-6 rounded-full opacity-40" />
+            <Skeleton className="w-32 h-5 opacity-40" />
           </div>
-        </div>
-        <div className="max-w-[430px] mx-auto px-4 -mt-8 space-y-3.5">
-          <div className="bg-white rounded-[8px] p-5 shadow-sm space-y-4">
-            <Skeleton className="w-32 h-4" />
-            <Skeleton className="w-full h-12" rounded="rounded-[8px]" />
-            <Skeleton className="w-full h-12" rounded="rounded-[8px]" />
-            <Skeleton className="w-full h-12" rounded="rounded-[8px]" />
-            <Skeleton className="w-full h-12" rounded="rounded-[8px]" />
-          </div>
-        </div>
+        </header>
+        <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
+          <Skeleton className="w-full h-14 rounded-[10px]" />
+          <Skeleton className="w-full h-14 rounded-[10px]" />
+          <Skeleton className="w-full h-14 rounded-[10px]" />
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans antialiased text-[#1A1C1E] select-none">
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
 
-      {/* 1. HEADER VERDE ORGÂNICO */}
-      <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-16 px-5 text-white overflow-hidden">
-        <svg
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
-          viewBox="0 0 380 260"
-          preserveAspectRatio="none"
-        >
-          <path d="M190,0 Q185,130 190,260" stroke="#FFFFFF" strokeWidth="1.8" fill="none" opacity="0.6" />
-          <path d="M190,40 C140,70 70,110 0,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,40 C240,70 310,110 380,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C140,170 80,210 0,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C240,170 300,210 380,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-        </svg>
-
-        <div className="relative z-10 flex items-center justify-between max-w-[430px] mx-auto w-full">
+      {/* 1. HEADER (Design AddBank) */}
+      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/perfil')}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
             aria-label={t('common.back')}
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-6 h-6 stroke-[2.2]" />
           </button>
 
-          <h1 className="text-[17px] font-semibold text-white tracking-tight">
-            {t('withdraw.title')}
+          <h1 className="text-[18px] font-bold text-[#202020] tracking-tight">
+            {t('withdraw.title') || 'Retirar Saldo'}
           </h1>
-
-          <div className="w-9" />
-        </div>
-      </div>
-
-      {/* 2. CONTEÚDO DOS CARDS */}
-      <div className="max-w-[430px] mx-auto px-4 -mt-8 relative z-20 space-y-3.5">
-
-        {/* CARD DO FORMULÁRIO */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 p-5">
-          <form onSubmit={handleSubmit} className="space-y-4">
-
-            {/* Saldo Disponível Info */}
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-              <span className="text-[13px] text-[#8A929A]">{t('withdraw.balance_label') || 'Saldo Disponível'}</span>
-              <span className="text-[15px] font-bold text-[#1A1C1E]">
-                {formatCurrency(balance, 'KZ')}
-              </span>
-            </div>
-
-            {/* Amount Input */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('withdraw.amount')}</label>
-              <div className="flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
-                <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
-                  <Banknote className="w-4 h-4" />
-                </div>
-                <input
-                  type="tel"
-                  placeholder={t('withdraw.amount_placeholder')}
-                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
-                  value={amount}
-                  onChange={handleAmountChange}
-                />
-                <span className="text-[14px] font-semibold text-[#64748B] ml-2">KZ</span>
-              </div>
-            </div>
-
-
-            {/* Security Password */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('withdraw.password')}</label>
-              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
-                <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
-                  <Lock className="w-4 h-4" />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder={t('withdraw.security_pass_placeholder')}
-                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-[#A09AA5] hover:text-[#C62828] p-1 active:scale-90 transition-transform"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting || hasPending || !amount || parseInt(amount) < 400}
-              className="w-full h-[46px] rounded-[8px] bg-gradient-to-r from-[#D32F2F] to-[#B71C1C] text-white font-semibold text-[15px] transition-all active:scale-[0.99] disabled:opacity-40 shadow-sm flex items-center justify-center mt-4 cursor-pointer"
-            >
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : 'Sacar'}
-            </button>
-          </form>
         </div>
 
-        {/* CARD DE INSTRUÇÕES / GUIA */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 p-5 space-y-3">
-          <div className="flex items-center space-x-2 text-[#C62828]">
-            <Info className="w-4 h-4" />
-            <p className="text-[13px] font-semibold tracking-tight">{t('withdraw.guide_title')}</p>
+        {/* Subtítulo verde com ícone de escudo */}
+        <div className="flex items-center gap-1.5 mt-1.5 ml-8 text-[13px] text-[#38A98B] font-medium">
+          <ShieldCheck className="w-4 h-4 text-[#38A98B] shrink-0" />
+          <span>Sua transação bancária é protegida e criptografada.</span>
+        </div>
+      </header>
+
+      {/* 2. CONTEÚDO PRINCIPAL (CAMPOS BRANCOS LIMPOS) */}
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
+        
+        {/* CARD: Saldo Disponível */}
+        <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <span className="text-[14px] text-[#A6A6A6] font-medium">
+            {t('withdraw.balance_label') || 'Saldo Disponível'}
+          </span>
+          <span className="text-[16px] font-bold text-[#202020]">
+            {formatCurrency(balance, 'KZ')}
+          </span>
+        </div>
+
+        {/* FORMULÁRIO DE RETIRADA */}
+        <form onSubmit={handleSubmit} id="withdraw-form" className="space-y-3">
+          
+          {/* Campo: Valor de Retirada */}
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <input
+              type="tel"
+              placeholder={t('withdraw.amount_placeholder') || 'Valor a retirar'}
+              className="w-full h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium pr-2"
+              value={amount}
+              onChange={handleAmountChange}
+            />
+            <span className="text-[14px] font-bold text-[#FE384F] shrink-0">KZ</span>
           </div>
 
-          <div className="space-y-2 text-[12.5px] text-[#64748B] leading-relaxed">
+          {/* Campo: Senha de Segurança */}
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder={t('withdraw.security_pass_placeholder') || 'Senha de Segurança'}
+              className="w-full h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium pr-2"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="p-1 text-[#A6A6A6] hover:text-[#202020] active:scale-90 transition-transform"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5 stroke-[1.8]" /> : <Eye className="w-5 h-5 stroke-[1.8]" />}
+            </button>
+          </div>
+
+        </form>
+
+        {/* CARD: Instruções e Regras */}
+        <div className="bg-[#FFFFFF] rounded-[14px] p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5">
+          <div className="flex items-center gap-2 text-[#202020]">
+            <Info className="w-4 h-4 text-[#A6A6A6]" />
+            <p className="text-[13px] font-bold tracking-tight">{t('withdraw.guide_title') || 'Instruções de Retirada'}</p>
+          </div>
+
+          <div className="space-y-1.5 text-[12px] text-[#707070] leading-relaxed pl-1">
             {[
               t('withdraw.guide_time'),
               t('withdraw.guide_limits'),
               t('withdraw.guide_tax'),
               t('withdraw.guide_support')
             ].map((text, idx) => (
-              <div key={idx} className="flex items-start space-x-2">
-                <span className="text-[#C62828] font-bold">•</span>
+              <div key={idx} className="flex items-start gap-2">
+                <span className="text-[#FE384F] font-bold">•</span>
                 <span>{text}</span>
               </div>
             ))}
           </div>
         </div>
 
+      </main>
+
+      {/* 3. BARRA INFERIOR FIXA COM BOTÃO "Salvar e confirmar" (#FE384F) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
+        <div className="w-full max-w-[480px]">
+          <button
+            type="submit"
+            form="withdraw-form"
+            disabled={isSubmitting || hasPending || !amount || parseInt(amount) < 400}
+            className="w-full h-[48px] rounded-full bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-bold text-[16px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin h-5 w-5 text-[#FFFFFF]" />
+            ) : (
+              "Confirmar Retirada"
+            )}
+          </button>
+        </div>
       </div>
+
     </div>
   );
 }

@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
-import { cn } from '../lib/utils';
-import { ChevronLeft, History, Landmark, Loader2 } from 'lucide-react';
+import { ChevronLeft, ShieldCheck, ChevronDown, History, Loader2 } from 'lucide-react';
 
 interface RechargeResponse {
   success: boolean;
@@ -27,7 +25,6 @@ export default function Recharge() {
 
   const MIN_RECHARGE = 9000;
   const MAX_RECHARGE = 3000000;
-  const isAmountValid = parseInt(amount || '0') >= MIN_RECHARGE && parseInt(amount || '0') <= MAX_RECHARGE;
 
   useEffect(() => {
     async function fetchBanks() {
@@ -91,167 +88,119 @@ export default function Recharge() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans antialiased text-[#1A1C1E] select-none">
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
       
-      {/* 1. HEADER VERDE ORGÂNICO */}
-      <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-16 px-5 text-white overflow-hidden">
-        <svg
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
-          viewBox="0 0 380 260"
-          preserveAspectRatio="none"
-        >
-          <path d="M190,0 Q185,130 190,260" stroke="#FFFFFF" strokeWidth="1.8" fill="none" opacity="0.6" />
-          <path d="M190,40 C140,70 70,110 0,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,40 C240,70 310,110 380,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C140,170 80,210 0,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C240,170 300,210 380,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-        </svg>
-
-        <div className="relative z-10 flex items-center justify-between max-w-[430px] mx-auto w-full">
-          <button
-            onClick={() => navigate('/perfil')}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"
-            aria-label={t('common.back')}
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          
-          <h1 className="text-[17px] font-semibold text-white tracking-tight">
-            {t('recharge.title') || 'Recarregar'}
-          </h1>
+      {/* 1. HEADER (Design AddBank) */}
+      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/perfil')}
+              className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
+              aria-label={t('common.back')}
+            >
+              <ChevronLeft className="w-6 h-6 stroke-[2.2]" />
+            </button>
+            
+            <h1 className="text-[18px] font-bold text-[#202020] tracking-tight">
+              {t('recharge.title') || 'Recarregar Conta'}
+            </h1>
+          </div>
 
           <button 
             onClick={() => navigate('/registro-recarga?tab=recarga')}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white/90 hover:text-white active:scale-95 transition-transform"
+            className="p-2 text-[#202020] hover:bg-gray-100 rounded-full transition-colors"
             title="Histórico"
           >
-            <History className="w-5 h-5" />
+            <History className="w-5 h-5 stroke-[1.8]" />
+          </button>
+        </div>
+
+        {/* Subtítulo verde com ícone de escudo */}
+        <div className="flex items-center gap-1.5 mt-1.5 ml-8 text-[13px] text-[#38A98B] font-medium">
+          <ShieldCheck className="w-4 h-4 text-[#38A98B] shrink-0" />
+          <span>Transações seguras e processamento instantâneo.</span>
+        </div>
+      </header>
+
+      {/* 2. CONTEÚDO PRINCIPAL (CAMPOS BRANCOS LIMPOS) */}
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
+        
+        {/* Campo 1: Valor de Recarga */}
+        <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <input
+            type="text"
+            className="w-full h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium pr-2"
+            placeholder={t('recharge.placeholder') || 'Valor da recarga'}
+            value={amount}
+            onChange={handleAmountChange}
+          />
+          <span className="text-[14px] font-bold text-[#FE384F] shrink-0">KZ</span>
+        </div>
+
+        {/* Botões de Sugestão de Valor */}
+        <div className="grid grid-cols-3 gap-2">
+          {[9000, 25000, 72000].map(val => (
+            <button
+              key={val}
+              type="button"
+              onClick={() => {
+                setAmount(val.toString());
+                setShowBankField(true);
+              }}
+              className={`h-[40px] rounded-full text-[13px] font-semibold transition-all border ${
+                amount === val.toString()
+                  ? "bg-[#FE384F] text-white border-[#FE384F] shadow-xs"
+                  : "bg-white text-[#202020] border-gray-200 hover:border-[#FE384F]"
+              }`}
+            >
+              {val.toLocaleString()} Kz
+            </button>
+          ))}
+        </div>
+
+        {/* Campo 2: Seleção de Banco (Step 2) */}
+        {showBankField && (
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative">
+            <select 
+              ref={selectRef}
+              className={`w-full h-full bg-transparent appearance-none outline-none text-[15px] font-medium cursor-pointer pr-8 ${
+                selectedBankId ? 'text-[#202020]' : 'text-[#A6A6A6]'
+              }`}
+              value={selectedBankId}
+              onChange={(e) => setSelectedBankId(e.target.value)}
+            >
+              <option value="" disabled>{t('recharge.select_bank') || 'Selecionar banco de depósito'}</option>
+              {banks.map((bank) => (
+                <option key={bank.id} value={bank.id} className="text-[#202020]">
+                  {bank.nome_banco}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-5 h-5 text-[#A6A6A6] absolute right-4 pointer-events-none stroke-[1.8]" />
+          </div>
+        )}
+
+      </main>
+
+      {/* 3. BARRA INFERIOR FIXA COM BOTÃO "Salvar e confirmar" (#FE384F) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
+        <div className="w-full max-w-[480px]">
+          <button
+            type="button"
+            onClick={handleMainAction}
+            disabled={isSubmitting || !amount}
+            className="w-full h-[48px] rounded-full bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-bold text-[16px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin h-5 w-5 text-[#FFFFFF]" />
+            ) : (
+              selectedBankId ? t('recharge.generate_data') || 'Gerar Dados de Pagamento' : (t('recharge.submit_btn') || 'Continuar Recarga')
+            )}
           </button>
         </div>
       </div>
 
-      {/* 2. CONTEÚDO DOS CARDS */}
-      <div className="max-w-[430px] mx-auto px-4 -mt-8 relative z-20 space-y-3.5">
-        
-        {/* CARD PRINCIPAL */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 p-5 space-y-5">
-          
-          {/* Campo de Valor */}
-          <div>
-            <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-2">{t('recharge.amount')}</label>
-            <div className={cn(
-              "relative flex items-center h-[54px] bg-[#FFFFFF] border rounded-[8px] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] transition-all focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10",
-              amount && !isAmountValid ? "border-red-300 ring-1 ring-red-200" : "border-[#F4F4F4]"
-            )}>
-              <input
-                type="text"
-                className={cn(
-                  "w-full h-full bg-transparent outline-none text-[18px] font-semibold transition-all placeholder:text-[#A09AA5] placeholder:font-normal pr-8",
-                  amount && !isAmountValid ? "text-red-600" : "text-[#2D2324]"
-                )}
-                placeholder={t('recharge.placeholder')}
-                value={amount}
-                onChange={handleAmountChange}
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#64748B] text-[14px] font-semibold">Kz</span>
-            </div>
-            
-            {/* Mensagens de Limite */}
-            <AnimatePresence>
-              {amount && parseInt(amount) < MIN_RECHARGE && (
-                <motion.p 
-                  initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  className="text-[12px] text-red-500 mt-2 ml-1 font-medium"
-                >
-                  {t('recharge.min_limit')} {MIN_RECHARGE.toLocaleString()} Kz
-                </motion.p>
-              )}
-              {amount && parseInt(amount) > MAX_RECHARGE && (
-                <motion.p 
-                  initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  className="text-[12px] text-red-500 mt-2 ml-1 font-medium"
-                >
-                  {t('recharge.max_limit')} {MAX_RECHARGE.toLocaleString()} Kz
-                </motion.p>
-              )}
-            </AnimatePresence>
-
-            {/* Sugestões de Valor */}
-            <div className="grid grid-cols-3 gap-2.5 mt-4">
-              {[9000, 25000, 72000].map(val => (
-                <button
-                  key={val}
-                  type="button"
-                  onClick={() => setAmount(val.toString())}
-                  className={cn(
-                    "h-[40px] rounded-[8px] text-[13px] font-semibold transition-all border",
-                    amount === val.toString()
-                      ? "bg-red-50 text-[#C62828] border-[#C62828]/30 shadow-xs"
-                      : "bg-[#F8FAFC] text-[#475569] border-gray-200/80 hover:bg-gray-50 active:scale-95"
-                  )}
-                >
-                  {val.toLocaleString()} Kz
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Seleção de Banco (Step 2) */}
-          <AnimatePresence mode="wait">
-            {showBankField && (
-              <motion.div 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-3 pt-3 border-t border-gray-100"
-              >
-                <label className="block text-[13px] font-semibold text-[#1A1C1E]">{t('recharge.bank_institution')}</label>
-                <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
-                  <select 
-                    ref={selectRef}
-                    className="w-full h-full bg-transparent appearance-none outline-none text-[15px] text-[#2D2324] font-medium cursor-pointer"
-                    value={selectedBankId}
-                    onChange={(e) => setSelectedBankId(e.target.value)}
-                  >
-                    <option value="">{t('recharge.select_bank')}</option>
-                    {banks.map((bank) => (
-                      <option key={bank.id} value={bank.id}>
-                        {bank.nome_banco}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#94A3B8]">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-                <p className="text-[12px] text-[#94A3B8] ml-1">
-                  {t('recharge.bank_desc')}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Botão de Ação */}
-          <div className="pt-2">
-            <button
-              onClick={handleMainAction}
-              disabled={isSubmitting || !amount}
-              className="w-full h-[46px] rounded-[8px] bg-gradient-to-r from-[#D32F2F] to-[#B71C1C] text-white font-semibold text-[15px] transition-all active:scale-[0.99] disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
-            >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center text-white">
-                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                  {t('common.processing')}
-                </span>
-              ) : (
-                selectedBankId ? t('recharge.generate_data') : (t('recharge.submit_btn') || 'Recarregar')
-              )}
-            </button>
-          </div>
-        </div>
-
-      </div>
     </div>
   );
 }
