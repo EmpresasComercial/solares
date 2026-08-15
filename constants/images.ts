@@ -8,3 +8,4 @@ export const CAROUSEL_IMAGES = [
   'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1000&auto=format&fit=crop'  // Clean Tech & Power
 ];
 
+

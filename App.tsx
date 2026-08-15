@@ -61,7 +61,7 @@ export default function App() {
     document.title = 'AliExpress24';
     
     // Forçar atualização do Favicon
-    const iconUrl = '/update_logo_canadianSolar.png?v=2';
+    const iconUrl = '/aliexpress24_logo_icon_167892.webp?v=2';
     let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
     if (!link) {
       link = document.createElement('link');
@@ -129,3 +129,4 @@ export default function App() {
     </LanguageProvider>
   );
 }
+

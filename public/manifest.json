@@ -3,13 +3,13 @@
   "name": "AliExpress24",
   "icons": [
     {
-      "src": "/update_logo_canadianSolar.png",
+      "src": "/aliexpress24_logo_icon_167892.webp",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/update_logo_canadianSolar.png",
+      "src": "/aliexpress24_logo_icon_167892.webp",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
@@ -21,4 +21,6 @@
   "display": "standalone",
   "orientation": "portrait"
 }
+
+
 
