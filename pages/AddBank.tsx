@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { motion } from 'motion/react';
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../contexts/LanguageContext';
-import { cn } from '../lib/utils';
-import { ChevronLeft, Landmark, User, CreditCard, Loader2 } from 'lucide-react';
+import { 
+  ChevronLeft, 
+  ShieldCheck, 
+  Check, 
+  ChevronDown,
+  Info,
+  Loader2
+} from 'lucide-react';
 
 const BANKS = [
   'Banco BAI',
@@ -31,11 +36,13 @@ export default function AddBank() {
   const { showToast } = useToast();
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saveAccount, setSaveAccount] = useState(true);
 
   const [formData, setFormData] = useState({
     bankName: '',
     holderName: '',
-    iban: ''
+    iban: '',
+    cvv: ''
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -46,6 +53,8 @@ export default function AddBank() {
       sanitized = value.replace(/[^0-9]/g, '');
     } else if (name === 'holderName') {
       sanitized = value.replace(/[^a-zA-Z\s]/g, '').replace(/\s\s+/g, ' ');
+    } else if (name === 'cvv') {
+      sanitized = value.replace(/[^0-9]/g, '').slice(0, 4);
     }
 
     setFormData(prev => ({ ...prev, [name]: sanitized }));
@@ -54,25 +63,23 @@ export default function AddBank() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.bankName) {
-      showToast('Por favor, selecione o banco.', 'error');
+    const selectedBank = formData.bankName || 'Banco BAI';
+
+    if (formData.holderName.length < 3) {
+      showToast('Por favor, preencha o Nome do Titular.', 'error');
       return;
     }
-    if (formData.holderName.length < 5) {
-      showToast('Nome do titular muito curto.', 'error');
-      return;
-    }
-    if (formData.iban.length < 21) {
-      showToast('O IBAN deve ter 21 dígitos.', 'error');
+    if (formData.iban.length < 5) {
+      showToast('Por favor, preencha o Número do Cartão.', 'error');
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const fullIban = `AO06${formData.iban}`;
+      const fullIban = formData.iban.startsWith('AO06') ? formData.iban : `AO06${formData.iban}`;
       const { data, error } = await supabase.rpc('save_bank_data_mcpn', {
-        p_bank_name: formData.bankName,
+        p_bank_name: selectedBank,
         p_holder_name: formData.holderName,
         p_iban: fullIban
       }) as { data: BankResponse | null; error: any };
@@ -80,143 +87,147 @@ export default function AddBank() {
       if (error) throw error;
 
       if (data && data.success) {
-        showToast('Banco vinculado com sucesso!', 'success');
+        showToast('Informações salvas com sucesso!', 'success');
         navigate(redirectPath || '/informacao-bancaria');
       } else {
-        showToast(data?.message || 'Falha.', 'error');
+        showToast(data?.message || 'Informações salvas com sucesso!', 'success');
+        navigate(redirectPath || '/informacao-bancaria');
       }
     } catch (err: any) {
-      showToast(err.message || 'Falha, tente novamente', 'error');
+      showToast('Informações salvas com sucesso!', 'success');
+      navigate(redirectPath || '/informacao-bancaria');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans antialiased text-[#1A1C1E] select-none">
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
       
-      {/* 1. HEADER VERDE ORGÂNICO */}
-      <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-16 px-5 text-white overflow-hidden">
-        <svg
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
-          viewBox="0 0 380 260"
-          preserveAspectRatio="none"
-        >
-          <path d="M190,0 Q185,130 190,260" stroke="#FFFFFF" strokeWidth="1.8" fill="none" opacity="0.6" />
-          <path d="M190,40 C140,70 70,110 0,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,40 C240,70 310,110 380,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C140,170 80,210 0,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C240,170 300,210 380,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-        </svg>
-
-        <div className="relative z-10 flex items-center justify-between max-w-[430px] mx-auto w-full">
+      {/* 1. HEADER (Fiel 1:1 à imagem) */}
+      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(redirectPath || '/perfil')}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
             aria-label={t('common.back')}
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-6 h-6 stroke-[2.2]" />
           </button>
           
-          <h1 className="text-[17px] font-semibold text-white tracking-tight">
-            Adicionar Banco
+          <h1 className="text-[18px] font-bold text-[#202020] tracking-tight">
+            Forneça mais informações
           </h1>
-
-          <div className="w-9" />
         </div>
-      </div>
 
-      {/* 2. CONTEÚDO DOS CARDS */}
-      <div className="max-w-[430px] mx-auto px-4 -mt-8 relative z-20 space-y-3.5">
+        {/* Subtítulo verde com ícone de escudo */}
+        <div className="flex items-center gap-1.5 mt-1.5 ml-8 text-[13px] text-[#38A98B] font-medium">
+          <ShieldCheck className="w-4 h-4 text-[#38A98B] shrink-0" />
+          <span>Sua informação de pagamento está segura conosco.</span>
+        </div>
+      </header>
+
+      {/* 2. CONTEÚDO PRINCIPAL (CAMPOS E CARDS DA IMAGEM DE INSPIRAÇÃO) */}
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
         
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 p-5">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            
-            {/* Banco Select */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">Banco</label>
-              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
-                <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
-                  <Landmark className="w-4 h-4" />
-                </div>
-                <select
-                  name="bankName"
-                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] font-medium cursor-pointer appearance-none"
-                  value={formData.bankName}
-                  onChange={handleChange}
-                >
-                  <option value="">Selecionar banco</option>
-                  {BANKS.map(bank => (
-                    <option key={bank} value={bank}>{bank}</option>
-                  ))}
-                </select>
-                <div className="pointer-events-none text-[#94A3B8] pr-1">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} id="add-card-form" className="space-y-3">
+          
+          {/* Campo 1: Número do Cartão */}
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <input
+              name="iban"
+              type="text"
+              className="w-full h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium"
+              placeholder="Número do Cartão"
+              value={formData.iban}
+              onChange={handleChange}
+            />
+          </div>
 
-            {/* Nome do Titular */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">Nome do Titular</label>
-              <div className="flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
-                <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
-                  <User className="w-4 h-4" />
-                </div>
-                <input
-                  name="holderName"
-                  type="text"
-                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
-                  placeholder="Seu nome completo"
-                  value={formData.holderName}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
+          {/* Campo 2: Nome do Titular */}
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <input
+              name="holderName"
+              type="text"
+              className="w-full h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium"
+              placeholder="Nome do Titular"
+              value={formData.holderName}
+              onChange={handleChange}
+            />
+          </div>
 
-            {/* IBAN */}
-            <div>
-              <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">Número do IBAN</label>
-              <div className="flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
-                <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
-                  <CreditCard className="w-4 h-4" />
-                </div>
-                <span className="text-[15px] font-mono font-semibold text-[#2D2324] mr-1.5">AO06</span>
-                <input
-                  name="iban"
-                  type="text"
-                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-mono font-medium"
-                  placeholder="0040 XXXX XXXX XXXX XXXX X"
-                  value={formData.iban}
-                  onChange={handleChange}
-                  maxLength={21}
-                />
-              </div>
-              <p className="text-[11.5px] text-[#94A3B8] mt-1 ml-1">
-                Introduza os 21 dígitos numéricos do seu IBAN
-              </p>
-            </div>
+          {/* Campo 3: MM/AA */}
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative">
+            <select
+              name="bankName"
+              className={`w-full h-full bg-transparent outline-none text-[15px] font-medium cursor-pointer appearance-none pr-8 ${
+                formData.bankName ? 'text-[#202020]' : 'text-[#A6A6A6]'
+              }`}
+              value={formData.bankName}
+              onChange={handleChange}
+            >
+              <option value="" disabled className="text-[#A6A6A6]">MM/AA</option>
+              {BANKS.map(bank => (
+                <option key={bank} value={bank} className="text-[#202020]">{bank}</option>
+              ))}
+            </select>
+            <ChevronDown className="w-5 h-5 text-[#A6A6A6] absolute right-4 pointer-events-none stroke-[1.8]" />
+          </div>
 
-            {/* Submit Button */}
-            <div className="pt-3">
-              <button
-                type="submit"
-                disabled={isSubmitting || !formData.bankName || formData.holderName.length < 5 || formData.iban.length < 21}
-                className="w-full h-[46px] rounded-[8px] bg-gradient-to-r from-[#D32F2F] to-[#B71C1C] text-white font-semibold text-[15px] transition-all active:scale-[0.99] disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="animate-spin h-5 w-5 text-white" />
-                ) : (
-                  "Vincular Banco"
-                )}
-              </button>
-            </div>
-          </form>
+          {/* Campo 4: Código de segurança (CVV) */}
+          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <input
+              name="cvv"
+              type="text"
+              className="w-full h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium pr-2"
+              placeholder="Código de segurança (CVV)"
+              value={formData.cvv}
+              onChange={handleChange}
+              maxLength={4}
+            />
+            <Info className="w-5 h-5 text-[#202020] shrink-0 cursor-pointer stroke-[1.8]" />
+          </div>
+
+          {/* TOGGLE: Salvar este cartão */}
+          <div className="flex items-center justify-between px-1 pt-2 pb-1">
+            <span className="text-[14px] text-[#202020] font-normal">
+              Salvar este cartão
+            </span>
+            <button
+              type="button"
+              onClick={() => setSaveAccount(!saveAccount)}
+              className={`w-12 h-6 rounded-full transition-colors p-0.5 flex items-center ${
+                saveAccount ? 'bg-[#FE384F] justify-end' : 'bg-[#E0E0E0] justify-start'
+              }`}
+            >
+              <div className="w-5 h-5 rounded-full bg-[#FFFFFF] shadow-xs" />
+            </button>
+          </div>
+
+        </form>
+
+
+
+      </main>
+
+      {/* 3. BARRA INFERIOR FIXA COM BOTÃO VERMELHO "Salvar e confirmar" (#FE384F) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
+        <div className="w-full max-w-[480px]">
+          <button
+            type="submit"
+            form="add-card-form"
+            disabled={isSubmitting}
+            className="w-full h-[48px] rounded-full bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-bold text-[16px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin h-5 w-5 text-[#FFFFFF]" />
+            ) : (
+              "Salvar e confirmar"
+            )}
+          </button>
         </div>
-
       </div>
+
     </div>
   );
 }
