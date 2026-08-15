@@ -21,7 +21,7 @@ export default function Home() {
   const [telegramLink, setTelegramLink] = useState<string>('https://t.me');
 
   useEffect(() => {
-    supabase.from('atendimento_links').select('whatsapp_grupo_vendas_url, telegram_url, suporte_online_url').limit(1).maybeSingle()
+    supabase.from('atendimento_links').select('whatsapp_grupo_vendas_url, telegram_url').limit(1).maybeSingle()
       .then(({ data }) => {
         if (data?.whatsapp_grupo_vendas_url) setCommunityLink(data.whatsapp_grupo_vendas_url);
         if (data?.telegram_url) setTelegramLink(data.telegram_url);
