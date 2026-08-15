@@ -139,12 +139,15 @@ export default function Recharge() {
           {/* Campo de Valor */}
           <div>
             <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-2">{t('recharge.amount')}</label>
-            <div className="relative">
+            <div className={cn(
+              "relative flex items-center h-[54px] bg-[#FFFFFF] border rounded-[8px] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] transition-all focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10",
+              amount && !isAmountValid ? "border-red-300 ring-1 ring-red-200" : "border-[#F4F4F4]"
+            )}>
               <input
                 type="text"
                 className={cn(
-                  "w-full h-[52px] bg-[#F8FAFC] border border-gray-200/80 rounded-[8px] px-4 text-[20px] font-semibold outline-none transition-all placeholder:text-[#94A3B8] placeholder:font-normal focus:border-[#C62828] focus:ring-2 focus:ring-[#C62828]/20",
-                  amount && !isAmountValid ? "text-red-600 border-red-300 ring-1 ring-red-200" : "text-[#1A1C1E]"
+                  "w-full h-full bg-transparent outline-none text-[18px] font-semibold transition-all placeholder:text-[#A09AA5] placeholder:font-normal pr-8",
+                  amount && !isAmountValid ? "text-red-600" : "text-[#2D2324]"
                 )}
                 placeholder={t('recharge.placeholder')}
                 value={amount}
@@ -202,10 +205,10 @@ export default function Recharge() {
                 className="space-y-3 pt-3 border-t border-gray-100"
               >
                 <label className="block text-[13px] font-semibold text-[#1A1C1E]">{t('recharge.bank_institution')}</label>
-                <div className="relative">
+                <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                   <select 
                     ref={selectRef}
-                    className="w-full h-[46px] bg-[#F8FAFC] rounded-[8px] border border-gray-200/80 px-4 appearance-none outline-none text-[14px] text-[#1A1C1E] font-medium cursor-pointer focus:border-[#C62828] focus:ring-2 focus:ring-[#C62828]/20"
+                    className="w-full h-full bg-transparent appearance-none outline-none text-[15px] text-[#2D2324] font-medium cursor-pointer"
                     value={selectedBankId}
                     onChange={(e) => setSelectedBankId(e.target.value)}
                   >

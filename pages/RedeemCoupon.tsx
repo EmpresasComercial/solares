@@ -83,7 +83,7 @@ export default function RedeemCoupon() {
             <div className="relative">
               <input
                 type="text"
-                className="w-full h-[50px] bg-[#F5F5F5] rounded-[25px] px-5 outline-none text-[15px] text-[#333333] placeholder-gray-400"
+                className="w-full h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-5 outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus:border-[#C62828] focus:ring-2 focus:ring-[#C62828]/10 transition-all"
                 placeholder="Introduza o código"
                 value={coupon}
                 onChange={handleCouponChange}

@@ -131,14 +131,14 @@ export default function ChangePassword() {
             {/* Senha Atual */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('password.old_label')}</label>
-              <div className="relative flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <Key className="w-4 h-4" />
                 </div>
                 <input
                   name="currentPassword"
                   type={showCurrentPass ? "text" : "password"}
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
                   placeholder={t('password.old_placeholder')}
                   value={formData.currentPassword}
                   onChange={handleChange}
@@ -146,7 +146,7 @@ export default function ChangePassword() {
                 <button 
                   type="button" 
                   onClick={() => setShowCurrentPass(!showCurrentPass)} 
-                  className="p-1 text-[#94A3B8] hover:text-[#C62828] active:scale-90 transition-transform"
+                  className="p-1 text-[#A09AA5] hover:text-[#C62828] active:scale-90 transition-transform"
                 >
                   {showCurrentPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -156,14 +156,14 @@ export default function ChangePassword() {
             {/* Nova Senha */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('password.new_label')}</label>
-              <div className="relative flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
                   name="newPassword"
                   type={showNewPass ? "text" : "password"}
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
                   placeholder={t('password.new_placeholder')}
                   value={formData.newPassword}
                   onChange={handleChange}
@@ -171,7 +171,7 @@ export default function ChangePassword() {
                 <button 
                   type="button" 
                   onClick={() => setShowNewPass(!showNewPass)} 
-                  className="p-1 text-[#94A3B8] hover:text-[#C62828] active:scale-90 transition-transform"
+                  className="p-1 text-[#A09AA5] hover:text-[#C62828] active:scale-90 transition-transform"
                 >
                   {showNewPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -181,14 +181,14 @@ export default function ChangePassword() {
             {/* Confirmar Nova Senha */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('password.confirm_label')}</label>
-              <div className="relative flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
                   name="confirmPassword"
                   type={showConfirmPass ? "text" : "password"}
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
                   placeholder={t('password.confirm_placeholder')}
                   value={formData.confirmPassword}
                   onChange={handleChange}
@@ -196,7 +196,7 @@ export default function ChangePassword() {
                 <button 
                   type="button" 
                   onClick={() => setShowConfirmPass(!showConfirmPass)} 
-                  className="p-1 text-[#94A3B8] hover:text-[#C62828] active:scale-90 transition-transform"
+                  className="p-1 text-[#A09AA5] hover:text-[#C62828] active:scale-90 transition-transform"
                 >
                   {showConfirmPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

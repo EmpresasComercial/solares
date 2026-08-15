@@ -243,18 +243,18 @@ export default function Withdraw() {
             {/* Amount Input */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('withdraw.amount')}</label>
-              <div className="flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 transition-all focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20">
+              <div className="flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <Banknote className="w-4 h-4" />
                 </div>
                 <input
                   type="tel"
                   placeholder={t('withdraw.amount_placeholder')}
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
                   value={amount}
                   onChange={handleAmountChange}
                 />
-                <span className="text-[13px] font-semibold text-[#64748B] ml-2">KZ</span>
+                <span className="text-[14px] font-semibold text-[#64748B] ml-2">KZ</span>
               </div>
             </div>
 
@@ -262,21 +262,21 @@ export default function Withdraw() {
             {/* Security Password */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">{t('withdraw.password')}</label>
-              <div className="relative flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder={t('withdraw.security_pass_placeholder')}
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-[#94A3B8] hover:text-[#C62828] p-1 active:scale-90 transition-transform"
+                  className="text-[#A09AA5] hover:text-[#C62828] p-1 active:scale-90 transition-transform"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

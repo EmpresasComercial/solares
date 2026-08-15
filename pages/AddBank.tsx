@@ -135,13 +135,13 @@ export default function AddBank() {
             {/* Banco Select */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">Banco</label>
-              <div className="relative flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="relative flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <Landmark className="w-4 h-4" />
                 </div>
                 <select
                   name="bankName"
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] font-medium cursor-pointer appearance-none"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] font-medium cursor-pointer appearance-none"
                   value={formData.bankName}
                   onChange={handleChange}
                 >
@@ -161,14 +161,14 @@ export default function AddBank() {
             {/* Nome do Titular */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">Nome do Titular</label>
-              <div className="flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <User className="w-4 h-4" />
                 </div>
                 <input
                   name="holderName"
                   type="text"
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-medium"
                   placeholder="Seu nome completo"
                   value={formData.holderName}
                   onChange={handleChange}
@@ -179,15 +179,15 @@ export default function AddBank() {
             {/* IBAN */}
             <div>
               <label className="block text-[13px] font-semibold text-[#1A1C1E] mb-1.5">Número do IBAN</label>
-              <div className="flex items-center h-[46px] rounded-[8px] bg-[#F8FAFC] border border-gray-200/80 px-3.5 focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/20 transition-all">
+              <div className="flex items-center h-[54px] rounded-[8px] border border-[#F4F4F4] bg-[#FFFFFF] px-4 shadow-[0_8px_20px_rgba(242,240,242,0.55)] focus-within:border-[#C62828] focus-within:ring-2 focus-within:ring-[#C62828]/10 transition-all">
                 <div className="w-[26px] h-[26px] rounded-[6px] bg-red-50 flex items-center justify-center text-[#C62828] mr-2.5 shrink-0">
                   <CreditCard className="w-4 h-4" />
                 </div>
-                <span className="text-[14px] font-mono font-semibold text-[#475569] mr-1.5">AO06</span>
+                <span className="text-[15px] font-mono font-semibold text-[#2D2324] mr-1.5">AO06</span>
                 <input
                   name="iban"
                   type="text"
-                  className="flex-1 h-full bg-transparent outline-none text-[14px] text-[#1A1C1E] placeholder:text-[#94A3B8] font-mono font-medium"
+                  className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#2D2324] placeholder:text-[#A09AA5] font-mono font-medium"
                   placeholder="0040 XXXX XXXX XXXX XXXX X"
                   value={formData.iban}
                   onChange={handleChange}
