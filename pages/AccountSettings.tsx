@@ -6,13 +6,33 @@ import { supabase } from '../lib/supabase';
 import { 
   ChevronLeft, 
   ChevronRight, 
+  Key, 
+  HelpCircle, 
+  Globe, 
+  Smartphone, 
   LogOut,
-  Key,
-  HelpCircle,
-  Globe,
-  Smartphone
+  UserCheck
 } from 'lucide-react';
-import { AccountSettingsSkeleton } from '../components/Skeleton';
+
+/* ─── Skeleton Loading ─────────────────────────────────────── */
+function AccountSettingsSkeleton() {
+  return (
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased select-none flex flex-col items-center">
+      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-2">
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 rounded bg-gray-200 animate-pulse" />
+          <div className="h-5 w-44 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="h-3.5 w-60 bg-gray-200 rounded animate-pulse ml-8" />
+      </header>
+
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
+        <div className="bg-[#FFFFFF] rounded-[10px] p-4 h-20 animate-pulse" />
+        <div className="bg-[#FFFFFF] rounded-[10px] p-4 h-48 animate-pulse" />
+      </main>
+    </div>
+  );
+}
 
 export default function AccountSettings() {
   const navigate = useNavigate();
@@ -47,67 +67,66 @@ export default function AccountSettings() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans antialiased text-[#1A1C1E] select-none">
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
       
-      {/* 1. HEADER VERMELHO #C62828 */}
-      <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-16 px-5 text-white overflow-hidden">
-        
-        {/* Veios geométricos orgânicos de folha */}
-        <svg
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
-          viewBox="0 0 380 260"
-          preserveAspectRatio="none"
-        >
-          <path d="M190,0 Q185,130 190,260" stroke="#FFFFFF" strokeWidth="1.8" fill="none" opacity="0.6" />
-          <path d="M190,40 C140,70 70,110 0,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,40 C240,70 310,110 380,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C140,170 80,210 0,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C240,170 300,210 380,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-        </svg>
-
-        {/* Barra superior de navegação */}
-        <div className="relative z-10 flex items-center justify-between max-w-[430px] mx-auto w-full">
+      {/* ═════════════════════════════════════════════════════
+          1. HEADER (Design System AddBank)
+      ══════════════════════════════════════════════════════ */}
+      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/perfil')}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white active:scale-95 transition-transform"
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
             aria-label={t('common.back')}
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-6 h-6 stroke-[2.2]" />
           </button>
           
-          <h1 className="text-[17px] font-semibold text-white tracking-tight">
-            {t('settings.title')}
+          <h1 className="text-[18px] font-bold text-[#202020] tracking-tight">
+            {t('settings.title') || 'Configurações de Conta'}
           </h1>
-
-          <div className="w-9" />
         </div>
-      </div>
+      </header>
 
-      {/* 2. CONTEÚDO DOS CARDS */}
-      <div className="max-w-[430px] mx-auto px-4 -mt-8 relative z-20 space-y-3.5">
+      {/* ═════════════════════════════════════════════════════
+          2. CONTEÚDO PRINCIPAL (Cards estilo AddBank)
+      ══════════════════════════════════════════════════════ */}
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
         
-        {/* CARD 1: DADOS DA CONTA (ID) */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 overflow-hidden divide-y divide-gray-100">
-          <div className="flex items-center py-3.5 px-4.5 space-x-3.5">
-            <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0 p-1">
-              <Smartphone className="w-4 h-4" />
+        {/* CARD 1: DADOS DA CONTA */}
+        <div className="bg-[#FFFFFF] rounded-[10px] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-[34px] h-[34px] rounded-[8px] bg-red-50 flex items-center justify-center text-[#FE384F] shrink-0">
+                <Smartphone className="w-4 h-4 stroke-[2]" />
+              </div>
+              <div>
+                <span className="text-[12px] text-[#8A929A] font-medium block leading-tight">
+                  Código de Identificação
+                </span>
+                <span className="text-[15px] font-bold text-[#202020] tracking-tight">
+                  ID: {profile?.invite_code || profile?.codigo_meu_refferal || '---'}
+                </span>
+              </div>
             </div>
-            <span className="text-[14px] font-semibold text-[#1A1C1E] tracking-tight">
-              ID: {loading ? '...' : (profile?.codigo_meu_refferal || profile?.invite_code || '---')}
-            </span>
+            
+            <div className="flex items-center gap-1 text-[12px] text-[#38A98B] font-semibold bg-emerald-50 px-2 py-1 rounded-full">
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>Ativo</span>
+            </div>
           </div>
         </div>
 
         {/* CARD 2: PREFERÊNCIAS E SEGURANÇA */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 overflow-hidden divide-y divide-gray-100">
+        <div className="bg-[#FFFFFF] rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
           
           {/* Idioma */}
-          <div className="flex items-center justify-between py-3.5 px-4.5">
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0 p-1">
-                <Globe className="w-4 h-4" />
+          <div className="flex items-center justify-between py-3.5 px-4">
+            <div className="flex items-center gap-3">
+              <div className="w-[34px] h-[34px] rounded-[8px] bg-red-50 flex items-center justify-center text-[#FE384F] shrink-0">
+                <Globe className="w-4 h-4 stroke-[2]" />
               </div>
-              <span className="text-[14px] font-semibold text-[#1A1C1E] tracking-tight">
+              <span className="text-[14.5px] font-semibold text-[#202020] tracking-tight">
                 {t('settings.language')}
               </span>
             </div>
@@ -119,62 +138,55 @@ export default function AccountSettings() {
           {/* Alterar Senha */}
           <div
             onClick={() => navigate('/alterar-senha')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
+            className="flex items-center justify-between py-3.5 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
           >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0 p-1">
-                <Key className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <div className="w-[34px] h-[34px] rounded-[8px] bg-red-50 flex items-center justify-center text-[#FE384F] shrink-0">
+                <Key className="w-4 h-4 stroke-[2]" />
               </div>
-              <span className="text-[14px] font-semibold text-[#1A1C1E] tracking-tight">
+              <span className="text-[14.5px] font-semibold text-[#202020] tracking-tight">
                 {t('settings.change_password')}
               </span>
             </div>
-            <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <ChevronRight className="w-4 h-4 text-[#A6A6A6] stroke-[2]" />
           </div>
 
           {/* Sobre AliExpress24 */}
           <div
             onClick={() => navigate('/sobre-microsoft')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
+            className="flex items-center justify-between py-3.5 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
           >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0 p-1">
-                <HelpCircle className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <div className="w-[34px] h-[34px] rounded-[8px] bg-red-50 flex items-center justify-center text-[#FE384F] shrink-0">
+                <HelpCircle className="w-4 h-4 stroke-[2]" />
               </div>
-              <span className="text-[14px] font-semibold text-[#1A1C1E] tracking-tight">
-                {t('profile.about')}
+              <span className="text-[14.5px] font-semibold text-[#202020] tracking-tight">
+                {t('profile.about') || 'Sobre AliExpress24'}
               </span>
             </div>
-            <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <ChevronRight className="w-4 h-4 text-[#A6A6A6] stroke-[2]" />
           </div>
 
         </div>
 
-        {/* CARD 3: TERMINAR SESSÃO (LOGOUT) */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 overflow-hidden">
-          <div
+      </main>
+
+      {/* ═════════════════════════════════════════════════════
+          3. BARRA INFERIOR FIXA COM BOTÃO VERMELHO "Encerrar Sessão"
+      ══════════════════════════════════════════════════════ */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
+        <div className="w-full max-w-[480px]">
+          <button
+            type="button"
             onClick={handleLogout}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-red-50/50 active:bg-red-100/50 transition-colors cursor-pointer"
+            className="w-full h-[48px] rounded-full bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-bold text-[16px] transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
           >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-red-500 shrink-0 p-1">
-                <LogOut className="w-4 h-4" />
-              </div>
-              <span className="text-[14px] font-semibold text-red-600 tracking-tight">
-                {t('settings.logout')}
-              </span>
-            </div>
-            <svg className="w-3.5 h-3.5 text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </div>
+            <LogOut className="w-4 h-4 stroke-[2.2]" />
+            <span>{t('settings.logout') || 'Encerrar Sessão'}</span>
+          </button>
         </div>
-
       </div>
+
     </div>
   );
 }

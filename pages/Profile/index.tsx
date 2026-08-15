@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { formatCurrency, CurrencyType } from '../../lib/currency';
 import { supabase } from '../../lib/supabase';
 
 /* ─── Skeleton Loading ─────────────────────────────────────── */
@@ -42,6 +43,10 @@ export default function Profile() {
   const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
 
+  const [currency] = useState<CurrencyType>(() => {
+    const saved = localStorage.getItem('app_currency') as CurrencyType;
+    return (saved === 'KZ' || saved === 'USDT') ? saved : 'KZ';
+  });
   const [accountData, setAccountData] = useState({
     saldo_disponivel: 0,
     lucro_acumulado: 0,
@@ -133,55 +138,70 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* 3 Ícones de Ações Rápidas: Favoritos | Cupons | Crédito de compras */}
+        {/* 3 Ícones de Ações Rápidas: Saldo | Recargas | Retiradas (1:1 com a solicitação) */}
         <div className="grid grid-cols-3 gap-2 mt-5 pt-1 text-center">
           
-          {/* 1. Favoritos */}
-          <div 
-            onClick={() => navigate('/produtos')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
-          >
-            {/* Ícone Coração fino */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-            </svg>
-            <span className="text-[13px] text-[#222222] font-normal leading-none">
-              Favoritos
-            </span>
-          </div>
-
-          {/* 2. Cupons */}
-          <div 
-            onClick={() => navigate('/resgate')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
-          >
-            {/* Ícone Cupom recortado */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
-              <path d="M13 5v2" />
-              <path d="M13 17v2" />
-              <path d="M13 11v2" />
-            </svg>
-            <span className="text-[13px] text-[#222222] font-normal leading-none">
-              Cupons
-            </span>
-          </div>
-
-          {/* 3. Crédito de compras */}
+          {/* 1. Total de Saldo */}
           <div 
             onClick={() => navigate('/retirada')}
             className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
           >
-            {/* Ícone Cartão com cifrão */}
+            {/* Ícone Carteira / Saldo */}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <rect width="20" height="14" x="2" y="5" rx="2" />
-              <line x1="2" x2="22" y1="10" y2="10" />
-              <circle cx="16" cy="14" r="2.2" strokeWidth="1.3" />
-              <path d="M16 12.8v2.4" strokeWidth="1.2" />
+              <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+              <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+              <circle cx="18" cy="14" r="1" fill="#222222" />
             </svg>
-            <span className="text-[13px] text-[#222222] font-normal leading-tight text-center">
-              Crédito de<br />compras
-            </span>
+            <div className="flex flex-col items-center leading-tight">
+              <span className="text-[12.5px] text-[#222222] font-normal">
+                Saldo
+              </span>
+              <span className="text-[12px] text-[#191919] font-bold mt-0.5">
+                {formatCurrency(accountData.saldo_disponivel || 0, currency)}
+              </span>
+            </div>
+          </div>
+
+          {/* 2. Total de Recargas */}
+          <div 
+            onClick={() => navigate('/recarregar')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Recargas (Depósito / Entrada) */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v8" />
+              <path d="m8 12 4 4 4-4" />
+            </svg>
+            <div className="flex flex-col items-center leading-tight">
+              <span className="text-[12.5px] text-[#222222] font-normal">
+                Recargas
+              </span>
+              <span className="text-[12px] text-[#191919] font-bold mt-0.5">
+                {formatCurrency(accountData.total_recarregado || 0, currency)}
+              </span>
+            </div>
+          </div>
+
+          {/* 3. Total de Retiradas */}
+          <div 
+            onClick={() => navigate('/registro-retirada')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Retiradas (Levantamento / Saída) */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16V8" />
+              <path d="m8 12 4-4 4 4" />
+            </svg>
+            <div className="flex flex-col items-center leading-tight">
+              <span className="text-[12.5px] text-[#222222] font-normal">
+                Retiradas
+              </span>
+              <span className="text-[12px] text-[#191919] font-bold mt-0.5">
+                {formatCurrency(accountData.total_retirado || 0, currency)}
+              </span>
+            </div>
           </div>
 
         </div>
