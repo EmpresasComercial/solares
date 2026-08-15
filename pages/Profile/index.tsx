@@ -1,90 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { formatCurrency, CurrencyType } from '../../lib/currency';
 import { supabase } from '../../lib/supabase';
-import { Settings, Wallet, PlusCircle, TrendingUp, Landmark, UserPlus } from 'lucide-react';
 
-/* ─── Skeleton atom ─────────────────────────────────────────── */
-function Sk({ w = 'w-full', h = 'h-4', rounded = 'rounded-md', extra = '' }) {
-  return (
-    <div
-      className={`${w} ${h} ${rounded} ${extra} bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]`}
-    />
-  );
-}
-
-/* ─── Skeleton para uma linha do card principal ─────────────── */
-function SkRow() {
-  return (
-    <div className="flex items-center justify-between py-3.5 px-4">
-      <div className="flex items-center space-x-3.5">
-        <Sk w="w-[30px]" h="h-[30px]" rounded="rounded-[7px]" />
-        <div className="space-y-1.5">
-          <Sk w="w-24" h="h-3.5" />
-          <Sk w="w-16" h="h-3" />
-        </div>
-      </div>
-      <div className="flex items-center space-x-2">
-        <Sk w="w-16" h="h-3.5" />
-        <Sk w="w-3" h="h-3" rounded="rounded-full" />
-      </div>
-    </div>
-  );
-}
-
-/* ─── Skeleton do Header ────────────────────────────────────── */
-function SkHeader() {
-  return (
-    <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-20 px-5 overflow-hidden">
-      <div className="relative z-10 flex flex-col items-center justify-center text-center mt-5 mb-2 space-y-2.5">
-        <Sk w="w-24" h="h-4" rounded="rounded-full" extra="opacity-40" />
-        <Sk w="w-40" h="h-6" rounded="rounded-full" extra="opacity-40" />
-      </div>
-    </div>
-  );
-}
-
-/* ─── Skeleton completo da página Profile ───────────────────── */
+/* ─── Skeleton Loading ─────────────────────────────────────── */
 function ProfileSkeleton() {
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans antialiased select-none">
-      <SkHeader />
-      <div className="max-w-[430px] mx-auto px-4 -mt-12 relative z-20 space-y-3.5">
-        {/* Card principal */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 overflow-hidden divide-y divide-gray-100">
-          {[...Array(6)].map((_, i) => <SkRow key={i} />)}
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-24 font-sans antialiased select-none flex flex-col items-center">
+      <div className="w-full max-w-[480px] bg-white px-4 pt-5 pb-4 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-gray-200 animate-pulse" />
+          <div className="h-5 w-52 bg-gray-200 rounded animate-pulse" />
         </div>
-        {/* Card path to 1M */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100/60 p-6 pt-5 text-center">
-          <div className="flex flex-col items-center space-y-3 mt-1">
-            <Sk w="w-36" h="h-5" rounded="rounded-full" />
-            <Sk w="w-56" h="h-3.5" />
-            <Sk w="w-48" h="h-3.5" />
-            <Sk w="w-52" h="h-24" rounded="rounded-[8px]" extra="mt-4" />
-          </div>
+        <div className="grid grid-cols-3 gap-2 pt-2">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <div className="w-6 h-6 bg-gray-200 rounded animate-pulse" />
+              <div className="w-16 h-3 bg-gray-200 rounded animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-full max-w-[480px] mt-2.5 bg-white p-4 space-y-4">
+        <div className="h-5 w-24 bg-gray-200 rounded animate-pulse" />
+        <div className="grid grid-cols-4 gap-2">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <div className="w-9 h-9 bg-gray-200 rounded-[8px] animate-pulse" />
+              <div className="w-14 h-3 bg-gray-200 rounded animate-pulse" />
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── Componente principal ──────────────────────────────────── */
 export default function Profile() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-
   const [loading, setLoading] = useState(true);
-
-  const [currency, setCurrencyState] = useState<CurrencyType>(() => {
-    const saved = localStorage.getItem('app_currency') as CurrencyType;
-    return (saved === 'KZ' || saved === 'USDT') ? saved : 'KZ';
-  });
-
-  const setCurrency = (c: CurrencyType) => {
-    setCurrencyState(c);
-    localStorage.setItem('app_currency', c);
-  };
 
   const [accountData, setAccountData] = useState({
     saldo_disponivel: 0,
@@ -94,9 +50,8 @@ export default function Profile() {
     total_comissao_equipe: 0,
     telefone: ''
   });
-
-  const [dailyIncome, setDailyIncome] = useState(0);
-  const [bankName, setBankName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string>('');
+  const [hasBank, setHasBank] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -107,16 +62,16 @@ export default function Profile() {
           setAccountData(data[0]);
         }
 
-        const { data: opsData } = await supabase.rpc('get_daily_ops_status_mcpn');
-        if (opsData && (opsData as any).estimated_income) {
-          setDailyIncome(Number((opsData as any).estimated_income));
+        const { data: settingsData } = await supabase.rpc('get_my_settings_data_mcpn');
+        if (settingsData && settingsData.length > 0) {
+          setUserId(settingsData[0].invite_code || '');
         }
 
         const { data: banksData } = await supabase.rpc('get_my_bank_accounts_mcpn');
         if (banksData && Array.isArray(banksData) && banksData.length > 0) {
-          setBankName(banksData[0].bank_name || null);
+          setHasBank(true);
         } else {
-          setBankName(null);
+          setHasBank(false);
         }
       } catch (error: any) {
         console.error('Erro ao carregar perfil:', error.message);
@@ -139,238 +94,268 @@ export default function Profile() {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return t('greeting.morning');
-    if (hour < 18) return t('greeting.afternoon');
-    return t('greeting.evening');
-  };
-
   const displayName = accountData.telefone 
-    ? `+244 ${accountData.telefone.slice(0, 3)} ${accountData.telefone.slice(3)}` 
-    : 'Jane!';
+    ? `AliExpress24 (+244 ${accountData.telefone.slice(0, 3)} ${accountData.telefone.slice(3)})` 
+    : 'AliExpress24 Usuário Oficial';
 
-  /* Enquanto carrega, mostra o skeleton */
   if (loading) return <ProfileSkeleton />;
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] pb-28 font-sans antialiased text-[#1A1C1E] select-none">
-      
-      {/* 1. HEADER VERMELHO #C62828 */}
-      <div className="relative bg-gradient-to-br from-[#D32F2F] via-[#C62828] to-[#B71C1C] pt-7 pb-20 px-5 text-white overflow-hidden">
-        
-        {/* Veios geométricos orgânicos */}
-        <svg
-          className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
-          viewBox="0 0 380 260"
-          preserveAspectRatio="none"
-        >
-          <path d="M190,0 Q185,130 190,260" stroke="#FFFFFF" strokeWidth="1.8" fill="none" opacity="0.6" />
-          <path d="M190,40 C140,70 70,110 0,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,40 C240,70 310,110 380,130" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C140,170 80,210 0,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-          <path d="M190,140 C240,170 300,210 380,230" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.4" />
-        </svg>
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-24 font-sans antialiased text-[#191919] select-none flex flex-col items-center">
 
-        {/* Saudação */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center mt-5 mb-2">
-          <p className="text-[20px] font-normal text-white/95 tracking-normal">
-            {getGreeting()}
-          </p>
-          <h1 className="text-[24px] font-bold text-white tracking-tight mt-0.5">
-            {displayName}
-          </h1>
+      {/* ═════════════════════════════════════════════════════
+          1. HEADER SUPERIOR (1:1 com a imagem AliExpress)
+      ══════════════════════════════════════════════════════ */}
+      <div className="w-full max-w-[480px] bg-white px-4 pt-4 pb-4">
+        
+        {/* Linha do Usuário: Avatar circular com logo + ID e Telefone em 2 linhas (1:1 com a imagem) */}
+        <div 
+          onClick={() => navigate('/configuracoes-conta')}
+          className="flex items-center gap-3 cursor-pointer active:opacity-80 transition-opacity"
+        >
+          {/* Avatar circular */}
+          <div className="w-11 h-11 rounded-full overflow-hidden border border-[#E8E8E8] bg-white flex-shrink-0 flex items-center justify-center p-1">
+            <img
+              src="/aliexpress24_logo_icon_167892.webp?v=2"
+              alt="Avatar"
+              className="w-full h-full object-contain"
+            />
+          </div>
+
+          {/* Nome e ID do Usuário em 2 linhas */}
+          <div className="flex flex-col justify-center leading-tight flex-1">
+            <span className="text-[14px] font-medium text-[#444444]">
+              ID:{userId || (accountData.telefone ? accountData.telefone.slice(-5) : 'h3fls')}
+            </span>
+            <h1 className="text-[17px] font-bold text-[#191919] tracking-tight mt-0.5">
+              {accountData.telefone ? `+244 ${accountData.telefone.slice(0, 3)} ${accountData.telefone.slice(3)}` : '+244 943 142132'}
+            </h1>
+          </div>
         </div>
+
+        {/* 3 Ícones de Ações Rápidas: Favoritos | Cupons | Crédito de compras */}
+        <div className="grid grid-cols-3 gap-2 mt-5 pt-1 text-center">
+          
+          {/* 1. Favoritos */}
+          <div 
+            onClick={() => navigate('/produtos')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Coração fino */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+            <span className="text-[13px] text-[#222222] font-normal leading-none">
+              Favoritos
+            </span>
+          </div>
+
+          {/* 2. Cupons */}
+          <div 
+            onClick={() => navigate('/resgate')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Cupom recortado */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+              <path d="M13 5v2" />
+              <path d="M13 17v2" />
+              <path d="M13 11v2" />
+            </svg>
+            <span className="text-[13px] text-[#222222] font-normal leading-none">
+              Cupons
+            </span>
+          </div>
+
+          {/* 3. Crédito de compras */}
+          <div 
+            onClick={() => navigate('/retirada')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Cartão com cifrão */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222222" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="20" height="14" x="2" y="5" rx="2" />
+              <line x1="2" x2="22" y1="10" y2="10" />
+              <circle cx="16" cy="14" r="2.2" strokeWidth="1.3" />
+              <path d="M16 12.8v2.4" strokeWidth="1.2" />
+            </svg>
+            <span className="text-[13px] text-[#222222] font-normal leading-tight text-center">
+              Crédito de<br />compras
+            </span>
+          </div>
+
+        </div>
+
       </div>
 
-      {/* 2. CARDS */}
-      <div className="max-w-[430px] mx-auto px-4 -mt-12 relative z-20 space-y-3.5">
+      {/* ═════════════════════════════════════════════════════
+          2. CARD "PEDIDOS" (1:1 com a imagem AliExpress)
+      ══════════════════════════════════════════════════════ */}
+      <div className="w-full max-w-[480px] mt-2.5 bg-white px-4 pt-4 pb-3.5">
         
-        {/* CARD PRINCIPAL */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/60 overflow-hidden divide-y divide-gray-100">
-
-          {/* Saldo */}
-          <div
-            onClick={() => navigate('/retirada')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0">
-                <Wallet className="w-4 h-4" />
-              </div>
-              <div className="flex items-baseline space-x-1.5">
-                <span className="text-[15px] font-semibold text-[#1A1C1E] tracking-tight">{t('profile.earn_title')}</span>
-                <span className="text-[14px] font-normal text-[#8A929A]">{t('profile.earn_sub')}</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2.5">
-              <span className="text-[15px] font-bold text-[#1A1C1E] tracking-tight">
-                {formatCurrency(accountData.saldo_disponivel || 0, currency)}
-              </span>
-              <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Recargas */}
-          <div 
-            onClick={() => navigate('/recarregar')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0">
-                <PlusCircle className="w-4 h-4" />
-              </div>
-              <div className="flex items-baseline space-x-1.5">
-                <span className="text-[15px] font-semibold text-[#1A1C1E] tracking-tight">{t('profile.invest_title')}</span>
-                <span className="text-[14px] font-normal text-[#8A929A]">{t('profile.invest_sub')}</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2.5">
-              <span className="text-[15px] font-bold text-[#1A1C1E] tracking-tight">
-                {formatCurrency(accountData.total_recarregado || 0, currency)}
-              </span>
-              <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Renda diária */}
-          <div 
-            onClick={() => navigate('/operacoes')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0">
-                <TrendingUp className="w-4 h-4" />
-              </div>
-              <div className="flex items-baseline space-x-1.5">
-                <span className="text-[15px] font-semibold text-[#1A1C1E] tracking-tight">{t('profile.later_title')}</span>
-                <span className="text-[14px] font-normal text-[#8A929A]">{t('profile.later_sub')}</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2.5">
-              <span className="text-[15px] font-bold text-[#1A1C1E] tracking-tight">
-                {formatCurrency(dailyIncome > 0 ? dailyIncome : (accountData.lucro_acumulado || 0), currency)}
-              </span>
-              <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Banco */}
-          <div 
-            onClick={() => navigate(bankName ? '/informacao-bancaria' : '/adicionar-banco')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0">
-                <Landmark className="w-4 h-4" />
-              </div>
-              <div className="flex items-baseline space-x-1.5">
-                <span className="text-[15px] font-semibold text-[#1A1C1E] tracking-tight">{t('profile.bank_title')}</span>
-                <span className="text-[14px] font-normal text-[#8A929A]">{t('profile.bank_sub')}</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2.5">
-              <span className={`text-[14px] font-semibold tracking-tight ${bankName ? 'text-[#1A1C1E]' : 'text-[#8A929A]'}`}>
-                {bankName ? bankName : 'N/A'}
-              </span>
-              <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Convidar */}
-          <div 
-            onClick={() => navigate('/convite')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0">
-                <UserPlus className="w-4 h-4" />
-              </div>
-              <div className="flex items-baseline space-x-1.5">
-                <span className="text-[15px] font-semibold text-[#1A1C1E] tracking-tight">{t('profile.early_title')}</span>
-                <span className="text-[14px] font-normal text-[#8A929A]">{t('profile.early_sub')}</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2.5">
-              <span className="text-[15px] font-bold text-[#1A1C1E] tracking-tight">
-                {formatCurrency(accountData.total_comissao_equipe || 0, currency)}
-              </span>
-              <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Definições */}
-          <div
-            onClick={() => navigate('/configuracoes-conta')}
-            className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center space-x-3.5">
-              <div className="w-[30px] h-[30px] rounded-[7px] bg-red-50 flex items-center justify-center text-[#C62828] shrink-0">
-                <Settings className="w-4 h-4" />
-              </div>
-              <span className="text-[15px] font-semibold text-[#1A1C1E] tracking-tight">
-                {t('profile.settings_row')}
-              </span>
-            </div>
-            <svg className="w-3.5 h-3.5 text-[#C4C8CC]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        {/* Cabeçalho: "Pedidos" na esquerda, "Ver tudo >" na direita */}
+        <div 
+          onClick={() => navigate('/minhas-compras')}
+          className="flex items-center justify-between cursor-pointer active:opacity-60 transition-opacity"
+        >
+          <h2 className="text-[16px] font-bold text-[#191919]">
+            Pedidos
+          </h2>
+          <div className="flex items-center gap-0.5 text-[13px] text-[#999999] font-normal">
+            <span>Ver tudo</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </div>
+        </div>
+
+        {/* 4 Ícones Laranja de Status do Pedido */}
+        <div className="grid grid-cols-4 gap-1 mt-4 text-center items-start">
+          
+          {/* 1. Pedidos aguardando pagamento */}
+          <div 
+            onClick={() => navigate('/recarregar')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Carteira Laranja */}
+            <div className="w-9 h-9 rounded-[8px] bg-gradient-to-b from-[#FF6B4A] to-[#FF4E27] flex items-center justify-center text-white shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+                <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+                <circle cx="18" cy="14" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <span className="text-[11.5px] text-[#222222] font-normal leading-[1.25] text-center px-0.5">
+              Pedidos aguardando pagamento
+            </span>
+          </div>
+
+          {/* 2. Aguardando Envio */}
+          <div 
+            onClick={() => navigate('/operacoes')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Pacote / Caixa Laranja */}
+            <div className="w-9 h-9 rounded-[8px] bg-gradient-to-b from-[#FF6B4A] to-[#FF4E27] flex items-center justify-center text-white shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                <path d="m3.3 7 8.7 5 8.7-5" />
+                <path d="M12 22V12" />
+              </svg>
+            </div>
+            <span className="text-[11.5px] text-[#222222] font-normal leading-[1.25] text-center">
+              Aguardando Envio
+            </span>
+          </div>
+
+          {/* 3. Enviado */}
+          <div 
+            onClick={() => navigate('/minhas-compras')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Camião Laranja */}
+            <div className="w-9 h-9 rounded-[8px] bg-gradient-to-b from-[#FF6B4A] to-[#FF4E27] flex items-center justify-center text-white shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                <path d="M15 18H9" />
+                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                <circle cx="17" cy="18.5" r="2.5" />
+                <circle cx="7" cy="18.5" r="2.5" />
+              </svg>
+            </div>
+            <span className="text-[11.5px] text-[#222222] font-normal leading-[1.25] text-center">
+              Enviado
+            </span>
+          </div>
+
+          {/* 4. Aguardando Avaliação */}
+          <div 
+            onClick={() => navigate('/provas-social')}
+            className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-60 transition-opacity"
+          >
+            {/* Ícone Check Laranja */}
+            <div className="w-9 h-9 rounded-[8px] bg-gradient-to-b from-[#FF6B4A] to-[#FF4E27] flex items-center justify-center text-white shadow-xs">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="18" height="14" x="3" y="5" rx="3" />
+                <path d="m8 12 3 3 5-5" />
+              </svg>
+            </div>
+            <span className="text-[11.5px] text-[#222222] font-normal leading-[1.25] text-center">
+              Aguardando Avaliação
+            </span>
+          </div>
 
         </div>
 
-        {/* CARD Path to $1M */}
-        <div className="bg-white rounded-[8px] shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100/60 p-6 pt-5 text-center relative overflow-hidden">
-          
+        {/* Linha Divisória Fina + Reembolsos e Devoluções */}
+        <div className="border-t border-[#F2F2F2] mt-4 pt-3.5">
           <div 
-            onClick={() => navigate('/operacoes')}
-            className="absolute top-4 right-4 text-[#D0D5DD] hover:text-gray-500 cursor-pointer p-1 transition-colors"
+            onClick={() => navigate('/historico-atividades')}
+            className="flex items-center justify-between cursor-pointer active:opacity-60 transition-opacity"
           >
-            <div className="w-[18px] h-[18px] rounded-[5px] bg-[#F2F4F7] flex items-center justify-center">
-              <svg className="w-3 h-3 text-[#98A2B3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-              </svg>
+            <div className="flex items-center gap-2">
+              {/* Cifrão circular outline */}
+              <div className="w-4 h-4 rounded-full border border-[#222222] flex items-center justify-center text-[10px] font-bold text-[#222222] leading-none">
+                $
+              </div>
+              <span className="text-[13.5px] text-[#222222] font-normal">
+                Reembolsos e devoluções
+              </span>
             </div>
-          </div>
-
-          <h2 className="text-[20px] font-bold text-[#111315] tracking-tight mt-1">
-            {t('profile.path_title')}
-          </h2>
-          <p className="text-[13.5px] text-[#4B5563] max-w-[290px] mx-auto mt-2 mb-6 font-normal leading-[1.45]">
-            {t('profile.path_sub')}
-          </p>
-
-          <div className="relative flex flex-col items-center justify-center mt-1 -mb-3">
-            <svg className="w-52 h-26 overflow-visible" viewBox="0 0 160 80">
-              <path
-                d="M 15,80 A 65,65 0 0,1 145,80"
-                fill="none"
-                stroke="#F2F4F7"
-                strokeWidth="18"
-                strokeLinecap="round"
-              />
-              <circle cx="80" cy="22" r="8.5" fill="#B0B6BC" />
-              <circle cx="80" cy="22" r="3.5" fill="#FFFFFF" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
             </svg>
-
-            <div className="flex items-center justify-center space-x-[-10px] mt-[-14px]">
-              <div className="w-7 h-7 rounded-full bg-[#EF9A9A] border-2 border-white shadow-sm"></div>
-              <div className="w-7 h-7 rounded-full bg-[#C62828] border-2 border-white shadow-sm"></div>
-            </div>
           </div>
         </div>
 
       </div>
+
+      {/* ═════════════════════════════════════════════════════
+          3. CARD MENU INFERIOR: Ajustes | Central de ajuda | Sugestão
+      ══════════════════════════════════════════════════════ */}
+      <div className="w-full max-w-[480px] mt-2.5 bg-white divide-y divide-[#F5F5F5]">
+        
+        {/* 1. Cartão do banco */}
+        <div
+          onClick={() => navigate(hasBank ? '/informacao-bancaria' : '/adicionar-banco')}
+          className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <span className="text-[15px] font-normal text-[#222222]">
+            Cartão do banco
+          </span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </div>
+
+        {/* 2. Central de ajuda */}
+        <div
+          onClick={() => navigate('/suporte')}
+          className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <span className="text-[15px] font-normal text-[#222222]">
+            Central de ajuda
+          </span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </div>
+
+        {/* 3. Configurações */}
+        <div
+          onClick={() => navigate('/configuracoes-conta')}
+          className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <span className="text-[15px] font-normal text-[#222222]">
+            Configurações
+          </span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </div>
+
+      </div>
+
     </div>
   );
 }
