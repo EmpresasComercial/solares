@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageSelector } from '../components/LanguageSelector';
@@ -13,10 +12,8 @@ export default function Login() {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const [formData, setFormData] = useState({ phone: '', password: '' });
 
-  // useCallback evita recriar a função em cada render
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const sanitized = name === 'phone'
@@ -72,8 +69,6 @@ export default function Login() {
 
   return (
     <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-
-      {/* IMAGEM HERO — fetchpriority=high para carregar imediatamente */}
       <div className="relative w-full">
         <img
           src="/gettyimages-2286930500-612x612.jpg"
@@ -88,12 +83,8 @@ export default function Login() {
         </div>
       </div>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className="w-full max-w-[480px] px-4 pt-5 space-y-3">
-
         <form onSubmit={handleSubmit} id="login-form" className="space-y-3">
-
-          {/* Campo: Telefone */}
           <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
             <span className="text-[15px] text-[#202020] font-medium pr-3 border-r border-[#E8E8E8] mr-3">+244</span>
             <input
@@ -109,7 +100,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Campo: Senha */}
           <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative">
             <input
               name="password"
@@ -129,10 +119,8 @@ export default function Login() {
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
-
         </form>
 
-        {/* Link para cadastro */}
         <div className="text-center pt-2">
           <p className="text-[14px] text-[#888888]">
             {t('auth.no_account')}{' '}
@@ -143,7 +131,6 @@ export default function Login() {
         </div>
       </main>
 
-      {/* BARRA INFERIOR FIXA */}
       <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
         <div className="w-full max-w-[480px]">
           <button
@@ -159,7 +146,6 @@ export default function Login() {
           </button>
         </div>
       </div>
-
     </div>
   );
 }

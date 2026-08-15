@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '../lib/utils';
-import { Check } from 'lucide-react';
+import { Check, ShoppingCart, Users, User } from 'lucide-react';
 
 export default function Navbar() {
   const navItems = [
@@ -14,68 +14,37 @@ export default function Navbar() {
             <Check className="w-3.5 h-3.5 text-white stroke-[3.5]" />
           </div>
         ) : (
-          <svg className="w-[24px] h-[24px] text-[#202020]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-[22px] h-[22px] text-[#202020]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
             <polyline points="9 21 9 12 15 12 15 21" />
           </svg>
         )
     },
     {
-      name: 'Categoria',
+      name: 'Carrinha',
       path: '/produtos',
       renderIcon: (isActive: boolean) => (
-        <svg 
-          className={cn("w-[24px] h-[24px] transition-colors", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="1.8" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        >
-          <line x1="3" y1="7" x2="8" y2="7" />
-          <line x1="3" y1="12" x2="8" y2="12" />
-          <line x1="3" y1="17" x2="8" y2="17" />
-          <circle cx="15" cy="11" r="5" />
-          <line x1="18.5" y1="14.5" x2="22" y2="18" />
-        </svg>
+        <ShoppingCart 
+          className={cn("w-[22px] h-[22px] transition-colors stroke-[1.8]", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
+        />
       )
     },
     {
-      name: 'Carrinho',
-      path: '/minhas-compras',
+      name: 'Equipe',
+      path: '/convite',
       renderIcon: (isActive: boolean) => (
-        <svg 
-          className={cn("w-[24px] h-[24px] transition-colors", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="1.8" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        >
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-          <circle cx="9" cy="20" r="1.5" />
-          <circle cx="18" cy="20" r="1.5" />
-        </svg>
+        <Users 
+          className={cn("w-[22px] h-[22px] transition-colors stroke-[1.8]", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
+        />
       )
     },
     {
       name: 'Minha Conta',
       path: '/perfil',
       renderIcon: (isActive: boolean) => (
-        <svg 
-          className={cn("w-[24px] h-[24px] transition-colors", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="1.8" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="7" r="4" />
-          <path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />
-        </svg>
+        <User 
+          className={cn("w-[22px] h-[22px] transition-colors stroke-[1.8]", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
+        />
       )
     }
   ];
