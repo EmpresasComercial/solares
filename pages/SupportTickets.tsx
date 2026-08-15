@@ -8,23 +8,18 @@ import { useToast } from "../components/Toast";
 import { cn } from "../lib/utils";
 import { 
   ChevronLeft, 
-  Info, 
-  Plus, 
+  Paperclip, 
   Send, 
   X, 
-  Image as ImageIcon,
-  Check,
   CheckCheck,
   MoreVertical,
-  Smile,
   ArrowDown,
   Loader2,
-  Activity
+  ShieldCheck,
+  Info,
+  Download
 } from 'lucide-react';
 
-// ==========================================
-// LISTA DE MODERAÇÃO DE CHAT
-// ==========================================
 const FORBIDDEN_WORDS = Array.from(new Set([
   "burla", "burlas", "fraude", "fraudes", "scam", "scams", "golpe", "golpes", 
   "ladrão", "ladrao", "ladrões", "ladroes", "roubo", "roubos", "bosta", "bostas", 
@@ -89,9 +84,6 @@ Object.values(CONTEXT_GROUPS).forEach(group => {
 const ALL_KEYWORDS_SORTED = Object.keys(KEYWORD_TO_PATH).sort((a, b) => b.length - a.length);
 const SMART_CONTEXT_REGEX = new RegExp(`(${ALL_KEYWORDS_SORTED.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
 
-// ==========================================
-// TRADUÇÃO DE MENSAGENS EM TEMPO REAL
-// ==========================================
 const translationCache = new Map<string, string>();
 const translationQueue: (() => Promise<void>)[] = [];
 let isTranslating = false;
@@ -103,7 +95,7 @@ const processTranslationQueue = async () => {
     const task = translationQueue.shift();
     if (task) {
       await task();
-      await new Promise(r => setTimeout(r, 100)); // Delay to prevent rate limit (429)
+      await new Promise(r => setTimeout(r, 100));
     }
   }
   isTranslating = false;
@@ -125,7 +117,7 @@ const translateTextAPI = (text: string, lang: string): Promise<string> => {
           translationCache.set(cacheKey, result);
           resolve(result);
         } else resolve(text);
-      } catch (e) {
+      } catch {
         resolve(text);
       }
     });
@@ -157,18 +149,29 @@ const TranslatedMessage = ({ text, language, renderFormatted }: { text: string, 
   return <>{renderFormatted(translated)}</>;
 };
 
+const USER_COLORS = [
+  "#229ED9", "#E56555", "#8E44AD", "#27AE60", "#D35400", "#16A085", "#C0392B", "#2980B9"
+];
+
+function getUserColor(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
+}
+
 export default function SupportTickets() {
   const navigate = useNavigate();
   const { session } = useAuth();
   const user = session?.user;
   const { showToast } = useToast();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   const [isLoading, setIsLoading] = useState(true);
   const [publicMessages, setPublicMessages] = useState<any[]>([]);
   const [publicInput, setPublicInput] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [userPhone, setUserPhone] = useState("");
   const [replyTo, setReplyTo] = useState<any>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
@@ -229,7 +232,7 @@ export default function SupportTickets() {
               e.stopPropagation();
               navigate(path);
             }}
-            className="text-[#C62828] font-bold underline cursor-pointer hover:opacity-80 transition-opacity"
+            className="text-[#229ED9] font-medium underline cursor-pointer hover:opacity-80 transition-opacity"
           >
             {part}
           </span>
@@ -241,7 +244,6 @@ export default function SupportTickets() {
 
   const fetchMessages = async (isInitial = false) => {
     try {
-      // Usamos uma query simples para evitar disparar interceptores de loading global se existirem
       const { data, error } = await supabase.from("chat_gruop")
         .select(`*`)
         .order("data_registrada", { ascending: false })
@@ -262,7 +264,7 @@ export default function SupportTickets() {
 
         const dataWithPhones = data.map(m => ({
           ...m,
-          perfis_mcpn: { telefone: phoneMap.get(m.uid_emissor) || "Amigo" }
+          perfis_mcpn: { telefone: phoneMap.get(m.uid_emissor) || "Membro" }
         }));
 
         const sortedData = dataWithPhones.reverse();
@@ -277,8 +279,7 @@ export default function SupportTickets() {
         
         if (isInitial) scrollToBottom("auto");
       }
-    } catch (err) {
-      console.error("Falhou, recarregue a pagina", err);
+    } catch {
     } finally {
       if (isInitial) setIsLoading(false);
     }
@@ -286,16 +287,14 @@ export default function SupportTickets() {
 
   useEffect(() => {
     fetchMessages(true);
-    pollingRef.current = setInterval(() => fetchMessages(false), 2000);
+    pollingRef.current = setInterval(() => fetchMessages(false), 2500);
     return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
   }, []);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("perfis_mcpn").select("telefone").eq("id", user.id).single()
-      .then(({ data }) => { if (data) setUserPhone(data.telefone || "Utilizador"); });
 
-    const channel = supabase.channel("public_chat_realtime")
+    const channel = supabase.channel("addbank_telegram_chat_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "chat_gruop" }, async (payload) => {
         if (payload.eventType === "DELETE") {
           setPublicMessages(prev => prev.filter(m => m.id !== payload.old.id));
@@ -304,7 +303,7 @@ export default function SupportTickets() {
         if (payload.eventType === "INSERT" || payload.eventType === "UPDATE") {
           const { data } = await supabase.from("chat_gruop").select(`*`).eq("id", payload.new.id).single();
           if (data) { 
-            let telefone = "Utilizador";
+            let telefone = "Membro";
             if (data.uid_emissor) {
               const { data: perfil } = await supabase.from("perfis_mcpn").select("telefone").eq("id", data.uid_emissor).single();
               if (perfil) telefone = perfil.telefone;
@@ -326,13 +325,13 @@ export default function SupportTickets() {
 
   const validateMessage = (text: string) => {
     if (text.length > 2000) return "A mensagem é muito longa.";
-    if (FORBIDDEN_REGEX.test(text)) return "Por favor,  não ofenda";
+    if (FORBIDDEN_REGEX.test(text)) return "Por favor, evite termos ofensivos.";
     const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
     const matches = text.match(urlRegex);
     if (matches) {
-      const allowed = ['microsoft', 'azure', 'mcn'];
+      const allowed = ['microsoft', 'azure', 'mcn', 'aliexpress24', 't.me'];
       if (matches.some(m => !allowed.some(d => m.toLowerCase().includes(d))))
-        return "Não é permitido links externos.";
+        return "Não são permitidos links externos.";
     }
     return null;
   };
@@ -356,7 +355,7 @@ export default function SupportTickets() {
     const tempMsg = publicInput.trim();
     const tempImg = imagePreview;
     const tempReply = replyTo;
-    const reacoesJson = tempReply ? JSON.stringify({ reply: { id: tempReply.id, text: tempReply.mensagem, sender: tempReply.perfis_mcpn?.telefone || "Utilizador" } }) : "";
+    const reacoesJson = tempReply ? JSON.stringify({ reply: { id: tempReply.id, text: tempReply.mensagem, sender: tempReply.perfis_mcpn?.telefone || "Membro" } }) : "";
 
     setPublicInput("");
     setImagePreview(null);
@@ -372,11 +371,13 @@ export default function SupportTickets() {
         url_imagen_conversa: tempImg || "",
       }]);
       scrollToBottom();
-    } catch (err: any) { 
-      showToast("Erro ao enviar.", "error"); 
+    } catch { 
+      showToast("Erro ao enviar mensagem.", "error"); 
       setPublicInput(tempMsg);
       setImagePreview(tempImg);
-    } finally { setIsSending(false); }
+    } finally { 
+      setIsSending(false); 
+    }
   };
 
   const handleToggleReaction = async (messageId: number, emoji: string) => {
@@ -388,7 +389,8 @@ export default function SupportTickets() {
         p_emoji: emoji,
         p_user_id: user.id
       });
-    } catch (err) { console.error("Erro ao reagir:", err); }
+    } catch {
+    }
   };
 
   const handleLongPressStart = (id: number) => {
@@ -407,46 +409,110 @@ export default function SupportTickets() {
     const now = new Date();
     const diff = now.getTime() - d.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) return t('chat.today');
+    if (days === 0) return "Hoje";
     if (days === 1) return "Ontem";
     return d.toLocaleDateString("pt-PT", { day: "numeric", month: "long" });
   };
 
-  const maskPhone = (p: string) => p.replace(/(\d{3})\d+(\d{2})/, "$1****$2");
+  const maskPhone = (p: string) => {
+    if (!p || p === "Membro") return "Membro";
+    return p.replace(/(\d{3})\d+(\d{2})/, "$1****$2");
+  };
+
+  const handleDownloadImage = async (imageUrl: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `imagem_${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      showToast('Download concluído!', 'success');
+    } catch {
+      const link = document.createElement('a');
+      link.href = imageUrl;
+      link.target = '_blank';
+      link.download = `imagem_${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   if (isLoading) return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <Loader2 className="w-8 h-8 animate-spin text-[#1A237E]" />
+    <div className="w-full min-h-screen bg-[#F2F2F2] flex flex-col items-center justify-center font-sans antialiased text-[#202020]">
+      <Loader2 className="w-6 h-6 animate-spin text-[#229ED9]" />
+      <span className="text-[12.5px] text-[#666666] mt-2 font-normal">A carregar chat...</span>
     </div>
   );
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-white font-sans overflow-hidden">
+    <div className="w-full h-[100dvh] bg-[#F2F2F2] font-sans antialiased text-[#202020] select-none flex flex-col items-center overflow-hidden">
       
-      {/* Header Premium Flat */}
-      <header className="w-full px-6 py-4 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-[100] border-b border-gray-50">
-        <button onClick={() => navigate('/suporte')} className="w-10 h-10 flex items-center justify-start text-[#333333] active:opacity-50 transition-opacity">
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <div className="flex flex-col items-center flex-1">
-          <h1 className="text-[16px] font-medium text-[#333333] whitespace-nowrap">{t('chat.title')}</h1>
+      <header className="w-full max-w-[480px] bg-white px-4 pt-3 pb-2.5 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex items-center justify-between border-b border-gray-100">
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          <button 
+            onClick={() => navigate('/home')} 
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform cursor-pointer"
+            aria-label="Voltar"
+          >
+            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
+          </button>
+          
+          <div 
+            onClick={() => setShowInfo(true)}
+            className="w-8 h-8 rounded-none bg-[#229ED9] flex items-center justify-center text-white shrink-0 cursor-pointer"
+          >
+            <svg className="w-4 h-4 fill-current ml-[-1px]" viewBox="0 0 24 24">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.949z"/>
+            </svg>
+          </div>
+
+          <div 
+            onClick={() => setShowInfo(true)}
+            className="flex flex-col min-w-0 cursor-pointer flex-1"
+          >
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-[14px] font-medium text-[#202020] tracking-normal truncate leading-tight">
+                Telegram AliExpress24
+              </h1>
+              <div className="w-3.5 h-3.5 bg-[#229ED9] text-white flex items-center justify-center rounded-full shrink-0" title="Conta Verificada">
+                <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+              </div>
+            </div>
+            <span className="text-[11px] text-[#229ED9] font-normal leading-tight">
+              On-line
+            </span>
+          </div>
         </div>
-        <button onClick={() => setShowInfo(true)} className="w-10 h-10 flex items-center justify-end text-[#333333] active:opacity-50 transition-opacity">
-          <Info className="w-5 h-5" />
+
+        <button 
+          onClick={() => setShowInfo(true)} 
+          className="p-1 text-[#888888] hover:text-[#202020] active:scale-95 transition-transform cursor-pointer"
+          aria-label="Mais informações"
+        >
+          <MoreVertical className="w-4.5 h-4.5" />
         </button>
       </header>
 
-      {/* Messages Area */}
       <main 
         ref={scrollRef} 
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-4 py-6 space-y-6 bg-white scroll-smooth"
+        className="w-full max-w-[480px] flex-1 overflow-y-auto no-scrollbar px-3.5 pt-3 pb-24 space-y-2.5 bg-[#F2F2F2] relative scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         {publicMessages.map((m, i) => {
           const isMe = m.uid_emissor === user?.id;
-          const phone = m.perfis_mcpn?.telefone || "Utilizador";
+          const phone = m.perfis_mcpn?.telefone || "Membro";
           const showDate = i === 0 || formatDateLabel(m.data_registrada) !== formatDateLabel(publicMessages[i-1].data_registrada);
-          
+          const authorColor = getUserColor(phone);
+
           let parsedData: any = {};
           try { if (m.reacoes_emojis) parsedData = JSON.parse(m.reacoes_emojis); } catch {}
           const reply = parsedData.reply;
@@ -455,27 +521,32 @@ export default function SupportTickets() {
           return (
             <React.Fragment key={m.id}>
               {showDate && (
-                <div className="flex justify-center my-8">
-                  <span className="text-[11px] font-light text-gray-400">{formatDateLabel(m.data_registrada)}</span>
+                <div className="flex justify-center my-2.5">
+                  <span className="text-[10.5px] font-normal text-[#777777] bg-white border border-gray-200/60 rounded-none px-2.5 py-0.5 shadow-2xs">
+                    {formatDateLabel(m.data_registrada)}
+                  </span>
                 </div>
               )}
               
               <motion.div 
-                initial={{ opacity: 0, y: 5 }}
+                initial={{ opacity: 0, y: 2 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex ${isMe ? "justify-end" : "justify-start"} relative`}
               >
-                {/* Reaction Picker Popup */}
                 <AnimatePresence>
                   {reactionMenuId === m.id && (
                     <motion.div 
-                      initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: -50 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      className={`absolute z-[100] bg-white rounded-full p-2 flex gap-1 shadow-xl border border-gray-100 ${isMe ? 'right-0' : 'left-0'}`}
+                      initial={{ opacity: 0, scale: 0.9, y: 5 }}
+                      animate={{ opacity: 1, scale: 1, y: -38 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className={`absolute z-[100] bg-white rounded-none px-1.5 py-1 flex gap-1 shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-gray-200 ${isMe ? 'right-0' : 'left-0'}`}
                     >
                       {EMOJIS.map(e => (
-                        <button key={e.char} onClick={() => handleToggleReaction(m.id, e.char)} className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 rounded-full transition-all active:scale-125 text-xl">
+                        <button 
+                          key={e.char} 
+                          onClick={() => handleToggleReaction(m.id, e.char)} 
+                          className="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded-none transition-all active:scale-110 text-[15px] cursor-pointer"
+                        >
                           {e.char}
                         </button>
                       ))}
@@ -489,57 +560,69 @@ export default function SupportTickets() {
                   onPointerLeave={handleLongPressEnd}
                   onDoubleClick={() => setReplyTo(m)}
                   className={cn(
-                    "max-w-[85%] rounded-[20px] p-3 shadow-none transition-all relative border",
+                    "max-w-[85%] px-3 py-2 text-[#202020] rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)] border relative select-text",
                     isMe 
-                      ? "bg-gradient-to-r from-[#C62828] to-[#1A237E] text-white border-transparent rounded-tr-none" 
-                      : "bg-gray-50 text-gray-900 border-gray-100 rounded-tl-none"
+                      ? "bg-[#EFFDDE] border-[#D6F0BD]" 
+                      : "bg-white border-gray-100/80"
                   )}
                 >
                   {!isMe && (
-                    <p className="text-[11px] font-bold text-[#1A237E] mb-1">{maskPhone(phone)}</p>
+                    <p 
+                      className="text-[12px] font-medium mb-1 cursor-pointer truncate"
+                      style={{ color: authorColor }}
+                    >
+                      {maskPhone(phone)}
+                    </p>
                   )}
 
                   {reply && (
                     <div className={cn(
-                      "rounded-[12px] p-2 mb-2 text-[11px] border-l-4 bg-black/5 overflow-hidden",
-                      isMe ? "border-white/50 text-white/80" : "border-[#1A237E] text-gray-500"
+                      "rounded-none px-2 py-1 mb-1.5 text-[11px] border-l-2 bg-black/5 overflow-hidden",
+                      isMe ? "border-[#229ED9] text-[#444444]" : "border-[#229ED9] text-[#555555]"
                     )}>
-                      <p className="font-bold opacity-70">{reply.sender}</p>
-                      <p className="truncate italic">{reply.text || "📷 Imagem"}</p>
+                      <p className="font-medium text-[10.5px] text-[#229ED9] truncate">{reply.sender}</p>
+                      <p className="truncate italic text-[10.5px] text-[#666666]">{reply.text || "📷 Foto"}</p>
                     </div>
                   )}
 
                   {m.url_imagen_conversa && (
-                    <div className="mb-2 -mx-1 -mt-1 overflow-hidden rounded-[14px]">
+                    <div className="mb-1.5 -mx-1 -mt-0.5 overflow-hidden rounded-none border border-gray-200/50">
                       <img
                         src={m.url_imagen_conversa}
                         alt="Anexo"
-                        className="w-full h-auto max-h-[300px] object-cover cursor-pointer active:opacity-80"
+                        className="w-full h-auto max-h-[260px] object-cover cursor-pointer active:opacity-90 rounded-none"
                         onClick={() => setZoomedImage(m.url_imagen_conversa)}
                       />
                     </div>
                   )}
 
-                  <div className="space-y-1">
-                    <p className="text-[14.5px] leading-relaxed break-words whitespace-pre-wrap">
+                  <div className="relative">
+                    <p className="text-[13px] leading-relaxed break-words whitespace-pre-wrap pr-12 text-[#202020] font-normal">
                       <TranslatedMessage text={m.mensagem} language={language} renderFormatted={renderFormattedMessage} />
                     </p>
-                    <div className="flex items-center justify-end gap-1 pt-0.5">
-                      <span className={cn("text-[9px] font-thin opacity-50", isMe ? "text-white" : "text-gray-400")}>
+                    
+                    <div className="absolute right-0 bottom-[-2px] flex items-center gap-0.5 select-none">
+                      <span className="text-[9.5px] text-[#888888] font-normal">
                         {formatTime(m.data_registrada)}
                       </span>
-                      {isMe && <CheckCheck className="w-3.5 h-3.5 text-[#4fc3f7]" />}
+                      {isMe && (
+                        <CheckCheck className="w-3 h-3 text-[#229ED9] stroke-[2.2]" />
+                      )}
                     </div>
                   </div>
 
-                  {/* Reactions */}
                   {Object.keys(reactions).length > 0 && (
-                    <div className={`absolute -bottom-3 ${isMe ? 'right-2' : 'left-2'} flex gap-1`}>
+                    <div className="flex flex-wrap gap-1 mt-1.5 pt-1 border-t border-black/5">
                       {Object.entries(reactions).map(([emoji, users]: [string, any]) => (
-                        <div key={emoji} className="bg-white border border-gray-100 rounded-full px-1.5 py-0.5 flex items-center gap-1 shadow-sm">
-                          <span className="text-[10px]">{emoji}</span>
-                          <span className="text-[9px] font-bold text-gray-500">{users.length}</span>
-                        </div>
+                        <button
+                          key={emoji}
+                          type="button"
+                          onClick={() => handleToggleReaction(m.id, emoji)}
+                          className="bg-white border border-gray-200 rounded-none px-1.5 py-0.2 flex items-center gap-1 shadow-2xs hover:bg-gray-50 active:scale-95 transition-transform cursor-pointer"
+                        >
+                          <span className="text-[10.5px]">{emoji}</span>
+                          <span className="text-[9.5px] font-medium text-[#555555]">{users.length}</span>
+                        </button>
                       ))}
                     </div>
                   )}
@@ -550,120 +633,218 @@ export default function SupportTickets() {
         })}
       </main>
 
-      {/* Floating Scroll Down */}
       <AnimatePresence>
         {showScrollDown && (
           <motion.button 
-            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            exit={{ opacity: 0, scale: 0.9 }}
             onClick={() => scrollToBottom()}
-            className="absolute bottom-24 right-6 w-10 h-10 bg-[#1A237E] text-white rounded-full shadow-lg flex items-center justify-center z-40 active:scale-90 transition-transform"
+            className="absolute bottom-20 right-5 w-8 h-8 bg-white text-[#202020] rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.15)] flex items-center justify-center z-40 active:scale-90 transition-transform cursor-pointer border border-gray-200"
+            aria-label="Rolar para o fundo"
           >
-            <ArrowDown className="w-5 h-5" />
+            <ArrowDown className="w-4 h-4 stroke-[2]" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Input Area */}
-      <footer className="bg-white border-t border-gray-50 p-4 pt-2">
-        <AnimatePresence>
-          {replyTo && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-              className="bg-gray-50 border-l-4 border-[#1A237E] rounded-xl p-3 mb-2 flex justify-between items-center"
-            >
-              <div className="truncate">
-                <p className="text-[11px] font-bold text-[#1A237E]">{t('chat.replying_to')} {maskPhone(replyTo.perfis_mcpn?.telefone || "Utilizador")}</p>
-                <p className="text-[12px] text-gray-500 truncate italic">
-                  <TranslatedMessage text={replyTo.mensagem} language={language} renderFormatted={(t: string) => t || 'Imagem'} />
-                </p>
-              </div>
-              <button onClick={() => setReplyTo(null)} className="text-gray-400 p-1"><X className="w-4 h-4" /></button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div className="flex items-end gap-3">
-          <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageSelect} />
-          <button onClick={() => fileInputRef.current?.click()} className="w-11 h-11 flex items-center justify-center text-gray-400 hover:text-[#1A237E] transition-colors shrink-0">
-            <Plus className="w-6 h-6" />
-          </button>
-
-          <div className="flex-1 bg-gray-50 rounded-[25px] flex flex-col border border-transparent focus-within:border-gray-100 transition-all overflow-hidden">
-            {imagePreview && (
-              <div className="p-3 pb-0 relative">
-                <img src={imagePreview} alt="preview" className="w-16 h-16 object-cover rounded-xl border border-gray-200" />
-                <button onClick={() => setImagePreview(null)} className="absolute top-2 left-12 bg-red-500 text-white rounded-full p-1"><X className="w-3 h-3" /></button>
-              </div>
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-2.5 z-40 flex justify-center border-t border-gray-200/50">
+        <div className="w-full max-w-[480px] flex flex-col gap-1.5">
+          <AnimatePresence>
+            {replyTo && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }} 
+                animate={{ height: "auto", opacity: 1 }} 
+                exit={{ height: 0, opacity: 0 }}
+                className="bg-white border-l-2 border-[#229ED9] rounded-none px-3 py-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex justify-between items-center"
+              >
+                <div className="truncate flex-1">
+                  <p className="text-[11px] font-medium text-[#229ED9]">
+                    A responder a {maskPhone(replyTo.perfis_mcpn?.telefone || "Membro")}
+                  </p>
+                  <p className="text-[11px] text-[#777777] truncate italic">
+                    <TranslatedMessage text={replyTo.mensagem} language={language} renderFormatted={(t: string) => t || 'Foto'} />
+                  </p>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setReplyTo(null)} 
+                  className="text-[#AAAAAA] hover:text-[#202020] p-1 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </motion.div>
             )}
-            <textarea
-              ref={inputRef}
-              value={publicInput}
-              onChange={(e) => {
-                setPublicInput(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
-              }}
-              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder={t('chat.input_placeholder')}
-              className="w-full px-5 py-3 text-[15px] bg-transparent resize-none outline-none max-h-[120px]"
-              rows={1}
+          </AnimatePresence>
+
+          <div className="flex items-end gap-1.5">
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleImageSelect} 
             />
+
+            <button 
+              type="button"
+              onClick={() => fileInputRef.current?.click()} 
+              className="w-[40px] h-[40px] bg-white rounded-none flex items-center justify-center text-[#777777] hover:text-[#202020] active:scale-95 transition-colors shrink-0 cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100/60"
+              title="Anexar foto"
+            >
+              <Paperclip className="w-4.5 h-4.5 stroke-[1.8]" />
+            </button>
+
+            <div className="flex-1 bg-white rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100/60 flex flex-col overflow-hidden min-h-[40px]">
+              {imagePreview && (
+                <div className="p-2 pb-0 relative">
+                  <img src={imagePreview} alt="preview" className="w-12 h-12 object-cover rounded-none border border-gray-200" />
+                  <button 
+                    type="button"
+                    onClick={() => setImagePreview(null)} 
+                    className="absolute top-1 left-9 bg-black/70 text-white rounded-none p-0.5 hover:bg-black cursor-pointer"
+                  >
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                </div>
+              )}
+              <textarea
+                ref={inputRef}
+                value={publicInput}
+                onChange={(e) => {
+                  setPublicInput(e.target.value);
+                  e.target.style.height = "auto";
+                  e.target.style.height = `${Math.min(e.target.scrollHeight, 100)}px`;
+                }}
+                onKeyDown={(e) => { 
+                  if (e.key === 'Enter' && !e.shiftKey) { 
+                    e.preventDefault(); 
+                    handleSend(); 
+                  } 
+                }}
+                placeholder="Mensagem..."
+                className="w-full px-3 py-2.5 text-[13px] bg-transparent resize-none outline-none max-h-[100px] text-[#202020] placeholder:text-[#AAAAAA] font-normal"
+                rows={1}
+              />
+            </div>
+
+            <button 
+              type="button"
+              onClick={handleSend}
+              disabled={isSending || (!publicInput.trim() && !imagePreview)}
+              className="w-[42px] h-[40px] rounded-none bg-[#229ED9] hover:bg-[#1D8BC3] text-white flex items-center justify-center active:scale-[0.99] disabled:opacity-40 transition-all shrink-0 cursor-pointer shadow-none"
+              title="Enviar"
+            >
+              {isSending ? (
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+              ) : (
+                <Send className="w-4 h-4 text-white ml-0.5 stroke-[2]" />
+              )}
+            </button>
           </div>
-
-          <button 
-            onClick={handleSend}
-            disabled={isSending || (!publicInput.trim() && !imagePreview)}
-            className="w-11 h-11 bg-gradient-to-r from-[#C62828] to-[#1A237E] text-white rounded-full flex items-center justify-center shadow-md active:scale-95 disabled:opacity-30 transition-all shrink-0"
-          >
-            {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-0.5" />}
-          </button>
         </div>
-      </footer>
+      </div>
 
-      {/* Info Modal */}
       <AnimatePresence>
         {showInfo && (
-          <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-center justify-center p-6" onClick={() => setShowInfo(false)}>
+          <div 
+            className="fixed inset-0 z-[200] bg-black/40 flex items-center justify-center p-4" 
+            onClick={() => setShowInfo(false)}
+          >
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-[32px] w-full max-w-sm p-8 shadow-2xl relative" 
+              initial={{ scale: 0.98, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.98, opacity: 0 }}
+              className="bg-white rounded-none w-full max-w-[380px] p-4 shadow-xl relative border border-gray-100" 
               onClick={e => e.stopPropagation()}
             >
-              <button onClick={() => setShowInfo(false)} className="absolute top-6 right-6 text-gray-400"><X className="w-6 h-6" /></button>
-              <div className="flex flex-col items-center gap-4 text-center">
-                <div className="w-20 h-20 rounded-[24px] bg-gray-50 flex items-center justify-center">
-                  <Activity className="w-10 h-10 text-[#1A237E]" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900">{t('chat.title')}</h2>
-                <p className="text-sm text-gray-400 font-light leading-relaxed">
-                  {t('chat.info_desc')}
-                </p>
-                <div className="w-full bg-gray-50 rounded-2xl p-4 space-y-3 mt-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">{t('common.status')}</span>
-                    <span className="font-bold text-[#C62828]">{t('chat.status_active') || 'Ativo'}</span>
+              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                <h2 className="text-[14px] font-medium text-[#202020]">Detalhes do Canal</h2>
+                <button 
+                  type="button"
+                  onClick={() => setShowInfo(false)} 
+                  className="text-gray-400 hover:text-gray-700 cursor-pointer"
+                >
+                  <X className="w-4.5 h-4.5" />
+                </button>
+              </div>
+
+              <div className="pt-3 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-none bg-[#229ED9] flex items-center justify-center text-white shrink-0">
+                    <svg className="w-5 h-5 fill-current ml-[-1px]" viewBox="0 0 24 24">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.949z"/>
+                    </svg>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">{t('chat.security')}</span>
-                    <span className="font-bold text-[#1A237E]">{t('chat.encrypted')}</span>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-[13.5px] font-medium text-[#202020]">Telegram AliExpress24</h3>
+                      <div className="w-3.5 h-3.5 bg-[#229ED9] text-white flex items-center justify-center rounded-full shrink-0">
+                        <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-[#229ED9]">Canal Oficial Verificado</p>
                   </div>
                 </div>
+
+                <div className="bg-[#F2F2F2] rounded-none p-3 space-y-1.5 text-[12px]">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#666666]">Tipo:</span>
+                    <span className="font-medium text-[#202020]">Canal Oficial</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#666666]">Moderação:</span>
+                    <span className="font-medium text-emerald-600">Ativa 24/7</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#666666]">Troca de Fotos:</span>
+                    <span className="font-medium text-[#229ED9]">Habilitada</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowInfo(false)}
+                  className="w-full h-[38px] rounded-none bg-white border border-gray-200 text-[#444444] text-[13px] hover:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer"
+                >
+                  Fechar
+                </button>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Image Zoom */}
       <AnimatePresence>
         {zoomedImage && (
           <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] bg-black flex items-center justify-center" 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-2" 
             onClick={() => setZoomedImage(null)}
           >
-            <img src={zoomedImage} className="max-w-full max-h-full object-contain" alt="Zoom" />
-            <button className="absolute top-10 right-6 text-white"><X className="w-8 h-8" /></button>
+            <img src={zoomedImage} className="max-w-full max-h-full object-contain rounded-none" alt="Zoom" />
+            <div className="absolute top-4 right-4 flex items-center gap-1">
+              <button 
+                type="button"
+                className="text-white p-2 hover:bg-white/10 rounded-none cursor-pointer flex items-center justify-center transition-colors"
+                onClick={(e) => handleDownloadImage(zoomedImage, e)}
+                title="Baixar imagem"
+              >
+                <Download className="w-6 h-6 stroke-[1.8]" />
+              </button>
+              <button 
+                type="button"
+                className="text-[#FE384F] hover:text-[#E02E44] p-2 hover:bg-white/10 rounded-none cursor-pointer flex items-center justify-center transition-colors"
+                onClick={() => setZoomedImage(null)}
+                title="Fechar"
+              >
+                <X className="w-6 h-6 stroke-[2]" />
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
