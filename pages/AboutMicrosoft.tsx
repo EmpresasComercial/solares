@@ -35,7 +35,7 @@ export default function AboutMicrosoft() {
           </button>
           
           <h1 className="text-[17px] font-semibold text-white tracking-tight">
-            {t('about.title') || 'Sobre a CanadianSolar'}
+            {t('about.title') || 'Sobre o AliExpress24'}
           </h1>
 
           <div className="w-9" />

@@ -134,7 +134,7 @@ export default function AccountSettings() {
             </svg>
           </div>
 
-          {/* Sobre CanadianSolar */}
+          {/* Sobre AliExpress24 */}
           <div
             onClick={() => navigate('/sobre-microsoft')}
             className="flex items-center justify-between py-3.5 px-4.5 hover:bg-gray-50/60 active:bg-gray-100 transition-colors cursor-pointer"

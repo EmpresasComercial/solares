@@ -66,7 +66,7 @@ export default function Products() {
             </svg>
           </button>
 
-          {/* Logo texto "CanadianSolar" (estilo AliExpress) */}
+          {/* Logo texto "AliExpress24" (estilo AliExpress) */}
           <span className="text-[17px] font-extrabold text-[#FF2442] tracking-tight ml-0.5">
             AliExpress24
           </span>
@@ -123,3 +123,4 @@ export default function Products() {
     </div>
   );
 }
+

@@ -50,7 +50,7 @@ export function SkeletonText({
 }
 
 /**
- * Skeleton para Cards genéricos (estilo CanadianSolar com borda suave)
+ * Skeleton para Cards genéricos (estilo AliExpress24 com borda suave)
  */
 export function SkeletonCard({ className }: { className?: string }) {
   return (
@@ -309,3 +309,4 @@ export function AccountSettingsSkeleton() {
     </div>
   );
 }
+

@@ -90,7 +90,7 @@ export default function Login() {
           <div className="flex justify-center mb-6">
             <img
               src="/update_logo_canadianSolar.png"
-              alt="CanadianSolar"
+              alt="AliExpress24"
               className="h-16 w-auto object-contain mix-blend-multiply"
             />
           </div>
@@ -162,3 +162,4 @@ export default function Login() {
     </div>
   );
 }
+

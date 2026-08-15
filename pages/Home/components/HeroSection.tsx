@@ -55,9 +55,9 @@ export const HeroSection: React.FC = () => {
             {/* Gradiente sutil para acabamento elegante */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
-            {/* Logo / Tag CanadianSolar sobreposta no banner */}
+            {/* Logo / Tag AliExpress24 sobreposta no banner */}
             <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-md">
-              <img src="/update_logo_canadianSolar.png" alt="Logo" className="w-5 h-5 rounded object-cover" />
+              <img src="/update_logo_AliExpress24.png" alt="Logo" className="w-5 h-5 rounded object-cover" />
               <span className="text-white text-[11px] font-medium tracking-wide">AliExpress24</span>
             </div>
           </motion.div>
@@ -85,6 +85,7 @@ export const HeroSection: React.FC = () => {
     </section>
   );
 };
+
 
 
 

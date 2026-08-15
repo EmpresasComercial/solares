@@ -9,7 +9,7 @@ export default function FloatingSupport() {
 
   const menuOptions = [
     { 
-      label: 'Suporte CanadianSolar', 
+      label: 'Suporte AliExpress24', 
       icon: <Headset size={16} strokeWidth={1.5} />, 
       path: '/suporte',
       color: 'bg-white text-[#333333] border border-[#E5E5E5]'
@@ -83,7 +83,7 @@ export default function FloatingSupport() {
             ) : (
               <img 
                 src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=200&h=200&auto=format&fit=crop" 
-                alt="Suporte CanadianSolar" 
+                alt="Suporte AliExpress24" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
@@ -99,3 +99,4 @@ export default function FloatingSupport() {
     </div>
   );
 }
+

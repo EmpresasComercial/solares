@@ -115,7 +115,7 @@ export default function ProductDetails() {
   const specs = [
     `Ciclo ${product.duracao_dias || 30} Dias`,
     `Renda ${formattedDaily}/dia`,
-    `Garantia CanadianSolar`,
+    `Garantia AliExpress24`,
     `Ativação Imediata`
   ];
 
@@ -123,7 +123,7 @@ export default function ProductDetails() {
     <div className="w-full min-h-screen bg-white pb-24 font-sans antialiased text-[#1A1A1A] select-none flex flex-col items-center">
       
       {/* ═══════════════════════════════════════════════════
-          1. CABEÇALHO (Estilo AliExpress / CanadianSolar)
+          1. CABEÇALHO (Estilo AliExpress / AliExpress24)
       ════════════════════════════════════════════════════ */}
       <header className="w-full max-w-[480px] bg-white h-[50px] px-3.5 flex items-center justify-between sticky top-0 z-30 border-b border-gray-100">
         <div className="flex items-center gap-1.5">
@@ -144,7 +144,7 @@ export default function ProductDetails() {
           </button>
 
           <span className="text-[17px] font-extrabold text-[#1A1A1A] tracking-tight ml-0.5">
-            CanadianSolar
+            AliExpress24
           </span>
         </div>
 
@@ -329,3 +329,4 @@ export default function ProductDetails() {
     </div>
   );
 }
+

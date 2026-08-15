@@ -53,7 +53,7 @@ export default function Support() {
           <ChevronLeft className="w-6 h-6" />
         </button>
         <h1 className="text-[16px] font-medium text-[#333333] absolute left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
-          Suporte CanadianSolar
+          Suporte AliExpress24
         </h1>
         <div className="w-10" />
       </header>
@@ -117,3 +117,4 @@ export default function Support() {
     </div>
   );
 }
+
