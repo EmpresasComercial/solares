@@ -45,7 +45,6 @@ export default function Invite() {
           setBaseUrl(linksRes.data.link_app_atualizado.replace(/\/$/, ''));
         }
       } catch {
-        // silent
       } finally {
         setLoading(false);
       }

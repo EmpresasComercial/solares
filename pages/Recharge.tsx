@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
-import { 
-  ChevronLeft, 
-  Check, 
-  Loader2 
-} from 'lucide-react';
+import { ChevronLeft, Check, Loader2 } from 'lucide-react';
 
 interface RechargeResponse {
   success: boolean;
@@ -117,13 +113,7 @@ export default function Recharge() {
 
   return (
     <div className="w-full min-h-screen bg-[#F2F2F2] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      
-      {/* ═════════════════════════════════════════════════════
-          1. HEADER COM PROGRESSO EM 3 ETAPAS
-      ══════════════════════════════════════════════════════ */}
-      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-3.5 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        
-        {/* Topo: Seta voltar + Título com fonte suave */}
+      <header className="w-full max-w-[480px] bg-white px-4 pt-3.5 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleBack}
@@ -138,22 +128,16 @@ export default function Recharge() {
           </h1>
         </div>
 
-        {/* ════ BARRA DE PROGRESSO EM 3 ETAPAS ════ */}
         <div className="mt-3.5 px-3">
           <div className="relative flex items-center justify-between">
-            
-            {/* Linha de Conexão Fundo (Cinza Fina) */}
             <div className="absolute left-3 right-3 top-2 h-[1.5px] bg-[#E5E7EB] -translate-y-1/2 z-0" />
-            
-            {/* Linha de Conexão Ativa (Vermelha) */}
             <div 
               className="absolute left-3 top-2 h-[1.5px] bg-[#FE384F] -translate-y-1/2 z-0 transition-all duration-300"
               style={{ width: currentStep >= 2 ? '50%' : '0%' }}
             />
 
-            {/* Passo 1: Add valor */}
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-full bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
+              <div className="w-[17px] h-[17px] rounded-none bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
                 {currentStep >= 2 || isStep1Valid ? <Check className="w-2.5 h-2.5 stroke-[2.5]" /> : '1'}
               </div>
               <span className="text-[10px] font-normal text-[#FE384F] mt-1 whitespace-nowrap">
@@ -161,9 +145,8 @@ export default function Recharge() {
               </span>
             </div>
 
-            {/* Passo 2: Selecionar banco */}
             <div className="relative z-10 flex flex-col items-center">
-              <div className={`w-[17px] h-[17px] rounded-full flex items-center justify-center text-[9.5px] font-normal transition-colors ${
+              <div className={`w-[17px] h-[17px] rounded-none flex items-center justify-center text-[9.5px] font-normal transition-colors ${
                 currentStep >= 2
                   ? 'bg-[#FE384F] text-white'
                   : 'bg-[#E5E7EB] text-[#888888]'
@@ -177,37 +160,27 @@ export default function Recharge() {
               </span>
             </div>
 
-            {/* Passo 3: Pagar */}
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-full bg-[#E5E7EB] text-[#888888] flex items-center justify-center text-[9.5px] font-normal">
+              <div className="w-[17px] h-[17px] rounded-none bg-[#E5E7EB] text-[#888888] flex items-center justify-center text-[9.5px] font-normal">
                 3
               </div>
               <span className="text-[10px] font-normal text-[#888888] mt-1 whitespace-nowrap">
                 Pagar
               </span>
             </div>
-
           </div>
         </div>
-
       </header>
 
-      {/* ═════════════════════════════════════════════════════
-          2. CONTEÚDO PRINCIPAL (Arredondamento 4px em todos elementos)
-      ══════════════════════════════════════════════════════ */}
       <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-3">
-        
-        {/* ── ETAPA 1: DIGITAR VALOR ── */}
         {currentStep === 1 && (
           <div className="space-y-3">
-            
-            {/* Campo de Entrada (rounded-[4px]) */}
-            <div className="bg-[#FFFFFF] rounded-[4px] h-[42px] px-3.5 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100/60">
+            <div className="bg-white rounded-none h-[42px] px-3.5 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)] border border-gray-100/60">
               <input
                 type="tel"
                 inputMode="numeric"
                 autoFocus
-                className="w-full h-full bg-transparent outline-none text-[13.5px] text-[#222222] placeholder:text-[#AAAAAA] font-normal pr-2 rounded-[4px]"
+                className="w-full h-full bg-transparent outline-none text-[13.5px] text-[#222222] placeholder:text-[#AAAAAA] font-normal pr-2 rounded-none"
                 placeholder="Digite o valor (mín. 3.000 Kz)"
                 value={amount}
                 onChange={handleAmountChange}
@@ -215,7 +188,6 @@ export default function Recharge() {
               <span className="text-[12px] font-medium text-[#FE384F] shrink-0">KZ</span>
             </div>
 
-            {/* Sugestões de Valor com Arredondamento 4px e Visto no Canto Interno do Quadrado */}
             <div className="grid grid-cols-4 gap-1.5">
               {[3000, 10000, 50000, 100000].map(val => {
                 const isSelected = amount === val.toString();
@@ -224,17 +196,15 @@ export default function Recharge() {
                     key={val}
                     type="button"
                     onClick={() => setAmount(val.toString())}
-                    className={`h-[35px] rounded-[4px] text-[11.5px] font-normal transition-all border flex items-center justify-center relative overflow-hidden ${
+                    className={`h-[35px] rounded-none text-[11.5px] font-normal transition-all border flex items-center justify-center relative overflow-hidden cursor-pointer ${
                       isSelected
-                        ? "bg-white text-[#FE384F] border-[#FE384F] shadow-xs"
+                        ? "bg-white text-[#FE384F] border-[#FE384F]"
                         : "bg-white text-[#444444] border-gray-200 hover:border-[#FE384F]"
                     }`}
                   >
                     <span>{val.toLocaleString()}</span>
-
-                    {/* Visto no canto inferior dentro do quadrado */}
                     {isSelected && (
-                      <div className="absolute bottom-0 right-0 bg-[#FE384F] text-white w-3 h-3 flex items-center justify-center rounded-tl-[3px]">
+                      <div className="absolute bottom-0 right-0 bg-[#FE384F] text-white w-3 h-3 flex items-center justify-center">
                         <Check className="w-2.5 h-2.5 stroke-[3]" />
                       </div>
                     )}
@@ -243,20 +213,18 @@ export default function Recharge() {
               })}
             </div>
 
-            {/* Botão "Continuar" com arredondamento de 4px */}
             <div className="pt-1">
               <button
                 type="button"
                 onClick={handleNextStep1}
                 disabled={!amount}
-                className="w-full h-[40px] rounded-[4px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
+                className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
               >
                 <span>Continuar</span>
               </button>
             </div>
 
-            {/* Bloco de Informações / Regras da Recarga com Destaques Vermelhos */}
-            <div className="bg-[#FFFFFF] rounded-[4px] p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-2 text-[#666666] text-[11.5px] leading-relaxed">
+            <div className="bg-white rounded-none p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-2 text-[#666666] text-[11.5px] leading-relaxed">
               <p>
                 • Recarregue sua conta no horário das <span className="text-[#FE384F] font-medium">09:00 às 21:00</span>.
               </p>
@@ -270,14 +238,12 @@ export default function Recharge() {
                 • Se o seu valor não for creditado dentro desse prazo, entre em contato com o <span className="text-[#FE384F] font-medium">suporte da plataforma</span>.
               </p>
             </div>
-
           </div>
         )}
 
-        {/* ── ETAPA 2: SELECIONAR BANCO (rounded-[4px]) ── */}
         {currentStep === 2 && (
           <div className="space-y-3">
-            <div className="bg-[#FFFFFF] rounded-[4px] shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
+            <div className="bg-white rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
               {banks.length > 0 ? (
                 banks.map((bank) => {
                   const isSelected = selectedBankId === bank.id;
@@ -287,12 +253,9 @@ export default function Recharge() {
                       onClick={() => setSelectedBankId(bank.id)}
                       className="flex items-center justify-between py-2.5 px-3.5 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
                     >
-                      {/* Nome do Banco */}
                       <span className={`text-[13px] ${isSelected ? 'font-medium text-[#202020]' : 'font-normal text-[#555555]'}`}>
                         {bank.nome_banco}
                       </span>
-
-                      {/* Visto vermelho direto */}
                       <div className="w-4 h-4 flex items-center justify-center">
                         {isSelected && (
                           <Check className="w-3.5 h-3.5 text-[#FE384F] stroke-[2.2]" />
@@ -308,13 +271,12 @@ export default function Recharge() {
               )}
             </div>
 
-            {/* Botão "Continuar" para Etapa 2 (rounded-[4px]) */}
             <div className="pt-1">
               <button
                 type="button"
                 onClick={handleFinalSubmit}
                 disabled={isSubmitting || !selectedBankId}
-                className="w-full h-[40px] rounded-[4px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
+                className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-1.5">
@@ -328,9 +290,7 @@ export default function Recharge() {
             </div>
           </div>
         )}
-
       </main>
-
     </div>
   );
 }

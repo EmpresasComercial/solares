@@ -43,8 +43,7 @@ export default function ConfirmarRecarga() {
         if (!error && data && data.length > 0) {
           setBankDetails(data[0]);
         }
-      } catch (err) {
-        console.error('Erro ao buscar dados bancários:', err);
+      } catch {
       }
     }
     fetchBank();
@@ -171,13 +170,7 @@ export default function ConfirmarRecarga() {
 
   return (
     <div className="w-full min-h-screen bg-[#F2F2F2] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      
-      {/* ═════════════════════════════════════════════════════
-          1. HEADER COM PROGRESSO EM 3 ETAPAS (Refinado & Sem ícone)
-      ══════════════════════════════════════════════════════ */}
-      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-3.5 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        
-        {/* Topo do Header: Seta voltar + Título */}
+      <header className="w-full max-w-[480px] bg-white px-4 pt-3.5 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <button
@@ -195,16 +188,12 @@ export default function ConfirmarRecarga() {
           <div className="w-6" />
         </div>
 
-        {/* ════ BARRA DE PROGRESSO EM 3 ETAPAS ════ */}
         <div className="mt-3.5 px-3">
           <div className="relative flex items-center justify-between">
-            
-            {/* Linha de Conexão Ativa Total (Vermelha Fina) */}
             <div className="absolute left-3 right-3 top-2 h-[1.5px] bg-[#FE384F] -translate-y-1/2 z-0" />
 
-            {/* Passo 1: Add valor (Completo) */}
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-full bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
+              <div className="w-[17px] h-[17px] rounded-none bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
                 <Check className="w-2.5 h-2.5 stroke-[2.5]" />
               </div>
               <span className="text-[10px] font-normal text-[#FE384F] mt-1 whitespace-nowrap">
@@ -212,9 +201,8 @@ export default function ConfirmarRecarga() {
               </span>
             </div>
 
-            {/* Passo 2: Selecionar banco (Completo) */}
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-full bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
+              <div className="w-[17px] h-[17px] rounded-none bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
                 <Check className="w-2.5 h-2.5 stroke-[2.5]" />
               </div>
               <span className="text-[10px] font-normal text-[#FE384F] mt-1 whitespace-nowrap">
@@ -222,30 +210,20 @@ export default function ConfirmarRecarga() {
               </span>
             </div>
 
-            {/* Passo 3: Pagar (Ativo) */}
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-full bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
+              <div className="w-[17px] h-[17px] rounded-none bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
                 3
               </div>
               <span className="text-[10px] font-normal text-[#FE384F] mt-1 whitespace-nowrap">
                 Pagar
               </span>
             </div>
-
           </div>
         </div>
-
       </header>
 
-      {/* ═════════════════════════════════════════════════════
-          2. CONTEÚDO PRINCIPAL (Arredondamento 4px / rounded-[4px])
-      ══════════════════════════════════════════════════════ */}
       <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-2.5">
-        
-        {/* CARD UNIFICADO DE DADOS BANCÁRIOS (rounded-[4px]) */}
-        <div className="bg-[#FFFFFF] rounded-[4px] shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
-          
-          {/* 1. IBAN com ícone de copiar */}
+        <div className="bg-white rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)] divide-y divide-gray-100 overflow-hidden">
           <div className="flex items-center justify-between py-2.5 px-3.5">
             <span className="text-[12.5px] text-[#666666] font-normal">
               IBAN
@@ -257,7 +235,7 @@ export default function ConfirmarRecarga() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(bankDetails?.iban || '', 'iban')}
-                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform"
+                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform cursor-pointer"
                 title="Copiar IBAN"
               >
                 {copiedField === 'iban' ? (
@@ -269,7 +247,6 @@ export default function ConfirmarRecarga() {
             </div>
           </div>
 
-          {/* 2. Nome do Banco com ícone de copiar */}
           <div className="flex items-center justify-between py-2.5 px-3.5">
             <span className="text-[12.5px] text-[#666666] font-normal">
               Banco
@@ -281,7 +258,7 @@ export default function ConfirmarRecarga() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(bankDetails?.nome_banco || '', 'banco')}
-                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform"
+                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform cursor-pointer"
                 title="Copiar Nome do Banco"
               >
                 {copiedField === 'banco' ? (
@@ -293,7 +270,6 @@ export default function ConfirmarRecarga() {
             </div>
           </div>
 
-          {/* 3. Beneficiário com ícone de copiar */}
           <div className="flex items-center justify-between py-2.5 px-3.5">
             <span className="text-[12.5px] text-[#666666] font-normal">
               Beneficiário
@@ -305,7 +281,7 @@ export default function ConfirmarRecarga() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(bankDetails?.nome_proprietario || '', 'beneficiario')}
-                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform"
+                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform cursor-pointer"
                 title="Copiar Beneficiário"
               >
                 {copiedField === 'beneficiario' ? (
@@ -317,7 +293,6 @@ export default function ConfirmarRecarga() {
             </div>
           </div>
 
-          {/* 4. Valor a Depositar com ícone de copiar */}
           <div className="flex items-center justify-between py-2.5 px-3.5">
             <span className="text-[12.5px] text-[#666666] font-normal">
               Valor a depositar
@@ -329,7 +304,7 @@ export default function ConfirmarRecarga() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(amount || '', 'amount')}
-                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform"
+                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform cursor-pointer"
                 title="Copiar Valor"
               >
                 {copiedField === 'amount' ? (
@@ -340,10 +315,8 @@ export default function ConfirmarRecarga() {
               </button>
             </div>
           </div>
-
         </div>
 
-        {/* 5. ÁREA COMPACTA PARA SUBMETER COMPROVATIVO (rounded-[4px]) */}
         <form onSubmit={handleSubmit} id="confirm-recharge-form">
           <input 
             type="file" 
@@ -355,13 +328,13 @@ export default function ConfirmarRecarga() {
 
           <div 
             onClick={() => !isSubmitting && document.getElementById('proofInput')?.click()}
-            className="bg-[#FFFFFF] rounded-[4px] px-3.5 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="bg-white rounded-none px-3.5 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors"
           >
             <div className="flex items-center gap-2">
               {previewUrl ? (
                 <img 
                   src={previewUrl} 
-                  className="w-5 h-5 object-cover rounded-[2px] border border-gray-200" 
+                  className="w-5 h-5 object-cover rounded-none border border-gray-200" 
                   alt="preview" 
                 />
               ) : null}
@@ -370,7 +343,6 @@ export default function ConfirmarRecarga() {
               </span>
             </div>
 
-            {/* Ícone de Câmera no canto direito */}
             <div className="flex items-center gap-1 text-[#FE384F]">
               <span className="text-[11px] font-normal">
                 {isOptimizing ? '...' : previewUrl ? 'Alterar' : 'Anexar'}
@@ -379,19 +351,15 @@ export default function ConfirmarRecarga() {
             </div>
           </div>
         </form>
-
       </main>
 
-      {/* ═════════════════════════════════════════════════════
-          3. BARRA INFERIOR FIXA COM BOTÃO "Enviar" (rounded-[4px])
-      ══════════════════════════════════════════════════════ */}
       <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-3.5 z-40 flex justify-center border-t border-gray-200/50">
         <div className="w-full max-w-[480px]">
           <button
             type="submit"
             form="confirm-recharge-form"
             disabled={isSubmitting || !proofFile || isOptimizing}
-            className="w-full h-[40px] rounded-[4px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
+            className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] tracking-normal transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-1.5">
@@ -404,7 +372,6 @@ export default function ConfirmarRecarga() {
           </button>
         </div>
       </div>
-
     </div>
   );
 }

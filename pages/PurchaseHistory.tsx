@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '../components/Toast';
 import { cn } from '../lib/utils';
 import { SmartImage } from '../components/SmartImage';
-import { History } from 'lucide-react';
+import { History, ChevronLeft } from 'lucide-react';
 
 export default function PurchaseHistory() {
   const navigate = useNavigate();
@@ -21,8 +21,7 @@ export default function PurchaseHistory() {
         const { data, error } = await supabase.rpc('get_my_purchased_products_mcpn');
         if (error) throw error;
         if (data) setPurchases(data);
-      } catch (err: any) {
-        console.error('Falhou, recarregue a pagina', err.message);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -37,51 +36,50 @@ export default function PurchaseHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-24 flex flex-col items-center">
-      {/* Header Minimalist Premium Flat */}
-      <header className="w-full px-6 py-4 flex items-center justify-between sticky top-0 bg-white z-50 border-b border-gray-50">
-        <button 
-          onClick={() => navigate('/perfil')} 
-          className="w-10 h-10 flex items-center justify-start text-[#333333] active:opacity-50 transition-opacity text-2xl font-light"
-          aria-label={t('common.back')}
-          title={t('common.back')}
-        >
-          ‹
-        </button>
-        <h1 className="text-[16px] font-medium text-[#333333] absolute left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
-          {t('history.title')}
-        </h1>
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-24 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/perfil')} 
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
+            aria-label={t('common.back')}
+          >
+            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
+          </button>
+          <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
+            {t('history.title')}
+          </h1>
+        </div>
       </header>
 
-      <main className="w-full max-w-[400px] px-6 py-6 flex-1">
+      <main className="w-full max-w-[480px] px-4 pt-4 flex-1 space-y-3">
         {loading ? (
-          <div className="text-center py-20 text-gray-400 font-normal tracking-widest text-[10px] italic">
+          <div className="text-center py-20 text-gray-400 font-normal text-[12px]">
             Sincronizando licenças...
           </div>
         ) : purchases.length === 0 ? (
-          <div className="bg-[#F9F9F9] rounded-[24px] p-16 text-center border border-gray-100/80 flex flex-col items-center">
-             <History size={40} className="text-gray-300 mb-3" />
-             <p className="text-[12px] text-gray-400 font-light tracking-wider">
+          <div className="bg-white rounded-none p-12 text-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col items-center space-y-2">
+             <History size={36} className="text-gray-300" />
+             <p className="text-[12.5px] text-[#888888] font-normal">
                Nenhuma licença ativa
              </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-3">
             <AnimatePresence mode="popLayout">
-              {purchases.map((item, idx) => {
+              {purchases.map((item) => {
                 const dailyIncome = item.renda_diaria;
                 return (
                   <motion.div 
                     key={item.id}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="group bg-[#F9F9F9] border border-gray-100/80 rounded-[24px] p-5 flex flex-col hover:border-gray-200/80 transition-all"
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.15 }}
+                    className="bg-white rounded-none p-4 flex flex-col shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-3"
                   >
-                    <div className="flex gap-4 items-start">
-                      {/* Product Image - Square rounded */}
-                      <div className="w-[76px] h-[76px] shrink-0 bg-white rounded-xl border border-gray-100 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105 duration-500">
+                    <div className="flex gap-3 items-start">
+                      <div className="w-[60px] h-[60px] shrink-0 bg-[#FAFAFA] rounded-none flex items-center justify-center overflow-hidden">
                         <SmartImage 
                           src={item.produto_imagem} 
                           className="w-full h-full object-cover" 
@@ -90,44 +88,38 @@ export default function PurchaseHistory() {
                         />
                       </div>
 
-                      {/* Title & License ID */}
-                      <div className="flex-1 min-w-0 pt-0.5">
-                        <div className="flex flex-col gap-1.5">
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <h3 className="text-[15px] font-medium text-[#333333] leading-tight truncate max-w-[150px]" title={item.produto_nome}>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="text-[13.5px] font-medium text-[#202020] truncate" title={item.produto_nome}>
                               {item.produto_nome}
                             </h3>
                             <span className={cn(
-                              "px-2 py-0.5 rounded-[4px] text-[8px] font-medium tracking-wider border shrink-0",
+                              "px-1.5 py-0.5 rounded-none text-[10px] font-normal shrink-0",
                               item.ativo 
-                                ? "text-[#C62828] bg-red-50/60 border-red-100" 
-                                : "text-[#e81123] bg-red-50/60 border-red-100"
+                                ? "text-emerald-600 bg-emerald-50" 
+                                : "text-[#FE384F] bg-red-50"
                             )}>
                               {item.ativo ? t('history.status_active') : t('history.status_expired')}
                             </span>
                           </div>
                           
-                          <p className="text-[9px] text-gray-400 font-light tracking-wider">
+                          <p className="text-[10px] text-[#AAAAAA] font-normal">
                             {t('history.license_id')}: {item.id.toString().substring(0, 8).toUpperCase()}
                           </p>
                         </div>
 
-                        {/* Invested & Daily Income inside details grid */}
-                        <div className="grid grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-200/20">
-                          <div className="flex flex-col">
-                            <span className="text-[9px] text-[#94A3B8] font-light tracking-wider">
-                              Investido
-                            </span>
-                            <span className="text-[13px] font-light text-[#333333]">
+                        <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-100 text-[11.5px]">
+                          <div>
+                            <span className="text-[#888888] block text-[10px]">Investido</span>
+                            <span className="font-medium text-[#202020]">
                               {Number(item.preco_pago).toLocaleString(undefined, { minimumFractionDigits: 2 })} Kz
                             </span>
                           </div>
                           
-                          <div className="flex flex-col items-end">
-                            <span className="text-[9px] text-[#94A3B8] font-light tracking-wider">
-                              Renda Diária
-                            </span>
-                            <span className="text-[13px] font-light text-[#C62828]">
+                          <div className="text-right">
+                            <span className="text-[#888888] block text-[10px]">Renda Diária</span>
+                            <span className="font-medium text-[#FE384F]">
                               +{Number(dailyIncome).toLocaleString(undefined, { minimumFractionDigits: 2 })} Kz
                             </span>
                           </div>
@@ -135,24 +127,23 @@ export default function PurchaseHistory() {
                       </div>
                     </div>
 
-                    {/* Table below the main layout */}
-                    <div className="space-y-1.5 py-3 border-t border-gray-200/40 text-[11px] text-gray-500 font-light mt-3">
+                    <div className="space-y-1 py-2 border-t border-gray-100 text-[11px] text-[#777777]">
                       <div className="flex justify-between items-center">
-                        <span>Data da compra</span>
-                        <span className="font-light text-gray-700">{formatDate(item.data_inicio)}</span>
+                        <span>Data da compra:</span>
+                        <span className="font-normal text-[#202020]">{formatDate(item.data_inicio)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span>Data de expiração</span>
-                        <span className="font-light text-gray-700">{formatDate(item.data_fim)}</span>
+                        <span>Data de expiração:</span>
+                        <span className="font-normal text-[#202020]">{formatDate(item.data_fim)}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span>Armazenamento SSD</span>
-                        <span className="font-light text-gray-700">{item.storage_size || '---'}</span>
+                        <span>Armazenamento:</span>
+                        <span className="font-normal text-[#202020]">{item.storage_size || '---'}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-200/20">
-                      <span className="text-[9px] text-[#94A3B8] font-light tracking-wider">
+                    <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                      <span className="text-[10px] text-[#AAAAAA] font-normal">
                         LICENÇA COMPRADA
                       </span>
                       
@@ -164,7 +155,7 @@ export default function PurchaseHistory() {
                             showToast('Download indisponível', 'error');
                           }
                         }}
-                        className="h-7 px-5 rounded-full bg-gradient-to-r from-[#C62828] to-[#1A237E] flex items-center justify-center text-white text-[11px] font-light transition-all active:scale-95"
+                        className="h-7 px-4 rounded-none bg-[#FE384F] hover:bg-[#E02E44] text-white text-[11px] font-normal transition-all active:scale-95 cursor-pointer"
                       >
                         Download
                       </button>
@@ -173,13 +164,6 @@ export default function PurchaseHistory() {
                 );
               })}
             </AnimatePresence>
-
-            {/* End of list indicator */}
-            <div className="text-center pt-8 pb-4 text-[12px] font-medium tracking-wide">
-              <span className="bg-gradient-to-r from-[#C62828] to-[#1A237E] bg-clip-text text-transparent opacity-80">
-                ~ Sem mais dados ~
-              </span>
-            </div>
           </div>
         )}
       </main>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Loader2, Eye, EyeOff } from 'lucide-react';
-
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { formatCurrency } from '../lib/currency';
@@ -30,11 +29,9 @@ export default function Withdraw() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [hasBank, setHasBank] = useState(false);
-  const [bankName, setBankName] = useState('');
   const [bankId, setBankId] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [hasPending, setHasPending] = useState(false);
-  const [iban, setIban] = useState('');
 
   const fetchData = useCallback(async () => {
     try {
@@ -44,14 +41,11 @@ export default function Withdraw() {
         const d = data[0];
         setBalance(Number(d.balance));
         setHasBank(d.has_bank);
-        setBankName(d.bank_name || '');
         setBankId(d.bank_id || null);
         setIsVerified(d.is_verified);
-        setIban(d.iban || '');
         setHasPending(d.has_pending);
       }
     } catch {
-      // silent
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +120,7 @@ export default function Withdraw() {
   if (isLoading) {
     return (
       <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans select-none flex flex-col items-center">
-        <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
           <div className="flex items-center gap-3">
             <Skeleton className="w-6 h-6 rounded-none opacity-40" />
             <Skeleton className="w-32 h-5 opacity-40" />
@@ -143,8 +137,7 @@ export default function Withdraw() {
 
   return (
     <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-
-      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/perfil')}
@@ -160,15 +153,13 @@ export default function Withdraw() {
       </header>
 
       <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
-
-        <div className="bg-[#FFFFFF] rounded-none h-[48px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+        <div className="bg-white rounded-none h-[48px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <span className="text-[13px] text-[#888888] font-normal">Saldo disponível</span>
           <span className="text-[14px] font-medium text-[#202020]">{formatCurrency(balance, 'KZ')}</span>
         </div>
 
         <form onSubmit={handleSubmit} id="withdraw-form" className="space-y-2.5">
-
-          <div className="bg-[#FFFFFF] rounded-none h-[46px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="bg-white rounded-none h-[46px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
             <input
               type="tel"
               placeholder="Valor a retirar (mín. 100 Kz)"
@@ -179,7 +170,7 @@ export default function Withdraw() {
             <span className="text-[12px] font-medium text-[#FE384F] shrink-0">KZ</span>
           </div>
 
-          <div className="bg-[#FFFFFF] rounded-none h-[46px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="bg-white rounded-none h-[46px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
             <input
               type={showPassword ? 'text' : 'password'}
               placeholder="Senha de login"
@@ -195,10 +186,9 @@ export default function Withdraw() {
               {showPassword ? <EyeOff className="w-4 h-4 stroke-[1.6]" /> : <Eye className="w-4 h-4 stroke-[1.6]" />}
             </button>
           </div>
-
         </form>
 
-        <div className="bg-[#FFFFFF] rounded-none p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-2">
+        <div className="bg-white rounded-none p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-2">
           <p className="text-[12px] font-medium text-[#FE384F]">Instruções de Retirada</p>
           <div className="space-y-1.5 text-[11.5px] text-[#666666] leading-relaxed">
             {guideItems.map((text, idx) => (
@@ -209,7 +199,6 @@ export default function Withdraw() {
             ))}
           </div>
         </div>
-
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-3.5 z-40 flex justify-center border-t border-gray-200/50">
@@ -218,16 +207,15 @@ export default function Withdraw() {
             type="submit"
             form="withdraw-form"
             disabled={isSubmitting || hasPending || !amount || parseInt(amount) < MIN_WITHDRAW}
-            className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
+            className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] transition-all disabled:opacity-40 shadow-none flex items-center justify-center cursor-pointer"
           >
             {isSubmitting
-              ? <Loader2 className="animate-spin h-4 w-4 text-[#FFFFFF]" />
+              ? <Loader2 className="animate-spin h-4 w-4 text-white" />
               : 'Confirmar'
             }
           </button>
         </div>
       </div>
-
     </div>
   );
 }

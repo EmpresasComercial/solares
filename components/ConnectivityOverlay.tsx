@@ -4,7 +4,6 @@ import { WifiOff, AlertTriangle, RefreshCw, X } from 'lucide-react';
 
 export const ConnectivityOverlay: React.FC = () => {
   const [errorType, setErrorType] = useState<'offline' | 'timeout' | null>(null);
-  const [activeRequests, setActiveRequests] = useState(0);
 
   useEffect(() => {
     const handleOffline = () => setErrorType('offline');
@@ -13,21 +12,14 @@ export const ConnectivityOverlay: React.FC = () => {
       if (errorType === 'offline') setErrorType(null);
     };
 
-    const handleLoadingStart = () => setActiveRequests(prev => prev + 1);
-    const handleLoadingEnd = () => setActiveRequests(prev => Math.max(0, prev - 1));
-
     window.addEventListener('app:offline', handleOffline);
     window.addEventListener('app:timeout', handleTimeout);
     window.addEventListener('online', handleOnline);
-    window.addEventListener('app:loading-start', handleLoadingStart);
-    window.addEventListener('app:loading-end', handleLoadingEnd);
 
     return () => {
       window.removeEventListener('app:offline', handleOffline);
       window.removeEventListener('app:timeout', handleTimeout);
       window.removeEventListener('online', handleOnline);
-      window.removeEventListener('app:loading-start', handleLoadingStart);
-      window.removeEventListener('app:loading-end', handleLoadingEnd);
     };
   }, [errorType]);
 
@@ -37,77 +29,54 @@ export const ConnectivityOverlay: React.FC = () => {
   };
 
   return (
-    <>
-      {/* Global Loading Bar in corporate gradient */}
-      <AnimatePresence>
-        {activeRequests > 0 && !errorType && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed top-0 left-0 right-0 h-0.5 z-[10000] overflow-hidden bg-transparent"
-          >
-            <motion.div 
-              className="h-full bg-gradient-to-r from-[#C62828] to-[#1A237E]"
-              initial={{ x: "-100%" }}
-              animate={{ x: "100%" }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {errorType && (
-          <motion.div 
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
-            className="fixed top-0 left-0 right-0 z-[10001] p-3 flex justify-center pointer-events-none"
-          >
-            <div className="bg-white border border-gray-100/80 shadow-none rounded-[20px] p-4 flex items-center gap-3.5 pointer-events-auto max-w-[90%] md:max-w-md">
-              {/* Icon Status */}
-              <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center shrink-0 border border-gray-50">
-                {errorType === 'offline' ? (
-                  <WifiOff className="w-5 h-5 text-[#C62828]" />
-                ) : (
-                  <AlertTriangle className="w-5 h-5 text-amber-500" />
-                )}
-              </div>
-              
-              {/* Text detail */}
-              <div className="flex-1 min-w-0 flex flex-col">
-                <p className="text-[13px] font-medium text-[#333333] leading-tight">
-                  {errorType === 'offline' ? 'Sem Conexão' : 'Instabilidade de Rede'}
-                </p>
-                <p className="text-[11px] text-gray-400 font-light leading-snug mt-0.5">
-                  {errorType === 'offline' 
-                    ? 'Verifique a sua rede de internet.' 
-                    : 'A ligação está lenta ou instável.'}
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 shrink-0 pl-3 border-l border-gray-100">
-                <button 
-                  onClick={handleRetry}
-                  className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 active:scale-95 transition-all text-[#1A237E]"
-                  title="Atualizar"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                </button>
-                <button 
-                  onClick={() => setErrorType(null)}
-                  className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center hover:bg-gray-100 active:scale-95 transition-all text-gray-400"
-                  title="Fechar"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
+    <AnimatePresence>
+      {errorType && (
+        <motion.div
+          initial={{ y: -60, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -60, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed top-0 left-0 right-0 z-[10001] p-3 flex justify-center pointer-events-none"
+        >
+          <div className="bg-white border border-[#E8E8E8] shadow-[0_4px_12px_rgba(0,0,0,0.08)] rounded-none p-3.5 flex items-center gap-3 pointer-events-auto w-full max-w-[480px]">
+            <div className="w-8 h-8 rounded-none bg-[#F5F5F5] flex items-center justify-center shrink-0">
+              {errorType === 'offline' ? (
+                <WifiOff className="w-4 h-4 text-[#FE384F]" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-[#FE384F]" />
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-medium text-[#202020] leading-tight">
+                {errorType === 'offline' ? 'Sem Ligação à Internet' : 'Tempo Limite Excedido'}
+              </p>
+              <p className="text-[11.5px] text-[#777777] font-normal leading-snug mt-0.5">
+                {errorType === 'offline'
+                  ? 'Por favor verifique a sua ligação à rede.'
+                  : 'O servidor demorou mais de 20s a responder.'}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-[#F0F0F0]">
+              <button
+                onClick={handleRetry}
+                className="w-7 h-7 rounded-none bg-[#F5F5F5] flex items-center justify-center hover:bg-[#EAEAEA] active:scale-95 transition-all text-[#202020] cursor-pointer"
+                title="Tentar novamente"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setErrorType(null)}
+                className="w-7 h-7 rounded-none bg-[#F5F5F5] flex items-center justify-center hover:bg-[#EAEAEA] active:scale-95 transition-all text-[#777777] cursor-pointer"
+                title="Fechar"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

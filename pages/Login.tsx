@@ -68,84 +68,79 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      <div className="relative w-full">
-        <img
-          src="/gettyimages-2286930500-612x612.jpg"
-          alt=""
-          aria-hidden="true"
-          fetchPriority="high"
-          loading="eager"
-          className="w-full h-[220px] object-cover object-center block"
-        />
-        <div className="absolute top-4 right-4 z-10">
-          <LanguageSelector />
+    <div className="w-full min-h-screen bg-[#F2F2F2] pb-12 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      <main className="w-full max-w-[480px] px-4 pt-4 space-y-2.5 flex flex-col">
+        <div className="relative w-full overflow-hidden">
+          <img
+            src="/gettyimages-2286930500-612x612.jpg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            loading="eager"
+            className="w-full h-[200px] object-cover object-center block"
+          />
+          <div className="absolute top-3 right-3 z-10">
+            <LanguageSelector />
+          </div>
         </div>
-      </div>
 
-      <main className="w-full max-w-[480px] px-4 pt-5 space-y-3">
-        <form onSubmit={handleSubmit} id="login-form" className="space-y-3">
-          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-            <span className="text-[15px] text-[#202020] font-medium pr-3 border-r border-[#E8E8E8] mr-3">+244</span>
+        <form onSubmit={handleSubmit} className="space-y-2.5 flex flex-col">
+          <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+            <span className="text-[13.5px] text-[#202020] font-normal pr-3 border-r border-[#E8E8E8] mr-3">+244</span>
             <input
               name="phone"
               type="tel"
               inputMode="numeric"
               autoComplete="tel"
               placeholder={t('auth.phone_placeholder')}
-              className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium"
+              className="flex-1 h-full bg-transparent outline-none text-[13.5px] text-[#202020] placeholder:text-[#AAAAAA] font-normal"
               value={formData.phone}
               onChange={handleChange}
               maxLength={9}
             />
           </div>
 
-          <div className="bg-[#FFFFFF] rounded-[10px] h-[54px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative">
+          <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative">
             <input
               name="password"
               type={showPassword ? 'text' : 'password'}
               autoComplete="current-password"
               placeholder={t('auth.password_placeholder')}
-              className="flex-1 h-full bg-transparent outline-none text-[15px] text-[#202020] placeholder:text-[#A6A6A6] font-medium pr-10"
+              className="flex-1 h-full bg-transparent outline-none text-[13.5px] text-[#202020] placeholder:text-[#AAAAAA] font-normal pr-10"
               value={formData.password}
               onChange={handleChange}
             />
             <button
               type="button"
               onClick={togglePassword}
-              className="absolute right-4 text-[#A6A6A6] active:scale-95 transition-transform"
+              className="absolute right-4 text-[#AAAAAA] active:scale-95 transition-transform"
               aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
             </button>
           </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer mt-1"
+          >
+            {isSubmitting
+              ? <Loader2 className="animate-spin h-4 w-4 text-white" />
+              : t('auth.login')
+            }
+          </button>
         </form>
 
         <div className="text-center pt-2">
-          <p className="text-[14px] text-[#888888]">
+          <p className="text-[13px] text-[#777777]">
             {t('auth.no_account')}{' '}
-            <Link to="/cadastro" className="text-[#FE384F] font-semibold hover:underline">
+            <Link to="/cadastro" className="text-[#FE384F] font-normal hover:underline">
               {t('auth.signup_button')}
             </Link>
           </p>
         </div>
       </main>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
-        <div className="w-full max-w-[480px]">
-          <button
-            type="submit"
-            form="login-form"
-            disabled={isSubmitting}
-            className="w-full h-[48px] rounded-full bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-bold text-[16px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer"
-          >
-            {isSubmitting
-              ? <Loader2 className="animate-spin h-5 w-5 text-[#FFFFFF]" />
-              : t('auth.login')
-            }
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
