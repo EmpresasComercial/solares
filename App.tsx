@@ -58,7 +58,7 @@ function RootRedirect() {
 
 export default function App() {
   React.useEffect(() => {
-    document.title = 'CanadianSolar';
+    document.title = 'AliExpress24';
     
     // Forçar atualização do Favicon
     const iconUrl = '/update_logo_canadianSolar.png?v=2';

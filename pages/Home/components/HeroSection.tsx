@@ -58,7 +58,7 @@ export const HeroSection: React.FC = () => {
             {/* Logo / Tag CanadianSolar sobreposta no banner */}
             <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-md">
               <img src="/update_logo_canadianSolar.png" alt="Logo" className="w-5 h-5 rounded object-cover" />
-              <span className="text-white text-[11px] font-medium tracking-wide">CanadianSolar</span>
+              <span className="text-white text-[11px] font-medium tracking-wide">AliExpress24</span>
             </div>
           </motion.div>
         </AnimatePresence>

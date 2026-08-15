@@ -7,7 +7,7 @@ import FloatingSupport from './FloatingSupport';
 export default function Layout() {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const allowedPaths = ['/home', '/produtos', '/convite', '/perfil'];
+  const allowedPaths = ['/home', '/produtos', '/convite', '/perfil', '/minhas-compras'];
   const showNavbar = allowedPaths.includes(location.pathname);
 
   useEffect(() => {

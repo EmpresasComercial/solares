@@ -1,4 +1,4 @@
-const CACHE_NAME = 'canadiansolar-v3';
+const CACHE_NAME = 'aliexpress24-v1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

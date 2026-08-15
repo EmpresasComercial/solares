@@ -68,7 +68,7 @@ export default function Products() {
 
           {/* Logo texto "CanadianSolar" (estilo AliExpress) */}
           <span className="text-[17px] font-extrabold text-[#FF2442] tracking-tight ml-0.5">
-            CanadianSolar
+            AliExpress24
           </span>
         </div>
 
@@ -119,52 +119,6 @@ export default function Products() {
       </main>
 
 
-
-      {/* ═══════════════════════════════════════════════════
-          BARRA DE NAVEGAÇÃO INFERIOR — Início | Categoria | Carrinho | Minha Conta
-          (exatamente como na imagem)
-      ════════════════════════════════════════════════════ */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 flex justify-center">
-        <div className="w-full max-w-[480px] flex items-center justify-around py-2.5 px-2">
-          
-          <button
-            onClick={() => navigate('/inicio')}
-            className="flex flex-col items-center gap-0.5 text-[#888888] active:opacity-60 transition-opacity min-w-[60px]"
-          >
-            <Home className="w-5 h-5 stroke-[1.5]" />
-            <span className="text-[10px] font-normal">Início</span>
-          </button>
-
-          <button
-            onClick={() => navigate('/produtos')}
-            className="flex flex-col items-center gap-0.5 text-[#888888] active:opacity-60 transition-opacity min-w-[60px]"
-          >
-            <LayoutGrid className="w-5 h-5 stroke-[1.5]" />
-            <span className="text-[10px] font-normal">Categoria</span>
-          </button>
-
-          <button
-            onClick={() => navigate('/produtos')}
-            className="flex flex-col items-center gap-0.5 text-[#FF2442] active:opacity-60 transition-opacity min-w-[60px]"
-          >
-            {/* Ícone Carrinho ativo (vermelho com indicador) */}
-            <div className="relative">
-              <ShoppingCart className="w-5 h-5 stroke-[1.5]" />
-              <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#FF2442] rounded-full border border-white" />
-            </div>
-            <span className="text-[10px] font-bold">Carrinho</span>
-          </button>
-
-          <button
-            onClick={() => navigate('/perfil')}
-            className="flex flex-col items-center gap-0.5 text-[#888888] active:opacity-60 transition-opacity min-w-[60px]"
-          >
-            <User className="w-5 h-5 stroke-[1.5]" />
-            <span className="text-[10px] font-normal">Minha Conta</span>
-          </button>
-
-        </div>
-      </nav>
 
     </div>
   );
