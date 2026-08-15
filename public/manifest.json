@@ -1,0 +1,23 @@
+{
+  "short_name": "CanadianSolar",
+  "name": "CanadianSolar",
+  "icons": [
+    {
+      "src": "/update_logo_canadianSolar.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/update_logo_canadianSolar.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/cadastro",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait"
+}
