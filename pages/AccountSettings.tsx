@@ -134,21 +134,6 @@ export default function AccountSettings() {
             </div>
             <ChevronRight className="w-4 h-4 text-[#AAAAAA] stroke-[1.8]" />
           </div>
-
-          <div
-            onClick={() => navigate('/sobre-microsoft')}
-            className="flex items-center justify-between py-3 px-3.5 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-none bg-red-50 flex items-center justify-center text-[#FE384F] shrink-0">
-                <HelpCircle className="w-4 h-4 stroke-[1.8]" />
-              </div>
-              <span className="text-[13.5px] font-normal text-[#202020]">
-                {t('profile.about') || 'Sobre AliExpress24'}
-              </span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-[#AAAAAA] stroke-[1.8]" />
-          </div>
         </div>
       </main>
 

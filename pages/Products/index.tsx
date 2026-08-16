@@ -38,27 +38,15 @@ export default function Products() {
     <div className="w-full min-h-screen bg-white pb-20 font-sans antialiased text-[#1A1A1A] select-none flex flex-col items-center">
       <header className="w-full max-w-[480px] bg-white h-[52px] px-4 flex items-center justify-between sticky top-0 z-30 border-b border-gray-100">
         <div className="flex items-center gap-2">
-          <button className="text-[#1A1A1A] p-1 active:opacity-60 transition-opacity" aria-label="Menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-
-          <span className="text-[17px] font-extrabold text-[#FF2442] tracking-tight ml-0.5">
+          <span className="text-[17px] font-extrabold text-[#FF2442] tracking-tight">
             AliExpress24
           </span>
         </div>
       </header>
 
       <main className="w-full max-w-[480px] px-3 pt-3 bg-white">
-        <h2 className="text-[15px] font-bold text-[#1A1A1A] mb-2.5">
-          More to love
-        </h2>
-
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col gap-3">
             {products.map((product, idx) => (
               <ProductCard
                 key={product.id}

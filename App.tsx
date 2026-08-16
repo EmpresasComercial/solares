@@ -30,7 +30,7 @@ import RedeemCoupon from './pages/RedeemCoupon';
 import PurchaseHistory from './pages/PurchaseHistory';
 import Operations from './pages/Operations';
 import ProductDetails from './pages/ProductDetails';
-import AboutMicrosoft from './pages/AboutMicrosoft';
+import AboutUs from './pages/AboutMicrosoft';
 import HelpFAQ from './pages/HelpFAQ';
 import SupportFeedback from './pages/SupportFeedback';
 import ConfirmarRecarga from './pages/ConfirmarRecarga';
@@ -112,7 +112,7 @@ export default function App() {
                 <Route path="resgate" element={<RedeemCoupon />} />
                 <Route path="minhas-compras" element={<PurchaseHistory />} />
                 <Route path="operacoes" element={<Operations />} />
-                <Route path="sobre-microsoft" element={<AboutMicrosoft />} />
+                <Route path="sobre-aliexpress24" element={<AboutUs />} />
                 <Route path="help-faq" element={<HelpFAQ />} />
                 <Route path="suporte/feedback" element={<SupportFeedback />} />
                 <Route path="provas-social" element={<Navigate to="/home?postarProva=true" replace />} />

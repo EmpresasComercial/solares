@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronDown, Loader2 } from 'lucide-react';
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
@@ -20,6 +20,7 @@ interface BankResponse {
 
 export default function AddBank() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const redirectPath = searchParams.get('redirect');
   const { showToast } = useToast();
@@ -32,6 +33,36 @@ export default function AddBank() {
     holderName: '',
     cardName: ''
   });
+
+  useEffect(() => {
+    const stateBank = (location.state as any)?.bank;
+    if (stateBank) {
+      const cleanIban = (stateBank.iban || '').replace(/^AO06/i, '');
+      setFormData({
+        cardNumber: cleanIban,
+        holderName: stateBank.owner_name || stateBank.holder_name || '',
+        cardName: stateBank.bank_name || ''
+      });
+      return;
+    }
+
+    async function loadExistingBank() {
+      try {
+        const { data, error } = await supabase.rpc('get_my_bank_accounts_mcpn');
+        if (!error && data && data.length > 0) {
+          const bank = data[0];
+          const cleanIban = (bank.iban || '').replace(/^AO06/i, '');
+          setFormData({
+            cardNumber: cleanIban,
+            holderName: bank.owner_name || (bank as any).holder_name || '',
+            cardName: bank.bank_name || ''
+          });
+        }
+      } catch {
+      }
+    }
+    loadExistingBank();
+  }, [location.state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -78,13 +109,12 @@ export default function AddBank() {
 
       if (data && data.success) {
         showToast(data.message || 'Cartão salvo com sucesso!', 'success');
+        navigate(redirectPath || '/informacao-bancaria');
       } else {
-        showToast(data?.message || 'Cartão salvo com sucesso!', 'success');
+        showToast(data?.message || 'Falha ao salvar cartão.', 'error');
       }
-      navigate(redirectPath || '/informacao-bancaria');
     } catch (err: any) {
       showToast(err.message || 'Erro ao salvar cartão.', 'error');
-      navigate(redirectPath || '/informacao-bancaria');
     } finally {
       setIsSubmitting(false);
     }

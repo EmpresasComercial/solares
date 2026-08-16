@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { formatCurrency, CurrencyType } from '../../lib/currency';
 import { supabase } from '../../lib/supabase';
+import { LogOut, Key, Globe, CreditCard, Headphones, HelpCircle } from 'lucide-react';
 
 function ProfileSkeleton() {
   return (
@@ -39,7 +40,12 @@ function ProfileSkeleton() {
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
+  const { t, language, setLanguage } = useLanguage();
   const [loading, setLoading] = useState(true);
 
   const [currency] = useState<CurrencyType>(() => {
@@ -278,9 +284,12 @@ export default function Profile() {
           onClick={() => navigate(hasBank ? '/informacao-bancaria' : '/adicionar-banco')}
           className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
         >
-          <span className="text-[15px] font-normal text-[#222222]">
-            Cartão do banco
-          </span>
+          <div className="flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-[#999999] stroke-[1.8]" />
+            <span className="text-[15px] font-normal text-[#222222]">
+              Cartão do banco
+            </span>
+          </div>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
@@ -290,26 +299,87 @@ export default function Profile() {
           onClick={() => navigate('/suporte')}
           className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
         >
-          <span className="text-[15px] font-normal text-[#222222]">
-            Central de ajuda
-          </span>
+          <div className="flex items-center gap-2">
+            <Headphones className="w-4 h-4 text-[#999999] stroke-[1.8]" />
+            <span className="text-[15px] font-normal text-[#222222]">
+              Central de ajuda
+            </span>
+          </div>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </div>
 
         <div
-          onClick={() => navigate('/configuracoes-conta')}
+          onClick={() => navigate('/sobre-aliexpress24')}
           className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
         >
-          <span className="text-[15px] font-normal text-[#222222]">
-            Configurações
-          </span>
+          <div className="flex items-center gap-2">
+            <HelpCircle className="w-4 h-4 text-[#999999] stroke-[1.8]" />
+            <span className="text-[15px] font-normal text-[#222222]">
+              Sobre AliExpress24
+            </span>
+          </div>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </div>
 
+        <div className="relative flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer">
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-[#999999] stroke-[1.8]" />
+            <span className="text-[15px] font-normal text-[#222222]">
+              {t('settings.language')}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[13px] text-[#888888] font-normal uppercase">
+              {language}
+            </span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+          <select 
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as any)}
+            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+            title="Selecionar idioma"
+            aria-label="Selecionar idioma"
+          >
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
+        </div>
+
+        <div
+          onClick={() => navigate('/alterar-senha')}
+          className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-2">
+            <Key className="w-4 h-4 text-[#999999] stroke-[1.8]" />
+            <span className="text-[15px] font-normal text-[#222222]">
+              {t('settings.change_password')}
+            </span>
+          </div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </div>
+
+      </div>
+
+
+      <div className="w-full max-w-[480px] pt-2 pb-2">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] transition-all shadow-none flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <LogOut className="w-4 h-4 stroke-[1.8]" />
+          <span>{t('settings.logout') || 'Encerrar Sessão'}</span>
+        </button>
       </div>
 
     </div>

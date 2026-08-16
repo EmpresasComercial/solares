@@ -329,7 +329,7 @@ export default function SupportTickets() {
     const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
     const matches = text.match(urlRegex);
     if (matches) {
-      const allowed = ['microsoft', 'azure', 'mcn', 'aliexpress24', 't.me'];
+      const allowed = ['azure', 'mcn', 'aliexpress24', 't.me'];
       if (matches.some(m => !allowed.some(d => m.toLowerCase().includes(d))))
         return "Não são permitidos links externos.";
     }

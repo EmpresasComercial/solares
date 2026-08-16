@@ -8,7 +8,7 @@ interface SmartImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 export function SmartImage({ 
   src, 
   alt, 
-  fallbackSrc = 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg', 
+  fallbackSrc = '',
   className,
   ...props 
 }: SmartImageProps) {
