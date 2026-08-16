@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useToast } from '../../components/Toast';
 import { formatCurrency, CurrencyType } from '../../lib/currency';
 import { supabase } from '../../lib/supabase';
-import { LogOut, Key, Globe, CreditCard, Headphones, HelpCircle } from 'lucide-react';
+import { LogOut, Key, Globe, CreditCard, Headphones, HelpCircle, Bell } from 'lucide-react';
+import { subscribeToPushNotifications, sendLocalTestNotification } from '../../lib/pushNotifications';
 
 function ProfileSkeleton() {
   return (
@@ -40,6 +42,25 @@ function ProfileSkeleton() {
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission>(
+    'Notification' in window ? Notification.permission : 'denied'
+  );
+
+  const handleEnableNotifications = async () => {
+    const result = await subscribeToPushNotifications();
+    if (result.success) {
+      setNotifPermission('granted');
+      await sendLocalTestNotification(
+        'AliExpress24',
+        'Notificações ativadas! Você receberá alertas sobre depósitos e rendimentos.',
+        '/perfil'
+      );
+      showToast('Notificações ativadas com sucesso!', 'success');
+    } else {
+      showToast(result.message, 'error');
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -363,6 +384,31 @@ export default function Profile() {
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
+        </div>
+
+        <div
+          onClick={notifPermission !== 'granted' ? handleEnableNotifications : undefined}
+          className={`flex items-center justify-between py-4 px-4 transition-colors ${
+            notifPermission === 'granted'
+              ? 'opacity-60 cursor-default'
+              : 'hover:bg-gray-50 active:bg-gray-100 cursor-pointer'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <Bell className="w-4 h-4 text-[#999999] stroke-[1.8]" />
+            <span className="text-[15px] font-normal text-[#222222]">
+              Notificações Push
+            </span>
+          </div>
+          <span className={`text-[12px] font-medium px-2 py-0.5 rounded-none ${
+            notifPermission === 'granted'
+              ? 'bg-green-100 text-green-700'
+              : notifPermission === 'denied'
+              ? 'bg-red-100 text-[#FE384F]'
+              : 'bg-orange-100 text-orange-700'
+          }`}>
+            {notifPermission === 'granted' ? 'Ativo' : notifPermission === 'denied' ? 'Bloqueado' : 'Ativar'}
+          </span>
         </div>
 
       </div>
