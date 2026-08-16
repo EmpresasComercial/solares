@@ -189,20 +189,20 @@ export default function Recharge() {
             </div>
 
             <div className="grid grid-cols-4 gap-1.5">
-              {[3000, 10000, 50000, 100000].map(val => {
+              {[3000, 10000, 50000, 100000, 150000, 200000, 300000, 500000].map(val => {
                 const isSelected = amount === val.toString();
                 return (
                   <button
                     key={val}
                     type="button"
                     onClick={() => setAmount(val.toString())}
-                    className={`h-[35px] rounded-none text-[11.5px] font-normal transition-all border flex items-center justify-center relative overflow-hidden cursor-pointer ${
+                    className={`h-[35px] rounded-none text-[11px] font-normal transition-all border flex items-center justify-center relative overflow-hidden cursor-pointer ${
                       isSelected
                         ? "bg-white text-[#FE384F] border-[#FE384F]"
                         : "bg-white text-[#444444] border-gray-200 hover:border-[#FE384F]"
                     }`}
                   >
-                    <span>{val.toLocaleString()}</span>
+                    <span>{val.toLocaleString('pt-PT')}</span>
                     {isSelected && (
                       <div className="absolute bottom-0 right-0 bg-[#FE384F] text-white w-3 h-3 flex items-center justify-center">
                         <Check className="w-2.5 h-2.5 stroke-[3]" />
