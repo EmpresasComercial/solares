@@ -35,7 +35,7 @@ import SupportFeedback from './pages/SupportFeedback';
 import ConfirmarRecarga from './pages/ConfirmarRecarga';
 import SupportTickets from './pages/SupportTickets';
 import { ConnectivityOverlay } from './components/ConnectivityOverlay';
-import { registerServiceWorker, subscribeToPushNotifications } from './lib/pushNotifications';
+import { registerServiceWorker, subscribeToPushNotifications, clearAppBadge } from './lib/pushNotifications';
 
 function RootRedirect() {
   const { session, ready } = useAuth();
@@ -59,6 +59,24 @@ export default function App() {
   React.useEffect(() => {
     document.title = 'AliExpress24';
     
+    // Captura o evento nativo de instalação do PWA
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      (window as any).deferredPwaPrompt = e;
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+
+    // Limpar o badge de notificações não lidas ao abrir o app
+    clearAppBadge();
+
+    const handleClearBadgeOnFocus = () => {
+      if (document.visibilityState === 'visible') {
+        clearAppBadge();
+      }
+    };
+    window.addEventListener('focus', handleClearBadgeOnFocus);
+    document.addEventListener('visibilitychange', handleClearBadgeOnFocus);
+
     // Registrar Service Worker para Web Push
     registerServiceWorker().then(() => {
       // Tenta inscrever silenciosamente se já tiver permissão
@@ -85,6 +103,11 @@ export default function App() {
       document.head.appendChild(appleLink);
     }
     appleLink.href = iconUrl;
+
+    return () => {
+      window.removeEventListener('focus', handleClearBadgeOnFocus);
+      document.removeEventListener('visibilitychange', handleClearBadgeOnFocus);
+    };
   }, []);
 
   return (

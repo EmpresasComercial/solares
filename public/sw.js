@@ -47,13 +47,32 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title, options)
+    (async () => {
+      // 1. Exibe a notificação push
+      await self.registration.showNotification(data.title, options);
+
+      // 2. Incrementa o número no badge do ícone do PWA
+      try {
+        if ('setAppBadge' in navigator) {
+          const notifications = await self.registration.getNotifications();
+          const count = Math.max(1, notifications.length);
+          await navigator.setAppBadge(count);
+        }
+      } catch (err) {
+        console.debug('Badge API error:', err);
+      }
+    })()
   );
 });
 
 // Ao clicar na notificação, abre o app direto na tela correspondente
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
+  // Limpa o badge do ícone do PWA
+  if ('clearAppBadge' in navigator) {
+    navigator.clearAppBadge().catch(() => {});
+  }
 
   const rawUrl = event.notification.data?.url || '/perfil';
   const targetUrl = new URL(rawUrl, self.location.origin).href;

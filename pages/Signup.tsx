@@ -5,7 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { supabase } from '../lib/supabase';
 import { getDeviceId } from '../lib/device';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Download } from 'lucide-react';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -16,6 +16,47 @@ export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ phone: '', inviteCode: '', password: '' });
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      (window as any).deferredPwaPrompt = e;
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+
+    if ((window as any).deferredPwaPrompt) {
+      setDeferredPrompt((window as any).deferredPwaPrompt);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
+  }, []);
+
+  const handleInstallPWA = async () => {
+    const promptEvent = deferredPrompt || (window as any).deferredPwaPrompt;
+    if (promptEvent) {
+      try {
+        await promptEvent.prompt();
+        const choiceResult = await promptEvent.userChoice;
+        if (choiceResult?.outcome === 'accepted') {
+          showToast('Instalando aplicativo...', 'success');
+        }
+        setDeferredPrompt(null);
+        (window as any).deferredPwaPrompt = null;
+      } catch (err) {
+        console.error('Erro ao acionar prompt PWA:', err);
+      }
+    } else {
+      if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true) {
+        showToast('Aplicativo já instalado no dispositivo!', 'success');
+      } else {
+        showToast('Iniciando instalação do aplicativo...', 'info');
+      }
+    }
+  };
 
   useEffect(() => {
     const code = searchParams.get('join');
@@ -178,6 +219,15 @@ export default function Signup() {
               ? <Loader2 className="animate-spin h-4 w-4 text-white" />
               : t('auth.signup_button')
             }
+          </button>
+
+          <button
+            type="button"
+            onClick={handleInstallPWA}
+            className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] transition-all shadow-sm flex items-center justify-center cursor-pointer gap-2"
+          >
+            <Download className="w-4 h-4 stroke-[2]" />
+            <span>Baixar App</span>
           </button>
         </form>
 

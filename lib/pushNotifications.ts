@@ -131,3 +131,34 @@ export async function sendLocalTestNotification(title: string, body: string, url
     }
   }
 }
+
+/**
+ * Define o número no badge do ícone do PWA
+ */
+export async function setAppBadge(count?: number): Promise<void> {
+  try {
+    if ('setAppBadge' in navigator) {
+      if (typeof count === 'number' && count > 0) {
+        await (navigator as any).setAppBadge(count);
+      } else {
+        await (navigator as any).setAppBadge();
+      }
+    }
+  } catch (err) {
+    console.debug('Badging API não suportada ou não permitida:', err);
+  }
+}
+
+/**
+ * Limpa o badge do ícone do PWA
+ */
+export async function clearAppBadge(): Promise<void> {
+  try {
+    if ('clearAppBadge' in navigator) {
+      await (navigator as any).clearAppBadge();
+    }
+  } catch (err) {
+    console.debug('Erro ao limpar badge:', err);
+  }
+}
+
