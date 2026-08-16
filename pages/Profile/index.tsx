@@ -296,7 +296,7 @@ export default function Profile() {
 
       </div>
 
-      <div className="w-full max-w-[480px] mt-2.5 bg-white divide-y divide-[#F5F5F5]">
+      <div className="w-full max-w-[480px] mt-2.5 bg-white divide-y divide-[#F5F5F5] mx-2">
 
         <div
           onClick={() => navigate(hasBank ? '/informacao-bancaria' : '/adicionar-banco')}
