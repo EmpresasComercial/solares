@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
 import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { supabase } from '../lib/supabase';
 import { getDeviceId } from '../lib/device';
-import { Eye, EyeOff, Loader2, Download } from 'lucide-react';
+import { subscribeToPushNotifications } from '../lib/pushNotifications';
+import { Eye, EyeOff, Loader2, Download, Bell, X, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ phone: '', inviteCode: '', password: '' });
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -76,20 +79,38 @@ export default function Signup() {
 
   const togglePassword = useCallback(() => setShowPassword(v => !v), []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const validateForm = () => {
     if (!formData.phone || !formData.phone.startsWith('9') || formData.phone.length !== 9) {
       showToast(t('auth.phone_error_length'), 'error');
-      return;
+      return false;
     }
     if (formData.password.length < 8) {
       showToast(t('auth.password_error_length'), 'error');
-      return;
+      return false;
     }
     if (!formData.inviteCode || formData.inviteCode.length !== 10) {
       showToast(t('auth.invite_error_length'), 'error');
-      return;
+      return false;
+    }
+    return true;
+  };
+
+  const handleRegisterClick = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    // Abre o modal de permissão de notificações antes de executar o cadastro
+    setShowNotificationModal(true);
+  };
+
+  const executeRegistration = async (withNotifications = false) => {
+    setShowNotificationModal(false);
+
+    if (withNotifications) {
+      try {
+        await subscribeToPushNotifications();
+      } catch (err) {
+        console.debug('Erro ao solicitar push:', err);
+      }
     }
 
     setIsSubmitting(true);
@@ -131,6 +152,10 @@ export default function Signup() {
       }
 
       if (data.user) {
+        // Se ativou notificações, vincula a inscrição ao novo usuário
+        if (withNotifications || Notification.permission === 'granted') {
+          subscribeToPushNotifications().catch(() => {});
+        }
         showToast(t('auth.signup_success') || (data.session ? 'Registrado!' : 'Conta criada! Faça login.'), 'success');
         navigate(data.session ? '/home' : '/login');
       }
@@ -160,7 +185,7 @@ export default function Signup() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-2.5 flex flex-col">
+        <form onSubmit={handleRegisterClick} className="space-y-2.5 flex flex-col">
           <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
             <span className="text-[13.5px] text-[#202020] font-normal pr-3 border-r border-[#E8E8E8] mr-3">+244</span>
             <input
@@ -240,6 +265,100 @@ export default function Signup() {
           </p>
         </div>
       </main>
+
+      {/* MODAL DE PERMISSÕES DE NOTIFICAÇÕES (Estilo Bottom Sheet) */}
+      <AnimatePresence>
+        {showNotificationModal && (
+          <div
+            className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40"
+            onClick={(e) => e.target === e.currentTarget && setShowNotificationModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 60 }}
+              transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }}
+              className="bg-[#F2F2F2] w-full max-w-[480px] rounded-none relative overflow-hidden select-none font-sans antialiased"
+            >
+              <div className="bg-white px-4 pt-4 pb-3 flex items-center justify-between border-b border-[#F2F2F2]">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-none bg-[#FE384F] flex items-center justify-center text-white shrink-0">
+                    <Bell className="w-3.5 h-3.5 stroke-[2]" />
+                  </div>
+                  <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
+                    Permissões de Notificações
+                  </h1>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowNotificationModal(false)}
+                  className="p-1 text-[#AAAAAA] hover:text-[#202020] active:scale-95 transition-transform cursor-pointer"
+                  aria-label="Fechar"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="px-4 pt-3 pb-1">
+                <p className="text-[12.5px] text-[#666666] font-normal leading-relaxed">
+                  Concorda em receber notificações oficiais no seu dispositivo da empresa <strong className="text-[#202020] font-medium">AliExpress24</strong>?
+                </p>
+              </div>
+
+              <div className="px-4 pt-2 pb-6 flex flex-col gap-2">
+                <div className="w-full rounded-none bg-white p-3 flex items-center gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                  <div className="w-7 h-7 rounded-none bg-[#25D366] flex items-center justify-center text-white shrink-0 text-[13px] font-bold">
+                    💸
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[#202020]">Depósitos e Retiradas</p>
+                    <p className="text-[11.5px] text-[#777777] leading-tight mt-0.5">Alertas imediatos de confirmação de recarga e saques aprovados.</p>
+                  </div>
+                </div>
+
+                <div className="w-full rounded-none bg-white p-3 flex items-center gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                  <div className="w-7 h-7 rounded-none bg-[#FF6B4A] flex items-center justify-center text-white shrink-0 text-[13px] font-bold">
+                    🎁
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[#202020]">Bónus e Rendimentos Diários</p>
+                    <p className="text-[11.5px] text-[#777777] leading-tight mt-0.5">Avisos de tarefas concluídas, rendas diárias e comissões da equipa.</p>
+                  </div>
+                </div>
+
+                <div className="w-full rounded-none bg-white p-3 flex items-center gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+                  <div className="w-7 h-7 rounded-none bg-[#0088cc] flex items-center justify-center text-white shrink-0 text-[13px] font-bold">
+                    📢
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[#202020]">Notificações do Sistema</p>
+                    <p className="text-[11.5px] text-[#777777] leading-tight mt-0.5">Comunicações importantes, avisos de segurança e suporte da plataforma.</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => executeRegistration(true)}
+                  disabled={isSubmitting}
+                  className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm mt-1"
+                >
+                  <Bell className="w-4 h-4 stroke-[2]" />
+                  <span>Concordar e Ativar Notificações</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => executeRegistration(false)}
+                  disabled={isSubmitting}
+                  className="w-full h-[44px] rounded-none bg-white text-[#555555] font-normal text-[13.5px] hover:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                >
+                  Continuar sem Notificações
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
