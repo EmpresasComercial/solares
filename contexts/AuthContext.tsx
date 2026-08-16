@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
 import { useToast } from '../components/Toast';
 
+import { subscribeToPushNotifications } from '../lib/pushNotifications';
+
 interface AuthContextType {
   session: Session | null;
   ready: boolean;
@@ -26,6 +28,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     supabase.auth.getSession()
       .then(({ data }) => {
         setSession(data.session);
+        if (data.session && 'Notification' in window && Notification.permission === 'granted') {
+          subscribeToPushNotifications();
+        }
       })
       .catch(err => {
         console.error("Erro ao carregar sessão:", err);
@@ -45,6 +50,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         if (event === 'SIGNED_IN') {
+          if ('Notification' in window && Notification.permission === 'granted') {
+            subscribeToPushNotifications();
+          }
           const isAuthPage = window.location.pathname === '/login' || window.location.pathname === '/cadastro';
           if (isAuthPage) {
             navigate('/home', { replace: true });

@@ -35,6 +35,7 @@ import SupportFeedback from './pages/SupportFeedback';
 import ConfirmarRecarga from './pages/ConfirmarRecarga';
 import SupportTickets from './pages/SupportTickets';
 import { ConnectivityOverlay } from './components/ConnectivityOverlay';
+import { registerServiceWorker, subscribeToPushNotifications } from './lib/pushNotifications';
 
 function RootRedirect() {
   const { session, ready } = useAuth();
@@ -58,6 +59,14 @@ export default function App() {
   React.useEffect(() => {
     document.title = 'AliExpress24';
     
+    // Registrar Service Worker para Web Push
+    registerServiceWorker().then(() => {
+      // Tenta inscrever silenciosamente se já tiver permissão
+      if ('Notification' in window && Notification.permission === 'granted') {
+        subscribeToPushNotifications();
+      }
+    });
+
     // Forçar atualização do Favicon
     const iconUrl = '/aliexpress24_logo_icon_167892.webp?v=2';
     let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
