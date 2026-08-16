@@ -76,7 +76,7 @@ export default function ChangePassword() {
       }
 
       showToast(t('password.success'), 'success');
-      setTimeout(() => navigate('/configuracoes-conta'), 1500);
+      setTimeout(() => navigate('/perfil'), 1500);
     } catch (err: any) {
       showToast(err.message || t('common.error'), 'error');
     } finally {
@@ -90,8 +90,9 @@ export default function ChangePassword() {
       <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/configuracoes-conta')}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
+            type="button"
+            onClick={() => navigate('/perfil')}
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform cursor-pointer"
             aria-label={t('common.back')}
           >
             <ChevronLeft className="w-5 h-5 stroke-[1.8]" />

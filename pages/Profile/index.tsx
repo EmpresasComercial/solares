@@ -115,10 +115,7 @@ export default function Profile() {
 
       <div className="w-full max-w-[480px] bg-white px-4 pt-4 pb-4">
 
-        <div
-          onClick={() => navigate('/configuracoes-conta')}
-          className="flex items-center gap-3 cursor-pointer active:opacity-80 transition-opacity"
-        >
+        <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-full overflow-hidden border border-[#E8E8E8] bg-white flex-shrink-0 flex items-center justify-center p-1">
             <img
               src="/aliexpress24_logo_icon_167892.webp?v=2"

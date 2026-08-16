@@ -19,7 +19,6 @@ import Invite from './pages/Invite';
 import Profile from './pages/Profile';
 import AddBank from './pages/AddBank';
 import ChangePassword from './pages/ChangePassword';
-import AccountSettings from './pages/AccountSettings';
 import Recharge from './pages/Recharge';
 import Support from './pages/Support';
 import Withdraw from './pages/Withdraw';
@@ -98,7 +97,7 @@ export default function App() {
                 <Route path="perfil" element={<Profile />} />
                 <Route path="adicionar-banco" element={<AddBank />} />
                 <Route path="alterar-senha" element={<ChangePassword />} />
-                <Route path="configuracoes-conta" element={<AccountSettings />} />
+                <Route path="configuracoes-conta" element={<Navigate to="/perfil" replace />} />
                 <Route path="recarregar" element={<Recharge />} />
                 <Route path="suporte" element={<Support />} />
                 <Route path="retirada" element={<Withdraw />} />

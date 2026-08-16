@@ -67,7 +67,7 @@ export default function FloatingSupport() {
                 }}
                 className="flex items-center gap-2.5 group cursor-pointer focus:outline-none"
               >
-                <span className="bg-white/95 backdrop-blur-sm text-[#202020] text-[12px] font-medium px-3 py-1.5 rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.08)] border border-gray-100 group-hover:bg-[#FE384F] group-hover:text-white transition-all">
+                <span className="bg-white/95 backdrop-blur-sm text-[#202020] text-[12px] font-medium px-3 py-1.5 rounded-none shadow-[0_2px_10px_rgba(0,0,0,0.08)] border border-gray-100 group-hover:bg-[#FE384F] group-hover:text-white transition-all">
                   {option.label}
                 </span>
 
