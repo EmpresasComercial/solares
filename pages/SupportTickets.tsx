@@ -244,27 +244,14 @@ export default function SupportTickets() {
 
   const fetchMessages = async (isInitial = false) => {
     try {
-      const { data, error } = await supabase.from("chat_gruop")
-        .select(`*`)
-        .order("data_registrada", { ascending: false })
-        .limit(60);
+      const { data, error } = await supabase.rpc('get_chat_messages_mcpn', { p_limit: 60 });
 
       if (error) throw error;
 
       if (data) {
-        const uids = Array.from(new Set(data.map(m => m.uid_emissor).filter(Boolean)));
-        let phoneMap = new Map();
-        
-        if (uids.length > 0) {
-          const { data: perfis } = await supabase.from("perfis_mcpn")
-            .select("id, telefone")
-            .in("id", uids);
-          if (perfis) perfis.forEach(p => phoneMap.set(p.id, p.telefone));
-        }
-
-        const dataWithPhones = data.map(m => ({
+        const dataWithPhones = data.map((m: any) => ({
           ...m,
-          perfis_mcpn: { telefone: phoneMap.get(m.uid_emissor) || "Membro" }
+          perfis_mcpn: { telefone: m.telefone || "Membro" }
         }));
 
         const sortedData = dataWithPhones.reverse();
@@ -305,8 +292,8 @@ export default function SupportTickets() {
           if (data) { 
             let telefone = "Membro";
             if (data.uid_emissor) {
-              const { data: perfil } = await supabase.from("perfis_mcpn").select("telefone").eq("id", data.uid_emissor).single();
-              if (perfil) telefone = perfil.telefone;
+              const { data: phoneData } = await supabase.rpc('get_sender_phone_mcpn', { p_uid: data.uid_emissor });
+              if (phoneData) telefone = phoneData;
             }
             const dataWithPhone = { ...data, perfis_mcpn: { telefone } };
             setPublicMessages((c) => {
@@ -414,9 +401,13 @@ export default function SupportTickets() {
     return d.toLocaleDateString("pt-PT", { day: "numeric", month: "long" });
   };
 
-  const maskPhone = (p: string) => {
+  const formatSenderPhone = (p: string) => {
     if (!p || p === "Membro") return "Membro";
-    return p.replace(/(\d{3})\d+(\d{2})/, "$1****$2");
+    const clean = p.replace(/^\+?244\s*/, '').trim();
+    if (/^\d{9}$/.test(clean)) {
+      return `${clean.slice(0, 3)} ${clean.slice(3, 6)} ${clean.slice(6)}`;
+    }
+    return clean;
   };
 
   const handleDownloadImage = async (imageUrl: string, e: React.MouseEvent) => {
@@ -571,7 +562,7 @@ export default function SupportTickets() {
                       className="text-[12px] font-medium mb-1 cursor-pointer truncate"
                       style={{ color: authorColor }}
                     >
-                      {maskPhone(phone)}
+                      {formatSenderPhone(phone)}
                     </p>
                   )}
 
@@ -580,7 +571,7 @@ export default function SupportTickets() {
                       "rounded-none px-2 py-1 mb-1.5 text-[11px] border-l-2 bg-black/5 overflow-hidden",
                       isMe ? "border-[#229ED9] text-[#444444]" : "border-[#229ED9] text-[#555555]"
                     )}>
-                      <p className="font-medium text-[10.5px] text-[#229ED9] truncate">{reply.sender}</p>
+                      <p className="font-medium text-[10.5px] text-[#229ED9] truncate">{formatSenderPhone(reply.sender)}</p>
                       <p className="truncate italic text-[10.5px] text-[#666666]">{reply.text || "📷 Foto"}</p>
                     </div>
                   )}
@@ -660,7 +651,7 @@ export default function SupportTickets() {
               >
                 <div className="truncate flex-1">
                   <p className="text-[11px] font-medium text-[#229ED9]">
-                    A responder a {maskPhone(replyTo.perfis_mcpn?.telefone || "Membro")}
+                    A responder a {formatSenderPhone(replyTo.perfis_mcpn?.telefone || "Membro")}
                   </p>
                   <p className="text-[11px] text-[#777777] truncate italic">
                     <TranslatedMessage text={replyTo.mensagem} language={language} renderFormatted={(t: string) => t || 'Foto'} />
