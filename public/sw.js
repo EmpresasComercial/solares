@@ -55,16 +55,21 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const targetUrl = event.notification.data?.url || '/perfil';
+  const rawUrl = event.notification.data?.url || '/perfil';
+  const targetUrl = new URL(rawUrl, self.location.origin).href;
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // 1. Se o app já estiver aberto em alguma aba/PWA, navega até a tela e traz para foco
       for (const client of clientList) {
-        if (client.url && 'focus' in client) {
-          client.navigate(targetUrl);
+        if ('focus' in client) {
+          if ('navigate' in client) {
+            client.navigate(targetUrl);
+          }
           return client.focus();
         }
       }
+      // 2. Se o app estiver fechado no celular, abre direto na página da notificação
       if (self.clients.openWindow) {
         return self.clients.openWindow(targetUrl);
       }
