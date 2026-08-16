@@ -118,6 +118,7 @@ export default function App() {
                 <Route path="provas-social" element={<Navigate to="/home?postarProva=true" replace />} />
                 <Route path="confirmar-recarga" element={<ConfirmarRecarga />} />
                 <Route path="chat-comunidade" element={<SupportTickets />} />
+                <Route path="comunidade-chat" element={<SupportTickets />} />
               </Route>
 
 
