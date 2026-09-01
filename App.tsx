@@ -34,6 +34,7 @@ import HelpFAQ from './pages/HelpFAQ';
 import SupportFeedback from './pages/SupportFeedback';
 import ConfirmarRecarga from './pages/ConfirmarRecarga';
 import SupportTickets from './pages/SupportTickets';
+import PageTarefas from './pages/pagetarefas';
 import { ConnectivityOverlay } from './components/ConnectivityOverlay';
 import { registerServiceWorker, subscribeToPushNotifications, clearAppBadge } from './lib/pushNotifications';
 
@@ -150,6 +151,8 @@ export default function App() {
                 <Route path="confirmar-recarga" element={<ConfirmarRecarga />} />
                 <Route path="chat-comunidade" element={<SupportTickets />} />
                 <Route path="comunidade-chat" element={<SupportTickets />} />
+                <Route path="pagetarefas" element={<PageTarefas />} />
+                <Route path="tarefas" element={<PageTarefas />} />
               </Route>
 
 
