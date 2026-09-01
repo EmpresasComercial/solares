@@ -36,11 +36,11 @@ export const Header1688: React.FC<Header1688Props> = ({ onSearch, activeTab: ini
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/home')}>
             <div className="flex items-center">
-              <span className="text-[26px] font-black italic tracking-tighter bg-gradient-to-r from-[#FF6A00] via-[#FF5000] to-[#FF2200] bg-clip-text text-transparent drop-shadow-xs">
+              <span className="text-[26px] font-black italic tracking-tighter text-[#FF5000]">
                 1888
               </span>
               <div className="ml-1.5 flex flex-col -space-y-0.5">
-                <span className="text-[9px] font-black uppercase tracking-wider text-[#FF5000] bg-orange-100 px-1 py-0.2 rounded-xs">
+                <span className="text-[9px] font-black uppercase tracking-wider text-[#FF5000] bg-orange-100 px-1 py-0.2 rounded-none">
                   FÁBRICAS B2B
                 </span>
                 <span className="text-[8px] font-semibold text-gray-500">
@@ -51,13 +51,13 @@ export const Header1688: React.FC<Header1688Props> = ({ onSearch, activeTab: ini
           </div>
 
           {/* Search Tabs */}
-          <div className="flex items-center bg-orange-100/80 p-0.5 rounded-full text-[11px] font-semibold">
+          <div className="flex items-center bg-orange-100/80 p-0.5 rounded-none text-[11px] font-semibold">
             <button
               type="button"
               onClick={() => setTab('products')}
-              className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-none transition-all cursor-pointer ${
                 tab === 'products'
-                  ? 'bg-gradient-to-r from-[#FF6A00] to-[#FF5000] text-white shadow-xs'
+                  ? 'bg-[#FF5000] text-white'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -66,9 +66,9 @@ export const Header1688: React.FC<Header1688Props> = ({ onSearch, activeTab: ini
             <button
               type="button"
               onClick={() => setTab('factories')}
-              className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-none transition-all cursor-pointer ${
                 tab === 'factories'
-                  ? 'bg-gradient-to-r from-[#FF6A00] to-[#FF5000] text-white shadow-xs'
+                  ? 'bg-[#FF5000] text-white'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -79,7 +79,7 @@ export const Header1688: React.FC<Header1688Props> = ({ onSearch, activeTab: ini
 
         {/* 1888 Search Bar */}
         <form onSubmit={handleSearch} className="relative flex items-center">
-          <div className="relative w-full flex items-center bg-white border-2 border-[#FF5000] rounded-full overflow-hidden shadow-xs hover:border-[#FF4000] transition-colors h-[40px]">
+          <div className="relative w-full flex items-center bg-white border-2 border-[#FF5000] rounded-none overflow-hidden hover:border-[#FF4000] transition-colors h-[40px]">
             <div className="pl-3.5 pr-1.5 text-[#FF5000]">
               <Search className="w-4 h-4 stroke-[2.4]" />
             </div>
@@ -103,7 +103,7 @@ export const Header1688: React.FC<Header1688Props> = ({ onSearch, activeTab: ini
 
             <button
               type="submit"
-              className="h-[34px] px-4 mr-[3px] rounded-full bg-gradient-to-r from-[#FF6A00] to-[#FF4400] hover:from-[#FF5500] hover:to-[#E03300] active:scale-98 text-white text-[12.5px] font-bold transition-all flex items-center justify-center cursor-pointer shadow-xs"
+              className="h-[34px] px-4 mr-[3px] rounded-none bg-[#FF5000] hover:bg-[#E03300] active:scale-98 text-white text-[12.5px] font-bold transition-all flex items-center justify-center cursor-pointer"
             >
               Buscar
             </button>
@@ -125,7 +125,7 @@ export const Header1688: React.FC<Header1688Props> = ({ onSearch, activeTab: ini
                 if (onSearch) onSearch(kw);
                 else navigate('/produtos');
               }}
-              className="shrink-0 px-2 py-0.5 bg-white border border-orange-100 hover:border-orange-300 text-gray-600 hover:text-[#FF5000] text-[11px] rounded-full transition-all cursor-pointer shadow-2xs"
+              className="shrink-0 px-2 py-0.5 bg-white border border-orange-100 hover:border-orange-300 text-gray-600 hover:text-[#FF5000] text-[11px] rounded-none transition-all cursor-pointer"
             >
               {kw}
             </button>
