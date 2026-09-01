@@ -96,19 +96,45 @@ export default function Profile() {
   return (
     <div className="w-full min-h-screen bg-[#F7F8FA] pb-24 font-sans text-[#111111] select-none flex flex-col items-center">
       
-      {/* ── 1. TOPO: AVATAR + MINHA ASSINATURA VIP ── */}
-      <div className="w-full max-w-[480px] px-4 pt-5 pb-2 flex items-center justify-between">
+      {/* ── 1. HEADER IMAGE ── */}
+      <div className="w-full max-w-[480px] relative overflow-hidden" style={{ height: '140px' }}>
+        <img
+          src="/header.jpg"
+          alt="Header 1888"
+          className="w-full h-full object-cover"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+        />
+        {/* Overlay escuro para legibilidade */}
+        <div className="absolute inset-0 bg-black/30" />
+        {/* Logo 1888 sobre o header */}
+        <div className="absolute bottom-3 left-4 text-white">
+          <span className="text-[22px] font-black italic tracking-tighter">1888</span>
+          <span className="text-[11px] font-semibold ml-1.5 opacity-80">工厂B2B</span>
+        </div>
+      </div>
+
+      {/* ── 2. TOPO: AVATAR + BADGE VIP ── */}
+      <div className="w-full max-w-[480px] px-4 pt-4 pb-2 flex items-center justify-between bg-white border-b border-gray-100">
         <div className="flex items-center gap-2.5">
-          {/* Avatar com cabeça de boi oficial */}
-          <div className="w-12 h-12 rounded-full bg-[#FFEADA] border-2 border-white flex items-center justify-center text-xl overflow-hidden shrink-0 shadow-2xs">
-            🐮
+          {/* Avatar com imagem real */}
+          <div className="w-14 h-14 border-2 border-white overflow-hidden shrink-0" style={{borderRadius:0}}>
+            <img
+              src="/avatar.jpg"
+              alt="Avatar"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const t = e.target as HTMLImageElement;
+                t.style.display = 'none';
+                t.parentElement!.innerHTML = '<span class="w-full h-full flex items-center justify-center text-2xl bg-orange-100">🐮</span>';
+              }}
+            />
           </div>
           
           {/* Badge dourada 我的会员权益 */}
           <button
             type="button"
             onClick={() => navigate('/produtos')}
-            className="bg-[#EAD0A8] text-[#7A4B1A] text-[11px] font-bold px-2.5 py-1 rounded-full cursor-pointer hover:opacity-90"
+            className="bg-[#EAD0A8] text-[#7A4B1A] text-[11px] font-bold px-2.5 py-1 cursor-pointer hover:opacity-90"
           >
             我的会员权益
           </button>
