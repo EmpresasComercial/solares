@@ -3,20 +3,21 @@
 
 /* Design System Tokens - 1688 Official Theme */
 :root {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Alibaba Sans", "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Times New Roman", Times, "Songti SC", "SimSun", serif;
+  --font-serif: "Times New Roman", Times, "Songti SC", "SimSun", serif;
   --color-1688-primary: #FF5000;
   --color-1688-secondary: #FF6A00;
   --color-1688-dark: #E03E00;
   --color-1688-gradient: linear-gradient(135deg, #FF6000 0%, #FF2400 100%);
   --color-1688-gradient-gold: linear-gradient(135deg, #FFE6C5 0%, #FFC885 100%);
   --color-1688-gold: #FF9600;
-  --color-1688-bg: #F5F6F8;
+  --color-1688-bg: #FFFFFF;
   --ms-blue: #FF5000;
-  --ms-bg: #F5F6F8;
+  --ms-bg: #FFFFFF;
   --ms-text-primary: #111827;
   --ms-text-secondary: #6B7280;
   --ms-border: #E5E7EB;
-  --background: #F5F6F8;
+  --background: #FFFFFF;
   --surface: #FFFFFF;
   --input-background: #FFFFFF;
   --primary-orange: #FF5000;
@@ -25,16 +26,19 @@
   --button-text: #FFFFFF;
   --placeholder: #999999;
   --required: #FF4400;
-  --surface-shadow: rgba(0,0,0,0.04);
+  --surface-shadow: none;
   --divider: #EEEEEE;
   --header-surface: #FFFFFF;
+}
+
+body, button, input, select, textarea {
+  font-family: "Times New Roman", Times, "Songti SC", "SimSun", serif !important;
 }
 
 body {
   background-color: var(--ms-bg);
   color: var(--ms-text-primary);
   font-family: var(--font-sans);
-  font-weight: 300; /* Super leve por padrão */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

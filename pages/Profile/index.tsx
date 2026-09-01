@@ -5,12 +5,10 @@ import { useToast } from '../../components/Toast';
 import { formatCurrency, CurrencyType } from '../../lib/currency';
 import { supabase } from '../../lib/supabase';
 import { 
-  ChevronRight,
   CreditCard,
   Package,
   Truck,
   MessageSquare,
-  BadgePercent,
   FileText,
   Gift,
   Award,
@@ -19,7 +17,9 @@ import {
   MapPin,
   HelpCircle,
   LogOut,
-  Users
+  Users,
+  Edit2,
+  ChevronRight
 } from 'lucide-react';
 
 export default function Profile() {
@@ -89,287 +89,245 @@ export default function Profile() {
     navigate('/login');
   };
 
-  const userDisplayName = accountData.telefone
+  const userPhone = accountData.telefone
     ? `+244 ${accountData.telefone}`
-    : '立即登录 · Entrar';
+    : '请完善您的身份';
 
   return (
-    <div className="w-full min-h-screen bg-[#FFFFFF] pb-24 font-sans text-[#111111] select-none flex flex-col items-center">
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-24 font-sans text-[#111111] select-none flex flex-col items-center">
       
-      {/* ── 1. TOPO OFICIAL 1688 (Background Escuro Corporativo com Avatar e Login/ID) ── */}
-      <div className="w-full max-w-[480px] bg-[#2E3341] px-4 pt-6 pb-5 text-white flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* Avatar com ícone boi/touro da 1688 */}
-          <div className="w-14 h-14 bg-white flex items-center justify-center text-gray-400 font-bold overflow-hidden">
-            <svg viewBox="0 0 24 24" className="w-10 h-10 fill-gray-300">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
+      {/* ── 1. TOPO: AVATAR + MINHA ASSINATURA VIP ── */}
+      <div className="w-full max-w-[480px] px-4 pt-5 pb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          {/* Avatar com cabeça de boi oficial */}
+          <div className="w-12 h-12 rounded-full bg-[#FFEADA] border-2 border-white flex items-center justify-center text-xl overflow-hidden shrink-0 shadow-2xs">
+            🐮
           </div>
+          
+          {/* Badge dourada 我的会员权益 */}
+          <button
+            type="button"
+            onClick={() => navigate('/produtos')}
+            className="bg-[#EAD0A8] text-[#7A4B1A] text-[11px] font-bold px-2.5 py-1 rounded-full cursor-pointer hover:opacity-90"
+          >
+            我的会员权益
+          </button>
+        </div>
+      </div>
 
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="text-[15px] font-bold text-white border border-white/40 px-3 py-0.5 hover:bg-white/10 transition-colors cursor-pointer"
-              >
-                {userDisplayName}
-              </button>
-            </div>
-
-            {/* Badge de Bônus 1688 */}
-            <div className="flex items-center gap-1 text-[11px] text-white/90">
-              <span className="bg-[#FF5000] text-white text-[9px] font-bold px-1 py-0.2">
-                🎁
+      {/* ── 2. CARD DO USUÁRIO (请完善您的身份 / Saldo) ── */}
+      <div className="w-full max-w-[480px] px-3.5 mt-1">
+        <div className="bg-white border border-gray-200/80 p-3.5 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[14px] font-bold text-gray-900">
+                {userPhone}
               </span>
-              <span>快来登陆 新人领100元红包 (Bônus de Boas-vindas)</span>
+              <Edit2 className="w-3.5 h-3.5 text-gray-400 cursor-pointer" />
+              <span className="bg-[#2E3341] text-[#E0B880] text-[9.5px] font-bold px-1.5 py-0.2">
+                买家
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-1">
+              <MapPin className="w-3 h-3 text-gray-400" />
+              <span>杭州滨江区 • Luanda (ID: {userId || '1888'})</span>
             </div>
           </div>
-        </div>
 
-        <div className="text-right text-[11px] text-gray-300 font-mono">
-          {userId && <span>ID: {userId}</span>}
+          <div className="text-right">
+            <span className="text-[17px] font-black text-gray-900 block leading-tight">
+              {Number(accountData.saldo_disponivel || 0).toFixed(2)}
+            </span>
+            <span className="text-[10px] text-gray-400">总红包金额 (Kz)</span>
+          </div>
         </div>
       </div>
 
-      {/* ── 2. SEÇÃO: 我的订单 (Meus Pedidos) ── */}
-      <div className="w-full max-w-[480px] bg-white border-b border-gray-100 p-4">
+      {/* ── 3. BANNER DE BENEFÍCIOS (开通月卡解锁超级权益) ── */}
+      <div className="w-full max-w-[480px] px-3.5 mt-2.5">
         <div 
-          onClick={() => navigate('/minhas-compras')}
-          className="flex items-center justify-between cursor-pointer mb-3.5"
+          onClick={() => navigate('/produtos')}
+          className="bg-[#FFF4EA] border border-[#FFD8B8] px-3 py-2 flex items-center justify-between cursor-pointer hover:bg-[#FFEBD9] transition-colors"
         >
-          <span className="text-[14px] font-bold text-gray-900">我的订单 · Meus Pedidos</span>
-          <div className="flex items-center text-[12px] text-gray-400 hover:text-[#FF5000]">
-            <span>全部 · Todos</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-1.5">
+            <span className="bg-[#FF5000] text-white text-[9.5px] font-bold px-1.5 py-0.2">
+              月卡
+            </span>
+            <span className="text-[12px] font-bold text-gray-800">
+              开通月卡解锁超级权益 &gt;
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 text-[#FF5000] font-bold text-[12px]">
+            <span>开通领188元红包</span>
+            <span className="text-[15px]">🧧</span>
           </div>
         </div>
+      </div>
 
-        {/* Grid de 5 Ícones Oficiais 1688 */}
-        <div className="grid grid-cols-5 gap-1 text-center">
-          
-          <button 
-            type="button"
-            onClick={() => navigate('/recarregar')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="w-8 h-8 flex items-center justify-center text-[#FF5000]">
-              <CreditCard className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <span className="text-[11.5px] text-gray-700">待付款</span>
-            <span className="text-[9px] text-gray-400 -mt-1">Pendente</span>
-          </button>
+      {/* ── 4. SEÇÃO: 常用工具 (Ferramentas Úteis - Grid Flat Oficial) ── */}
+      <div className="w-full max-w-[480px] px-3.5 mt-3">
+        <div className="bg-white border border-gray-200/80 p-4">
+          <h2 className="text-[14px] font-bold text-gray-900 mb-4">常用工具</h2>
 
-          <button 
-            type="button"
-            onClick={() => navigate('/minhas-compras')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="w-8 h-8 flex items-center justify-center text-[#FF5000]">
-              <Package className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <span className="text-[11.5px] text-gray-700">待发货</span>
-            <span className="text-[9px] text-gray-400 -mt-1">Envio</span>
-          </button>
+          {/* Grid de 4 Colunas Idêntico à Foto */}
+          <div className="grid grid-cols-4 gap-y-4 gap-x-2 text-center">
+            
+            {/* 1. 免费赊账 (Recarregar) */}
+            <button
+              type="button"
+              onClick={() => navigate('/recarregar')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FF5000] text-white flex items-center justify-center">
+                <span className="text-[18px]">💳</span>
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">免费赊账</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Recarregar</span>
+            </button>
 
-          <button 
-            type="button"
-            onClick={() => navigate('/minhas-compras')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="w-8 h-8 flex items-center justify-center text-[#FF5000]">
-              <Truck className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <span className="text-[11.5px] text-gray-700">待收货</span>
-            <span className="text-[9px] text-gray-400 -mt-1">A caminho</span>
-          </button>
+            {/* 2. 我的展会 (Convites) */}
+            <button
+              type="button"
+              onClick={() => navigate('/convite')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FF6A00] text-white flex items-center justify-center">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">我的展会</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Convites</span>
+            </button>
 
-          <button 
-            type="button"
-            onClick={() => navigate('/home?postarProva=true')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="w-8 h-8 flex items-center justify-center text-[#FF5000]">
-              <MessageSquare className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <span className="text-[11.5px] text-gray-700">待评价</span>
-            <span className="text-[9px] text-gray-400 -mt-1">Avaliações</span>
-          </button>
+            {/* 3. 我的红包 (Resgatar) */}
+            <button
+              type="button"
+              onClick={() => navigate('/resgate')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FE2B2B] text-white flex items-center justify-center">
+                <Gift className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">我的红包</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Resgatar</span>
+            </button>
 
-          <button 
-            type="button"
-            onClick={() => navigate('/suporte')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="w-8 h-8 flex items-center justify-center text-[#FF5000]">
-              <span className="font-bold text-[18px]">¥</span>
-            </div>
-            <span className="text-[11.5px] text-gray-700">退款中</span>
-            <span className="text-[9px] text-gray-400 -mt-1">Reembolsos</span>
-          </button>
+            {/* 4. 新人特权 (Privilégios) */}
+            <button
+              type="button"
+              onClick={() => navigate('/produtos')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FFB800] text-white flex items-center justify-center font-black text-[15px]">
+                新
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">新人特权</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Privilégios</span>
+            </button>
 
+            {/* 5. 我的优惠 (Descontos) */}
+            <button
+              type="button"
+              onClick={() => navigate('/produtos')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FF4444] text-white flex items-center justify-center">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">我的优惠</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Descontos</span>
+            </button>
+
+            {/* 6. 累计返利 (Retirar Saldo) */}
+            <button
+              type="button"
+              onClick={() => navigate('/retirada')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FFA800] text-white flex items-center justify-center font-bold text-[18px]">
+                ¥
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">累计返利</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Retirar Saldo</span>
+            </button>
+
+            {/* 7. 免息大派送 (Extrato) */}
+            <button
+              type="button"
+              onClick={() => navigate('/historico-geral')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#00C4B4] text-white flex items-center justify-center font-black text-[14px]">
+                %
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">免息大派送</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Extrato</span>
+            </button>
+
+            {/* 8. 支付工具 (Conta Bancária) */}
+            <button
+              type="button"
+              onClick={() => navigate(hasBank ? '/informacao-bancaria' : '/adicionar-banco')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#FFA800] text-white flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">支付工具</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Conta Bancária</span>
+            </button>
+
+            {/* 9. 收货地址 (Suporte) */}
+            <button
+              type="button"
+              onClick={() => navigate('/suporte')}
+              className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
+            >
+              <div className="w-10 h-10 bg-[#00B480] text-white flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[11.5px] text-gray-800 font-medium">收货地址</span>
+              <span className="text-[9.5px] text-gray-400 -mt-1">Suporte</span>
+            </button>
+
+          </div>
         </div>
       </div>
 
-      {/* ── 3. SEÇÃO: 常用工具 (Ferramentas Úteis 1688) ── */}
-      <div className="w-full max-w-[480px] bg-white border-b border-gray-100 p-4">
-        <h2 className="text-[14px] font-bold text-gray-900 mb-4">常用工具 · Ferramentas Úteis</h2>
-
-        {/* Grid Oficial Flat com Ícones Coloridos 1688 */}
-        <div className="grid grid-cols-4 gap-y-4 gap-x-2 text-center">
-          
-          {/* 1. 免费赊账 (Crédito / Recarga) */}
-          <button
-            type="button"
-            onClick={() => navigate('/recarregar')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FF5000] text-white flex items-center justify-center">
-              <span className="text-[18px]">✉️</span>
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">免费赊账</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Recarregar</span>
-          </button>
-
-          {/* 2. 我的展会 (Minhas Feiras / Convites) */}
-          <button
-            type="button"
-            onClick={() => navigate('/convite')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FF6A00] text-white flex items-center justify-center font-black text-[16px]">
-              <Users className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">我的展会</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Convites</span>
-          </button>
-
-          {/* 3. 我的红包 (Meus Bônus / Cupons) */}
-          <button
-            type="button"
-            onClick={() => navigate('/resgate')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FE2B2B] text-white flex items-center justify-center">
-              <Gift className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">我的红包</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Resgatar</span>
-          </button>
-
-          {/* 4. 新人特权 (Privilégios Novos Membros) */}
-          <button
-            type="button"
-            onClick={() => navigate('/produtos')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FFB800] text-white flex items-center justify-center font-black text-[15px]">
-              新
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">新人特权</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Privilégios</span>
-          </button>
-
-          {/* 5. 我的优惠 (Meus Descontos) */}
-          <button
-            type="button"
-            onClick={() => navigate('/produtos')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FF4444] text-white flex items-center justify-center">
-              <FileText className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">我的优惠</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Descontos</span>
-          </button>
-
-          {/* 6. 累计返利 (Lucro Acumulado / Retirada) */}
-          <button
-            type="button"
-            onClick={() => navigate('/retirada')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FFA800] text-white flex items-center justify-center font-bold text-[18px]">
-              ¥
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">累计返利</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Retirar Saldo</span>
-          </button>
-
-          {/* 7. 免息大派送 (Bônus Sem Juros / Histórico) */}
-          <button
-            type="button"
-            onClick={() => navigate('/historico-geral')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#00C4B4] text-white flex items-center justify-center font-black text-[14px]">
-              %
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">免息大派送</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Extrato</span>
-          </button>
-
-          {/* 8. 支付工具 (Métodos de Pagamento / IBAN) */}
-          <button
-            type="button"
-            onClick={() => navigate(hasBank ? '/informacao-bancaria' : '/adicionar-banco')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#FFA800] text-white flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">支付工具</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Conta Bancária</span>
-          </button>
-
-          {/* 9. 收货地址 (Endereço / Suporte) */}
-          <button
-            type="button"
-            onClick={() => navigate('/suporte')}
-            className="flex flex-col items-center gap-1 cursor-pointer hover:opacity-80"
-          >
-            <div className="w-10 h-10 bg-[#00B480] text-white flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-[11.5px] text-gray-800 font-medium">收货地址</span>
-            <span className="text-[9.5px] text-gray-400 -mt-1">Suporte</span>
-          </button>
-
-        </div>
-      </div>
-
-      {/* ── 4. RESUMO DE SALDOS E CRÉDITOS ── */}
-      <div className="w-full max-w-[480px] bg-white border-b border-gray-100 p-4">
-        <div className="border border-gray-200 p-3 grid grid-cols-3 gap-2 text-center">
+      {/* ── 5. CARD RESUMO DE SALDOS (可用余额 · Saldo | 充值总额 · Recargas | 累计提现 · Sacado) ── */}
+      <div className="w-full max-w-[480px] px-3.5 mt-3">
+        <div className="bg-white border border-gray-200/80 p-3 grid grid-cols-3 gap-2 text-center">
           <div onClick={() => navigate('/retirada')} className="cursor-pointer">
             <span className="text-[11px] text-gray-400 block">可用余额 · Saldo</span>
-            <span className="text-[14px] font-bold text-gray-900">
+            <span className="text-[13.5px] font-black text-gray-900 mt-0.5 block">
               {formatCurrency(accountData.saldo_disponivel || 0, currency)}
             </span>
           </div>
           <div onClick={() => navigate('/recarregar')} className="cursor-pointer border-x border-gray-100">
             <span className="text-[11px] text-gray-400 block">充值总额 · Recargas</span>
-            <span className="text-[14px] font-bold text-[#FF5000]">
+            <span className="text-[13.5px] font-black text-[#FF5000] mt-0.5 block">
               {formatCurrency(accountData.total_recarregado || 0, currency)}
             </span>
           </div>
           <div onClick={() => navigate('/registro-retirada')} className="cursor-pointer">
             <span className="text-[11px] text-gray-400 block">累计提现 · Sacado</span>
-            <span className="text-[14px] font-bold text-gray-900">
+            <span className="text-[13.5px] font-black text-gray-900 mt-0.5 block">
               {formatCurrency(accountData.total_retirado || 0, currency)}
             </span>
           </div>
         </div>
       </div>
 
-      {/* ── 5. BOTÃO LOGOUT ── */}
-      <div className="w-full max-w-[480px] p-4">
+      {/* ── 6. BOTÃO DE LOGOUT ([-> 退出登录 · Encerrar Sessão) ── */}
+      <div className="w-full max-w-[480px] px-3.5 mt-3">
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full h-[44px] bg-white border border-gray-300 hover:border-red-400 hover:text-red-600 text-gray-700 font-bold text-[13px] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full h-[42px] bg-white border border-gray-300 hover:border-red-400 hover:text-red-600 text-gray-700 font-bold text-[13px] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
         >
-          <LogOut className="w-4 h-4" />
-          <span>退出登录 · Encerrar Sessão</span>
+          <LogOut className="w-4 h-4 text-gray-500" />
+          <span>[→ 退出登录 · Encerrar Sessão</span>
         </button>
       </div>
 
