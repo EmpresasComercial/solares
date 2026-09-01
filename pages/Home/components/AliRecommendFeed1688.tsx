@@ -204,7 +204,7 @@ export const AliRecommendFeed1688: React.FC = () => {
               <div
                 key={product.id}
                 onClick={() => navigate(`/produtos/${product.id}`)}
-                className="border-r border-b border-gray-100 bg-white cursor-pointer group overflow-hidden hover:z-10 hover:shadow-lg hover:border-[#FF5000] transition-all duration-150 relative"
+                className="border-r border-b border-gray-200 bg-white cursor-pointer group overflow-hidden hover:z-10 hover:border-[#FF5000] transition-colors duration-150 relative"
               >
                 {/* Imagem */}
                 <div className="relative aspect-square overflow-hidden bg-gray-50">

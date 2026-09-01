@@ -327,7 +327,7 @@ export function SocialProofFeed() {
       ) : (
         <div className="flex flex-col gap-2.5">
           {proofs.map(proof => (
-            <div key={proof.id} className="bg-white rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)] overflow-hidden">
+            <div key={proof.id} className="bg-white rounded-none border border-gray-200 overflow-hidden">
               <div className="p-3 flex items-center justify-between border-b border-[#F5F5F5]">
                 <div>
                   <p className="text-[13px] font-medium text-[#202020]">{proof.user}</p>
