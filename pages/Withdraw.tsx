@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { formatCurrency } from '../lib/currency';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Skeleton } from '../components/Skeleton';
+import { HeaderBanner } from '../components/HeaderBanner';
 
 const MIN_WITHDRAW = 100;
 const MAX_WITHDRAW = 100000;
@@ -61,22 +62,53 @@ export default function Withdraw() {
   }, [fetchData]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value.replace(/\D/g, ''));
+    const val = e.target.value.replace(/\D/g, '');
+    setAmount(val);
+  };
+
+  const handleAllIn = () => {
+    setAmount(Math.floor(balance).toString());
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (hasPending) { showToast(t('withdraw.pending_wait'), 'error'); return; }
-    if (!isWithdrawAllowed()) { showToast(t('withdraw.time_error'), 'error'); return; }
-    if (!isVerified) { showToast(t('withdraw.verify_required'), 'error'); navigate('/autenticacao'); return; }
-    if (!hasBank) { showToast(t('withdraw.bank_required'), 'error'); navigate('/informacao-bancaria?redirect=/retirada'); return; }
-    if (!password) { showToast(t('auth.password_error_empty'), 'error'); return; }
+    if (!isWithdrawAllowed()) {
+      showToast('Retiradas são permitidas apenas de Segunda a Sexta, das 09:00 às 18:00.', 'error');
+      return;
+    }
 
-    const withdrawAmount = parseInt(amount);
-    if (!amount || withdrawAmount < MIN_WITHDRAW) { showToast(t('withdraw.min_amount'), 'error'); return; }
-    if (withdrawAmount > MAX_WITHDRAW) { showToast(t('withdraw.max_amount'), 'error'); return; }
-    if (withdrawAmount > balance) { showToast(t('withdraw.insufficient'), 'error'); return; }
+    if (!hasBank) {
+      showToast('Por favor, adicione uma conta bancária primeiro.', 'error');
+      navigate('/adicionar-banco?redirect=/retirada');
+      return;
+    }
+
+    if (hasPending) {
+      showToast('Você já possui uma retirada pendente em análise.', 'error');
+      return;
+    }
+
+    const withdrawAmount = Number(amount);
+    if (!withdrawAmount || withdrawAmount < MIN_WITHDRAW) {
+      showToast(`Valor mínimo para retirada é ${formatCurrency(MIN_WITHDRAW, 'KZ')}`, 'error');
+      return;
+    }
+
+    if (withdrawAmount > MAX_WITHDRAW) {
+      showToast(`Valor máximo para retirada é ${formatCurrency(MAX_WITHDRAW, 'KZ')}`, 'error');
+      return;
+    }
+
+    if (withdrawAmount > balance) {
+      showToast('Saldo insuficiente para esta retirada.', 'error');
+      return;
+    }
+
+    if (!password) {
+      showToast(t('auth.password_placeholder') || 'Insira sua senha de login', 'error');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -119,13 +151,8 @@ export default function Withdraw() {
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans select-none flex flex-col items-center">
-        <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center gap-3">
-            <Skeleton className="w-6 h-6 rounded-none opacity-40" />
-            <Skeleton className="w-32 h-5 opacity-40" />
-          </div>
-        </header>
+      <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans select-none flex flex-col items-center">
+        <HeaderBanner title="累计返利 · Solicitar Retirada" subtitle="Pagamento Direto em Conta Bancária" />
         <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
           <Skeleton className="w-full h-14 rounded-none" />
           <Skeleton className="w-full h-14 rounded-none" />
@@ -136,21 +163,9 @@ export default function Withdraw() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/perfil')}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
-            aria-label={t('common.back')}
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
-          </button>
-          <h1 className="text-[14.5px] font-medium text-[#222222] tracking-normal">
-            {t('withdraw.title') || 'Retirar Saldo'}
-          </h1>
-        </div>
-      </header>
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com a imagem oficial */}
+      <HeaderBanner title="累计返利 · Solicitar Retirada" subtitle="Pagamento Direto em Conta Bancária" />
 
       <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
         <div className="bg-white rounded-none h-[48px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">

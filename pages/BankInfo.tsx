@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { useToast } from '../components/Toast';
 import { ChevronLeft, Plus, Landmark } from 'lucide-react';
 import { Skeleton } from '../components/Skeleton';
+import { HeaderBanner } from '../components/HeaderBanner';
 
 interface BankAccount {
   id: string;
@@ -58,24 +59,32 @@ export default function BankInfo() {
       if (error) throw error;
 
       const result = data as { success: boolean; message: string } | null;
-      if (!result?.success) throw new Error(result?.message || 'Falha, tente novamente');
-      
-      setLinkedBanks(prev => prev.filter(b => b.id !== id));
-      showToast('Conta excluída com sucesso!', 'success');
+
+      if (result && result.success) {
+        showToast('Conta bancária removida', 'success');
+        setLinkedBanks((prev) => prev.filter((b) => b.id !== id));
+      } else {
+        showToast(result?.message || 'Falhou ao remover conta', 'error');
+      }
     } catch (err: any) {
-      showToast('Falha: ' + err.message, 'error');
+      showToast(err.message || 'Erro ao remover conta', 'error');
     } finally {
       setDeleteDialog({ isOpen: false, id: null });
     }
   };
 
-  const hasBanks = useMemo(() => linkedBanks.length > 0, [linkedBanks]);
-  const primaryBank = linkedBanks[0];
+  const primaryBank = useMemo(() => linkedBanks[0] || null, [linkedBanks]);
+  const hasBanks = linkedBanks.length > 0;
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com a imagem oficial */}
+      <HeaderBanner title="支付工具 · Conta Bancária (IBAN)" subtitle="Gestão de Contas Bancárias para Retiradas" />
+
       <ConfirmDialog 
         isOpen={deleteDialog.isOpen}
+        title="Account"
+        message="Please select the action you want to take:"
         onClose={() => setDeleteDialog({ isOpen: false, id: null })}
         onConfirm={() => deleteDialog.id && handleDelete(deleteDialog.id)}
         onEdit={() => {
@@ -89,23 +98,6 @@ export default function BankInfo() {
         confirmText="Delete"
         cancelText="Close"
       />
-
-      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(redirectPath || '/perfil')}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
-            aria-label="Voltar"
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
-          </button>
-          
-          <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
-            Minha Conta
-          </h1>
-        </div>
-      </header>
 
       <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
         {loading ? (

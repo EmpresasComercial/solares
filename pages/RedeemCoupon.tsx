@@ -56,15 +56,9 @@ export default function RedeemCoupon() {
       {/* Header Banner com a imagem oficial */}
       <HeaderBanner title="我的红包 · Resgatar Bônus & Cupons" subtitle="Insira seu código promocional oficial 1888" />
 
-      <main className="w-full max-w-[480px] p-4 mt-2">
-            Resgate de Cupom
-          </h1>
-        </div>
-      </header>
-
       <main className="w-full max-w-[480px] px-4 pt-4 space-y-2.5">
         <form onSubmit={handleSubmit} id="redeem-coupon-form" className="space-y-2.5">
-          <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div className="bg-white rounded-none h-[46px] px-4 flex items-center border border-gray-200">
             <input
               type="text"
               className="w-full h-full bg-transparent outline-none text-[13.5px] text-[#202020] placeholder:text-[#AAAAAA] placeholder:text-[12.5px] placeholder:normal-case font-normal uppercase"
@@ -77,7 +71,7 @@ export default function RedeemCoupon() {
         </form>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-4 z-40 flex justify-center border-t border-gray-200/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white p-4 z-40 flex justify-center border-t border-gray-200">
         <div className="w-full max-w-[480px]">
           <button
             type="submit"

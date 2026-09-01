@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/Toast';
 import { ChevronLeft, ArrowUpRight, ArrowDownRight, TrendingUp, Users, Ticket, History, Gift, Shield, UserPlus } from 'lucide-react';
+import { HeaderBanner } from '../components/HeaderBanner';
 
 type HistoryType = 'recargas' | 'retiradas' | 'renda_diaria' | 'bonus_equipe' | 'cupom' | 'tarefas' | 'banimento' | 'convite' | '';
 
@@ -74,10 +75,10 @@ export default function GeneralHistory() {
       case 'renda_diaria': return <TrendingUp size={16} />;
       case 'bonus_equipe': return <Users size={16} />;
       case 'cupom': return <Ticket size={16} />;
-      case 'tarefas': return <Gift size={16} />;
+      case 'tarefas': return <History size={16} />;
       case 'banimento': return <Shield size={16} />;
       case 'convite': return <UserPlus size={16} />;
-      default: return <History size={16} />;
+      default: return <Gift size={16} />;
     }
   };
 
@@ -111,9 +112,11 @@ export default function GeneralHistory() {
     type !== 'retiradas' && type !== 'banimento';
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] font-sans antialiased text-[#191919] select-none flex flex-col items-center pb-10">
+    <div className="w-full min-h-screen bg-[#F7F8FA] font-sans antialiased text-[#191919] select-none flex flex-col items-center pb-10">
+      {/* Header Banner com a imagem oficial */}
+      <HeaderBanner title="免息大派送 · Extrato Geral de Atividades" subtitle="Histórico completo de transações e créditos" />
 
-      <div className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 border-b border-[#F2F2F2]">
+      <div className="w-full max-w-[480px] bg-white px-4 pt-3 pb-3 sticky top-0 z-30 border-b border-gray-200">
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={() => navigate('/perfil')}
