@@ -5,6 +5,8 @@ import { cn } from '../lib/utils';
 import { Copy, Users, UserCheck, TrendingUp, Award, ShieldCheck, Share2, Sparkles, Building2 } from 'lucide-react';
 import { InvitePageSkeleton } from '../components/Skeleton';
 
+import { HeaderBanner } from '../components/HeaderBanner';
+
 export default function Invite() {
   const { showToast } = useToast();
   const [activeLevel, setActiveLevel] = useState<'level1' | 'level2' | 'level3'>('level1');
@@ -71,19 +73,9 @@ export default function Invite() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F5F6F8] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      {/* Header */}
-      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-2xs border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-[20px] font-black italic text-[#FF5000]">1888</span>
-          <h1 className="text-[15px] font-bold text-gray-900 tracking-tight">
-            Programa de Parceiros & Comissões
-          </h1>
-        </div>
-        <span className="text-[10.5px] font-bold bg-orange-100 text-[#FF5000] px-2 py-0.5 rounded-full">
-          B2B VIP
-        </span>
-      </header>
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com a imagem oficial */}
+      <HeaderBanner title="我的展会 · Programa de Convites & Equipe" subtitle="Indique parceiros e receba comissões diárias de fábrica" />
 
       <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-3">
         {/* Banner do Programa */}

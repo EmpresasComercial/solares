@@ -4,6 +4,8 @@ import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { ChevronLeft, Loader2 } from 'lucide-react';
 
+import { HeaderBanner } from '../components/HeaderBanner';
+
 export default function RedeemCoupon() {
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -50,19 +52,11 @@ export default function RedeemCoupon() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com a imagem oficial */}
+      <HeaderBanner title="我的红包 · Resgatar Bônus & Cupons" subtitle="Insira seu código promocional oficial 1888" />
 
-      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/perfil')}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
-            aria-label="Voltar"
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
-          </button>
-
-          <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
+      <main className="w-full max-w-[480px] p-4 mt-2">
             Resgate de Cupom
           </h1>
         </div>

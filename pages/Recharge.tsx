@@ -4,6 +4,7 @@ import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { ChevronLeft, Check, Loader2 } from 'lucide-react';
+import { HeaderBanner } from '../components/HeaderBanner';
 
 interface RechargeResponse {
   success: boolean;
@@ -58,7 +59,7 @@ export default function Recharge() {
     if (currentStep === 2) {
       setCurrentStep(1);
     } else {
-      navigate('/perfil');
+      navigate(-1);
     }
   };
 
@@ -112,18 +113,21 @@ export default function Recharge() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      <header className="w-full max-w-[480px] bg-white px-4 pt-3.5 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com a imagem oficial */}
+      <HeaderBanner title="免费赊账 · Recarregar Saldo" subtitle="Canal Seguro de Pagamentos 1888" />
+
+      <header className="w-full max-w-[480px] bg-white px-4 pt-3.5 pb-3 shadow-none border-b border-gray-200">
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleBack}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
+            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform cursor-pointer"
             aria-label={t('common.back')}
           >
             <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
           </button>
           
-          <h1 className="text-[14.5px] font-medium text-[#222222] tracking-normal">
+          <h1 className="text-[14.5px] font-bold text-[#222222] tracking-normal">
             Recarregue em 3 etapas
           </h1>
         </div>
