@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Building2, 
+import {
+  Building2,
   ArrowRight,
   ShieldCheck,
   TrendingUp,
@@ -15,15 +15,10 @@ import { APP_CONFIG } from '../constants/config';
 import { supabase } from '../lib/supabase';
 
 // Componentes Oficiais do Layout 1688 / 1888
-import { AliLeftWorkbench1688 } from './Home/components/AliLeftWorkbench1688';
 import { AliTopBar1688 } from './Home/components/AliTopBar1688';
 import { AliSearchBox1688 } from './Home/components/AliSearchBox1688';
-import { AliCategorySidebar1688 } from './Home/components/AliCategorySidebar1688';
-import { AliCentralDoor1688 } from './Home/components/AliCentralDoor1688';
-import { AliUserCard1688 } from './Home/components/AliUserCard1688';
-import { AliActivityRibbon1688 } from './Home/components/AliActivityRibbon1688';
 import { AliRecommendFeed1688 } from './Home/components/AliRecommendFeed1688';
-import { HeroSection } from './Home/components/HeroSection';
+
 import { TradeTicker1688 } from './Home/components/TradeTicker1688';
 import { AnnouncementPopup } from './Home/components/AnnouncementPopup';
 import { SocialProofFeed } from './Home/components/SocialProofFeed';
@@ -56,15 +51,14 @@ export default function Home() {
   });
 
   return (
-    <div className="bg-[#F3F4F6] min-h-screen pb-24 overflow-x-hidden flex flex-col items-center font-sans antialiased text-[#191919] xl:pl-[72px]">
-      
-      {/* 0. Barra Lateral Fixa de Trabalho (AliBar Left Workbench) */}
-      <AliLeftWorkbench1688 />
+    <div className="bg-[#F3F4F6] min-h-screen pb-24 overflow-x-hidden flex flex-col items-center font-sans antialiased text-[#191919]">
+
+
 
       {/* Popups e Modais de Suporte */}
-      <AnnouncementPopup 
-        isOpen={showPopup} 
-        onClose={closePopup} 
+      <AnnouncementPopup
+        isOpen={showPopup}
+        onClose={closePopup}
         communityLink={communityLink}
       />
 
@@ -84,36 +78,13 @@ export default function Home() {
 
       {/* Container Principal Centralizado (Largura Máxima Adaptada) */}
       <main className="w-full max-w-[1440px] px-3 sm:px-6 pt-3 space-y-3">
-        
+
         {/* Ticker de Notícias e Transações em Tempo Real */}
         <TradeTicker1688 />
 
-        {/* 3. Grid Principal 1688 (Layout de 3 Colunas no Desktop / Empilhado no Mobile) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
-          
-          {/* Coluna Esquerda: Mega Menu de Categorias 1688 (3 cols no Desktop) */}
-          <div className="lg:col-span-3">
-            <AliCategorySidebar1688 />
-          </div>
 
-          {/* Coluna Central: Banner Hero + 8 Portas Centrais 1688 (6 cols no Desktop) */}
-          <div className="lg:col-span-6 space-y-3">
-            {/* Banner Carousel de Fábrica */}
-            <HeroSection />
 
-            {/* As 8 Portas Centrais Oficiais 1688 (Dropshipping, Cross-Border, Amostras 50%, etc.) */}
-            <AliCentralDoor1688 />
-          </div>
 
-          {/* Coluna Direita: Cartão do Usuário VIP 1688 (3 cols no Desktop) */}
-          <div className="lg:col-span-3 space-y-3">
-            <AliUserCard1688 />
-          </div>
-
-        </div>
-
-        {/* 4. Faixa Horizontal de Atividades e Garantias Oficiais 1688 (Activity Ribbon) */}
-        <AliActivityRibbon1688 />
 
         {/* 5. Ações Rápidas de Parceiro (Convidar, Recarregar, Retirar) */}
         <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-xs border border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-2.5">

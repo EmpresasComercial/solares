@@ -30,53 +30,6 @@ export const AliTopBar1688: React.FC<AliTopBar1688Props> = ({ onOpenSupport }) =
           </div>
         </div>
 
-        {/* Lado Direito - Ações Rápidas */}
-        <div className="flex items-center gap-4 sm:gap-6">
-          <button 
-            type="button"
-            onClick={() => navigate('/registro')} 
-            className="flex items-center gap-1 hover:text-[#FF5000] transition-colors cursor-pointer"
-          >
-            <Download className="w-3.5 h-3.5 text-gray-400" />
-            <span className="hidden sm:inline">Baixar App (PWA)</span>
-            <span className="sm:hidden">App</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => navigate('/meus-produtos')} 
-            className="flex items-center gap-1 hover:text-[#FF5000] transition-colors cursor-pointer"
-          >
-            <Package className="w-3.5 h-3.5 text-gray-400" />
-            <span>Meus Pedidos</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => navigate('/produtos')} 
-            className="flex items-center gap-1 hover:text-[#FF5000] transition-colors cursor-pointer"
-          >
-            <ShoppingCart className="w-3.5 h-3.5 text-gray-400" />
-            <span>Lotes & Carrinho</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => onOpenSupport ? onOpenSupport() : navigate('/suporte-tickets')} 
-            className="flex items-center gap-1 hover:text-[#FF5000] transition-colors cursor-pointer"
-          >
-            <Headphones className="w-3.5 h-3.5 text-gray-400" />
-            <span>Serviço Oficial</span>
-          </button>
-
-          <div 
-            onClick={() => navigate('/perfil')}
-            className="w-6 h-6 rounded-full bg-[#FF5000]/10 flex items-center justify-center text-[#FF5000] cursor-pointer hover:bg-[#FF5000]/20 transition-colors ml-1"
-            title="Meu Perfil"
-          >
-            <User className="w-3.5 h-3.5" />
-          </div>
-        </div>
       </div>
     </div>
   );
