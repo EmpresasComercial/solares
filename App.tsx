@@ -57,7 +57,7 @@ function RootRedirect() {
 
 export default function App() {
   React.useEffect(() => {
-    document.title = 'AliExpress24';
+    document.title = '1888 - Atacado Direto da Fábrica';
     
     // Captura o evento nativo de instalação do PWA
     const handleBeforeInstall = (e: Event) => {

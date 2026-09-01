@@ -7,7 +7,7 @@ import { LanguageSelector } from '../components/LanguageSelector';
 import { supabase } from '../lib/supabase';
 import { getDeviceId } from '../lib/device';
 import { subscribeToPushNotifications } from '../lib/pushNotifications';
-import { Eye, EyeOff, Loader2, Download, Bell, X, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Download, Bell, X, ShieldCheck, ArrowRight, Building2, Phone, KeyRound, UserCheck } from 'lucide-react';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function Signup() {
         await promptEvent.prompt();
         const choiceResult = await promptEvent.userChoice;
         if (choiceResult?.outcome === 'accepted') {
-          showToast('Instalando aplicativo...', 'success');
+          showToast('Instalando aplicativo 1888...', 'success');
         }
         setDeferredPrompt(null);
         (window as any).deferredPwaPrompt = null;
@@ -56,7 +56,7 @@ export default function Signup() {
       if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true) {
         showToast('Aplicativo já instalado no dispositivo!', 'success');
       } else {
-        showToast('Iniciando instalação do aplicativo...', 'info');
+        showToast('Iniciando instalação do aplicativo 1888...', 'info');
       }
     }
   };
@@ -98,7 +98,6 @@ export default function Signup() {
   const handleRegisterClick = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    // Abre o modal de permissão de notificações antes de executar o cadastro
     setShowNotificationModal(true);
   };
 
@@ -152,11 +151,10 @@ export default function Signup() {
       }
 
       if (data.user) {
-        // Se ativou notificações, vincula a inscrição ao novo usuário
         if (withNotifications || Notification.permission === 'granted') {
           subscribeToPushNotifications().catch(() => {});
         }
-        showToast(t('auth.signup_success') || (data.session ? 'Registrado!' : 'Conta criada! Faça login.'), 'success');
+        showToast(t('auth.signup_success') || (data.session ? 'Registrado com sucesso no 1888!' : 'Conta criada! Faça login.'), 'success');
         navigate(data.session ? '/home' : '/login');
       }
     } catch (err: any) {
@@ -169,190 +167,206 @@ export default function Signup() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-12 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      <main className="w-full max-w-[480px] px-4 pt-4 space-y-2.5 flex flex-col">
-        <div className="relative w-full overflow-hidden">
-          <img
-            src="/gettyimages-2286930500-612x612.jpg"
-            alt=""
-            aria-hidden="true"
-            fetchPriority="high"
-            loading="eager"
-            className="w-full h-[200px] object-cover object-center block"
-          />
+    <div className="w-full min-h-screen bg-[#F5F6F8] pb-12 font-sans antialiased text-[#202020] select-none flex flex-col items-center justify-center px-4">
+      <main className="w-full max-w-[440px] space-y-4 flex flex-col">
+        {/* Top 1888 Brand Hero */}
+        <div className="relative w-full bg-gradient-to-br from-[#FF6A00] via-[#FF5000] to-[#FF2500] rounded-3xl p-6 text-white shadow-md overflow-hidden">
           <div className="absolute top-3 right-3 z-10">
             <LanguageSelector />
           </div>
+
+          <div className="relative z-10 flex flex-col items-center text-center pt-2">
+            <div className="flex items-center gap-1">
+              <span className="text-[38px] font-black italic tracking-tighter drop-shadow-sm">
+                1888
+              </span>
+            </div>
+            <span className="text-[12px] font-bold tracking-wider uppercase bg-white/20 px-2.5 py-0.5 rounded-full mt-0.5">
+              CADASTRO DE PARCEIRO
+            </span>
+            <p className="text-[12px] text-white/90 font-medium mt-2">
+              Junte-se à maior rede de atacado direto de fábricas
+            </p>
+          </div>
+
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-xl" />
+          <div className="absolute -top-6 -left-6 w-24 h-24 bg-white/10 rounded-full blur-xl" />
         </div>
 
-        <form onSubmit={handleRegisterClick} className="space-y-2.5 flex flex-col">
-          <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-            <span className="text-[13.5px] text-[#202020] font-normal pr-3 border-r border-[#E8E8E8] mr-3">+244</span>
-            <input
-              name="phone"
-              type="tel"
-              inputMode="numeric"
-              autoComplete="tel"
-              placeholder={t('auth.phone_placeholder')}
-              className="flex-1 h-full bg-transparent outline-none text-[13.5px] text-[#202020] placeholder:text-[#AAAAAA] font-normal"
-              value={formData.phone}
-              onChange={handleChange}
-              maxLength={9}
-            />
+        {/* Signup Form Box */}
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-4">
+          <div className="text-center pb-1">
+            <h2 className="text-[17px] font-bold text-gray-900">Criar Nova Conta</h2>
+            <p className="text-[12px] text-gray-500">Cadastre-se para liberar os preços de atacado</p>
           </div>
 
-          <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)] relative">
-            <input
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="new-password"
-              placeholder={t('auth.password_placeholder')}
-              className="flex-1 h-full bg-transparent outline-none text-[13.5px] text-[#202020] placeholder:text-[#AAAAAA] font-normal pr-10"
-              value={formData.password}
-              onChange={handleChange}
-            />
+          <form onSubmit={handleRegisterClick} className="space-y-3.5 flex flex-col">
+            <div>
+              <label className="text-[11.5px] font-semibold text-gray-700 block mb-1">
+                Número de Celular
+              </label>
+              <div className="bg-[#F8F9FA] border border-gray-200 rounded-xl h-[48px] px-3.5 flex items-center focus-within:border-[#FF5000] focus-within:bg-white transition-all">
+                <span className="text-[13.5px] text-gray-700 font-bold pr-2.5 border-r border-gray-300 mr-2.5">
+                  +244
+                </span>
+                <input
+                  name="phone"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel"
+                  placeholder={t('auth.phone_placeholder')}
+                  className="flex-1 h-full bg-transparent outline-none text-[13.5px] text-gray-900 placeholder:text-gray-400 font-medium"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  maxLength={9}
+                />
+                <Phone className="w-4 h-4 text-gray-400" />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[11.5px] font-semibold text-gray-700 block mb-1">
+                Senha (mínimo 8 dígitos)
+              </label>
+              <div className="bg-[#F8F9FA] border border-gray-200 rounded-xl h-[48px] px-3.5 flex items-center focus-within:border-[#FF5000] focus-within:bg-white transition-all relative">
+                <input
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  placeholder={t('auth.password_placeholder')}
+                  className="flex-1 h-full bg-transparent outline-none text-[13.5px] text-gray-900 placeholder:text-gray-400 font-medium pr-8"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="text-gray-400 hover:text-gray-600 active:scale-95 transition-transform"
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5 text-gray-400" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[11.5px] font-semibold text-gray-700 block mb-1">
+                Código de Convite
+              </label>
+              <div className="bg-[#F8F9FA] border border-gray-200 rounded-xl h-[48px] px-3.5 flex items-center focus-within:border-[#FF5000] focus-within:bg-white transition-all">
+                <input
+                  name="inviteCode"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder={t('auth.invite_placeholder')}
+                  className="w-full h-full bg-transparent outline-none text-[13.5px] text-gray-900 placeholder:text-gray-400 font-bold tracking-wider uppercase"
+                  value={formData.inviteCode}
+                  onChange={handleChange}
+                  maxLength={10}
+                />
+                <UserCheck className="w-4 h-4 text-[#FF5000]" />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-[46px] rounded-xl bg-gradient-to-r from-[#FF6A00] via-[#FF5000] to-[#FF2500] hover:opacity-95 active:scale-[0.99] text-white font-bold text-[14px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer mt-1"
+            >
+              {isSubmitting
+                ? <Loader2 className="animate-spin h-4 w-4 text-white" />
+                : 'Registrar no 1888'
+              }
+            </button>
+
             <button
               type="button"
-              onClick={togglePassword}
-              className="absolute right-4 text-[#AAAAAA] active:scale-95 transition-transform"
-              aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+              onClick={handleInstallPWA}
+              className="w-full h-[44px] rounded-xl bg-[#FFF3EB] border border-orange-200 hover:bg-[#FFE6D6] active:scale-[0.99] text-[#FF5000] font-bold text-[13.5px] transition-all shadow-2xs flex items-center justify-center cursor-pointer gap-2"
             >
-              {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+              <Download className="w-4 h-4 stroke-[2.2]" />
+              <span>Baixar App 1888 (PWA)</span>
             </button>
+          </form>
+
+          <div className="text-center pt-2 border-t border-gray-100">
+            <p className="text-[13px] text-gray-600">
+              {t('auth.has_account')}{' '}
+              <Link to="/login" className="text-[#FF5000] font-bold hover:underline">
+                {t('auth.login')}
+              </Link>
+            </p>
           </div>
+        </div>
 
-          <div className="bg-white rounded-none h-[46px] px-4 flex items-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-            <input
-              name="inviteCode"
-              type="text"
-              inputMode="numeric"
-              autoComplete="off"
-              placeholder={t('auth.invite_placeholder')}
-              className="w-full h-full bg-transparent outline-none text-[13.5px] text-[#202020] placeholder:text-[#AAAAAA] font-normal"
-              value={formData.inviteCode}
-              onChange={handleChange}
-              maxLength={10}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] transition-all disabled:opacity-40 shadow-sm flex items-center justify-center cursor-pointer mt-1"
-          >
-            {isSubmitting
-              ? <Loader2 className="animate-spin h-4 w-4 text-white" />
-              : t('auth.signup_button')
-            }
-          </button>
-
-          <button
-            type="button"
-            onClick={handleInstallPWA}
-            className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] transition-all shadow-sm flex items-center justify-center cursor-pointer gap-2"
-          >
-            <Download className="w-4 h-4 stroke-[2]" />
-            <span>Baixar App</span>
-          </button>
-        </form>
-
-        <div className="text-center pt-2">
-          <p className="text-[13px] text-[#777777]">
-            {t('auth.has_account')}{' '}
-            <Link to="/login" className="text-[#FE384F] font-normal hover:underline">
-              {t('auth.login')}
-            </Link>
-          </p>
+        {/* Badges de Segurança */}
+        <div className="flex items-center justify-center gap-4 text-gray-400 text-[11px] pt-1">
+          <span className="flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#FF5000]" /> Origem Certificada
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1">
+            <Building2 className="w-3.5 h-3.5 text-[#FF5000]" /> 1888 Alibaba Group
+          </span>
         </div>
       </main>
 
-      {/* MODAL DE PERMISSÕES DE NOTIFICAÇÕES (Estilo Bottom Sheet) */}
+      {/* MODAL DE PERMISSÕES DE NOTIFICAÇÕES (Estilo 1888 Bottom Sheet) */}
       <AnimatePresence>
         {showNotificationModal && (
           <div
-            className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40"
+            className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 backdrop-blur-xs"
             onClick={(e) => e.target === e.currentTarget && setShowNotificationModal(false)}
           >
             <motion.div
-              initial={{ opacity: 0, y: 60 }}
+              initial={{ opacity: 0, y: 80 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 60 }}
+              exit={{ opacity: 0, y: 80 }}
               transition={{ type: 'tween', ease: 'easeOut', duration: 0.25 }}
-              className="bg-[#F2F2F2] w-full max-w-[480px] rounded-none relative overflow-hidden select-none font-sans antialiased"
+              className="bg-white w-full max-w-[440px] rounded-t-3xl relative overflow-hidden select-none font-sans p-5 shadow-2xl space-y-4"
             >
-              <div className="bg-white px-4 pt-4 pb-3 flex items-center justify-between border-b border-[#F2F2F2]">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-none bg-[#FE384F] flex items-center justify-center text-white shrink-0">
-                    <Bell className="w-3.5 h-3.5 stroke-[2]" />
+                  <div className="w-8 h-8 rounded-full bg-[#FFF3EB] flex items-center justify-center text-[#FF5000] shrink-0">
+                    <Bell className="w-4 h-4 stroke-[2.2]" />
                   </div>
-                  <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
-                    Permissões de Notificações
-                  </h1>
+                  <h3 className="text-[15px] font-bold text-gray-900">
+                    Notificações 1888
+                  </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowNotificationModal(false)}
-                  className="p-1 text-[#AAAAAA] hover:text-[#202020] active:scale-95 transition-transform cursor-pointer"
+                  className="p-1 text-gray-400 hover:text-gray-700 active:scale-95 transition-transform cursor-pointer"
                   aria-label="Fechar"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="px-4 pt-3 pb-1">
-                <p className="text-[12.5px] text-[#666666] font-normal leading-relaxed">
-                  Concorda em receber notificações oficiais no seu dispositivo da empresa <strong className="text-[#202020] font-medium">AliExpress24</strong>?
+              <div className="space-y-2">
+                <p className="text-[13px] text-gray-600 leading-relaxed font-medium">
+                  Ative as notificações para receber avisos instantâneos de novos lotes de fábrica, rendimentos creditados e bônus de equipe.
                 </p>
               </div>
 
-              <div className="px-4 pt-2 pb-6 flex flex-col gap-2">
-                <div className="w-full rounded-none bg-white p-3 flex items-center gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  <div className="w-7 h-7 rounded-none bg-[#25D366] flex items-center justify-center text-white shrink-0 text-[13px] font-bold">
-                    💸
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-[#202020]">Depósitos e Retiradas</p>
-                    <p className="text-[11.5px] text-[#777777] leading-tight mt-0.5">Alertas imediatos de confirmação de recarga e saques aprovados.</p>
-                  </div>
-                </div>
-
-                <div className="w-full rounded-none bg-white p-3 flex items-center gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  <div className="w-7 h-7 rounded-none bg-[#FF6B4A] flex items-center justify-center text-white shrink-0 text-[13px] font-bold">
-                    🎁
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-[#202020]">Bónus e Rendimentos Diários</p>
-                    <p className="text-[11.5px] text-[#777777] leading-tight mt-0.5">Avisos de tarefas concluídas, rendas diárias e comissões da equipa.</p>
-                  </div>
-                </div>
-
-                <div className="w-full rounded-none bg-white p-3 flex items-center gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  <div className="w-7 h-7 rounded-none bg-[#0088cc] flex items-center justify-center text-white shrink-0 text-[13px] font-bold">
-                    📢
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-[#202020]">Notificações do Sistema</p>
-                    <p className="text-[11.5px] text-[#777777] leading-tight mt-0.5">Comunicações importantes, avisos de segurança e suporte da plataforma.</p>
-                  </div>
-                </div>
-
+              <div className="flex flex-col gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => executeRegistration(true)}
-                  disabled={isSubmitting}
-                  className="w-full h-[44px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white font-normal text-[13.5px] flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm mt-1"
+                  className="w-full h-[46px] rounded-xl bg-gradient-to-r from-[#FF6A00] to-[#FF4400] text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <Bell className="w-4 h-4 stroke-[2]" />
-                  <span>Concordar e Ativar Notificações</span>
+                  <Bell className="w-4 h-4" />
+                  <span>Permitir e Criar Conta</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => executeRegistration(false)}
-                  disabled={isSubmitting}
-                  className="w-full h-[44px] rounded-none bg-white text-[#555555] font-normal text-[13.5px] hover:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                  className="w-full h-[42px] rounded-xl bg-gray-100 text-gray-600 font-semibold text-[13px]"
                 >
-                  Continuar sem Notificações
+                  Continuar sem notificações
                 </button>
               </div>
             </motion.div>

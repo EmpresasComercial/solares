@@ -244,12 +244,12 @@ export default function SupportTickets() {
 
   const fetchMessages = async (isInitial = false) => {
     try {
-      const { data, error } = await supabase.rpc('get_chat_messages_mcpn', { p_limit: 60 });
+      const { data, error } = await (supabase.rpc as any)('get_chat_messages_mcpn', { p_limit: 60 });
 
       if (error) throw error;
 
-      if (data) {
-        const dataWithPhones = data.map((m: any) => ({
+      if (data && Array.isArray(data)) {
+        const dataWithPhones = (data as any[]).map((m: any) => ({
           ...m,
           perfis_mcpn: { telefone: m.telefone || "Membro" }
         }));
@@ -257,9 +257,9 @@ export default function SupportTickets() {
         const sortedData = dataWithPhones.reverse();
         setPublicMessages(prev => {
           const msgMap = new Map();
-          prev.forEach(m => msgMap.set(m.id, m));
-          sortedData.forEach(m => msgMap.set(m.id, m));
-          return Array.from(msgMap.values()).sort((a, b) => 
+          prev.forEach((m: any) => msgMap.set(m.id, m));
+          sortedData.forEach((m: any) => msgMap.set(m.id, m));
+          return Array.from(msgMap.values()).sort((a: any, b: any) => 
             new Date(a.data_registrada).getTime() - new Date(b.data_registrada).getTime()
           );
         });
@@ -292,14 +292,14 @@ export default function SupportTickets() {
           if (data) { 
             let telefone = "Membro";
             if (data.uid_emissor) {
-              const { data: phoneData } = await supabase.rpc('get_sender_phone_mcpn', { p_uid: data.uid_emissor });
-              if (phoneData) telefone = phoneData;
+              const { data: phoneData } = await (supabase.rpc as any)('get_sender_phone_mcpn', { p_uid: data.uid_emissor });
+              if (phoneData) telefone = String(phoneData);
             }
             const dataWithPhone = { ...data, perfis_mcpn: { telefone } };
             setPublicMessages((c) => {
-              const msgMap = new Map(c.map(m => [m.id, m]));
+              const msgMap = new Map(c.map((m: any) => [m.id, m]));
               msgMap.set(data.id, dataWithPhone);
-              return Array.from(msgMap.values()).sort((a, b) => 
+              return Array.from(msgMap.values()).sort((a: any, b: any) => 
                 new Date(a.data_registrada).getTime() - new Date(b.data_registrada).getTime()
               );
             }); 

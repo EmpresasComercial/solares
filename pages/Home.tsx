@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  UserPlus, 
-  Wallet, 
-  PlusCircle, 
-  Volume2
+  Building2, 
+  ArrowRight,
+  ShieldCheck,
+  TrendingUp,
+  Award,
+  UserPlus,
+  Wallet,
+  PlusCircle
 } from 'lucide-react';
 import { usePopup } from '../hooks/usePopup';
 import { APP_CONFIG } from '../constants/config';
 import { supabase } from '../lib/supabase';
+
+// Componentes Oficiais do Layout 1688 / 1888
+import { AliLeftWorkbench1688 } from './Home/components/AliLeftWorkbench1688';
+import { AliTopBar1688 } from './Home/components/AliTopBar1688';
+import { AliSearchBox1688 } from './Home/components/AliSearchBox1688';
+import { AliCategorySidebar1688 } from './Home/components/AliCategorySidebar1688';
+import { AliCentralDoor1688 } from './Home/components/AliCentralDoor1688';
+import { AliUserCard1688 } from './Home/components/AliUserCard1688';
+import { AliActivityRibbon1688 } from './Home/components/AliActivityRibbon1688';
+import { AliRecommendFeed1688 } from './Home/components/AliRecommendFeed1688';
 import { HeroSection } from './Home/components/HeroSection';
+import { TradeTicker1688 } from './Home/components/TradeTicker1688';
 import { AnnouncementPopup } from './Home/components/AnnouncementPopup';
 import { SocialProofFeed } from './Home/components/SocialProofFeed';
 import { SupportModal } from './Home/components/SupportModal';
@@ -41,7 +56,12 @@ export default function Home() {
   });
 
   return (
-    <div className="bg-[#FFFFFF] min-h-screen pb-24 overflow-x-hidden flex flex-col items-center font-sans">
+    <div className="bg-[#F3F4F6] min-h-screen pb-24 overflow-x-hidden flex flex-col items-center font-sans antialiased text-[#191919] xl:pl-[72px]">
+      
+      {/* 0. Barra Lateral Fixa de Trabalho (AliBar Left Workbench) */}
+      <AliLeftWorkbench1688 />
+
+      {/* Popups e Modais de Suporte */}
       <AnnouncementPopup 
         isOpen={showPopup} 
         onClose={closePopup} 
@@ -56,77 +76,87 @@ export default function Home() {
         telegramUrl={telegramLink}
       />
 
-      <div className="w-full max-w-[480px] flex flex-col bg-white">
-        <HeroSection />
+      {/* 1. Barra de Topo Oficial 1688 (AliBar SSR) */}
+      <AliTopBar1688 onOpenSupport={() => setShowSupportModal(true)} />
 
-        <div className="px-3.5 py-2.5 bg-white border-b border-gray-100 flex items-center justify-between">
-          <div 
-            onClick={() => navigate('/suporte')}
-            className="flex items-center gap-2 cursor-pointer text-[#222222] hover:text-[#C62828] transition-colors"
-          >
-            <Volume2 className="w-[18px] h-[18px] text-[#C62828] stroke-[2.2]" />
-            <span className="text-[13px] font-normal tracking-tight text-[#222222]">
-              Se precisar de ajuda, por favor clique &rarr;
-            </span>
+      {/* 2. Barra de Busca Gigante Oficial 1688 (SearchBox com Abas) */}
+      <AliSearchBox1688 onSearch={() => navigate('/produtos')} />
+
+      {/* Container Principal Centralizado (Largura Máxima Adaptada) */}
+      <main className="w-full max-w-[1440px] px-3 sm:px-6 pt-3 space-y-3">
+        
+        {/* Ticker de Notícias e Transações em Tempo Real */}
+        <TradeTicker1688 />
+
+        {/* 3. Grid Principal 1688 (Layout de 3 Colunas no Desktop / Empilhado no Mobile) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+          
+          {/* Coluna Esquerda: Mega Menu de Categorias 1688 (3 cols no Desktop) */}
+          <div className="lg:col-span-3">
+            <AliCategorySidebar1688 />
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setShowSupportModal(true)}
-              className="w-7 h-7 rounded-full bg-[#25D366] flex items-center justify-center text-white hover:opacity-90 active:scale-95 transition-transform cursor-pointer"
-              title="Suporte WhatsApp"
-            >
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-              </svg>
-            </button>
+          {/* Coluna Central: Banner Hero + 8 Portas Centrais 1688 (6 cols no Desktop) */}
+          <div className="lg:col-span-6 space-y-3">
+            {/* Banner Carousel de Fábrica */}
+            <HeroSection />
 
-            <button
-              type="button"
-              onClick={() => navigate('/chat-comunidade')}
-              className="w-7 h-7 rounded-full bg-[#0088cc] flex items-center justify-center text-white hover:opacity-90 active:scale-95 transition-transform cursor-pointer"
-              title="Telegram AliExpress24"
-            >
-              <svg className="w-3.5 h-3.5 fill-current ml-[-1px]" viewBox="0 0 24 24">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.949z"/>
-              </svg>
-            </button>
+            {/* As 8 Portas Centrais Oficiais 1688 (Dropshipping, Cross-Border, Amostras 50%, etc.) */}
+            <AliCentralDoor1688 />
           </div>
+
+          {/* Coluna Direita: Cartão do Usuário VIP 1688 (3 cols no Desktop) */}
+          <div className="lg:col-span-3 space-y-3">
+            <AliUserCard1688 />
+          </div>
+
         </div>
 
-        <div className="px-3 pt-3 pb-2 space-y-2.5">
+        {/* 4. Faixa Horizontal de Atividades e Garantias Oficiais 1688 (Activity Ribbon) */}
+        <AliActivityRibbon1688 />
+
+        {/* 5. Ações Rápidas de Parceiro (Convidar, Recarregar, Retirar) */}
+        <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-xs border border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <button
             onClick={() => navigate('/convite')}
-            className="w-full h-[44px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white rounded-none font-normal text-[14px] flex items-center justify-center gap-2 transition-all shadow-none cursor-pointer"
+            className="h-[46px] bg-gradient-to-r from-[#FF6A00] via-[#FF5000] to-[#FF2A00] hover:opacity-95 active:scale-[0.99] text-white rounded-xl font-bold text-[13.5px] flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
           >
-            <UserPlus className="w-4 h-4 text-white" />
-            <span>Convidar amigos</span>
+            <UserPlus className="w-4.5 h-4.5 text-white" />
+            <span>Convidar Parceiros & Bônus</span>
           </button>
 
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => navigate('/retirada')}
-              className="h-[42px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white rounded-none font-normal text-[13.5px] flex items-center justify-center gap-1.5 transition-all shadow-none cursor-pointer"
-            >
-              <Wallet className="w-4 h-4 text-white" />
-              <span>Retirar</span>
-            </button>
-            <button
-              onClick={() => navigate('/recarregar')}
-              className="h-[42px] bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-white rounded-none font-normal text-[13.5px] flex items-center justify-center gap-1.5 transition-all shadow-none cursor-pointer"
-            >
-              <PlusCircle className="w-4 h-4 text-white" />
-              <span>Recarregar</span>
-            </button>
-          </div>
+          <button
+            onClick={() => navigate('/recarregar')}
+            className="h-[46px] bg-[#FFF3EB] border border-orange-200 hover:bg-[#FFE8DA] active:scale-[0.99] text-[#FF5000] rounded-xl font-bold text-[13.5px] flex items-center justify-center gap-2 transition-all shadow-2xs cursor-pointer"
+          >
+            <PlusCircle className="w-4.5 h-4.5 text-[#FF5000]" />
+            <span>Recarregar Saldo</span>
+          </button>
+
+          <button
+            onClick={() => navigate('/retirada')}
+            className="h-[46px] bg-white border border-gray-200 hover:border-[#FF5000] active:scale-[0.99] text-gray-800 hover:text-[#FF5000] rounded-xl font-semibold text-[13.5px] flex items-center justify-center gap-2 transition-all shadow-2xs cursor-pointer"
+          >
+            <Wallet className="w-4.5 h-4.5 text-[#FF5000]" />
+            <span>Solicitar Retirada</span>
+          </button>
         </div>
 
-        <div className="px-3 pb-4 flex flex-col items-center border-t border-gray-100 pt-3">
-          <div className="w-full flex items-center justify-between mb-2">
-            <h2 className="text-[14px] font-medium text-[#202020]">Tutoriais</h2>
+        {/* 6. Feed Recomendado de Lotes de Fábrica 1688 (recommend-index-list) */}
+        <AliRecommendFeed1688 />
+
+        {/* 7. Vídeo Institucional / Tour de Fábrica */}
+        <div className="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex flex-col items-center">
+          <div className="w-full flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-4 bg-[#FF5000] rounded-full" />
+              <h2 className="text-[15px] font-black text-[#191919]">
+                1888 工厂实拍 • Tour da Fábrica em Produção
+              </h2>
+            </div>
+            <span className="text-[11.5px] text-gray-400 font-medium">Shenzhen • Yiwu Industrial Base</span>
           </div>
-          <div className="w-full bg-black rounded-none overflow-hidden border border-gray-100 relative aspect-video flex items-center justify-center">
+          <div className="w-full max-w-[960px] bg-black rounded-2xl overflow-hidden border border-gray-100 relative aspect-video flex items-center justify-center shadow-xs">
             <video
               src="https://www.canadiansolar.com/wp-content/uploads/2019/12/Low-Bitrate-6.09mb.mp4"
               autoPlay
@@ -134,13 +164,16 @@ export default function Home() {
               muted
               playsInline
               controls
-              className="w-full h-full object-cover rounded-none"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
 
+        {/* 8. Feed Social de Pagamentos e Comprovantes */}
         <SocialProofFeed />
-      </div>
+
+      </main>
+
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
-import { Copy, Users, UserCheck, TrendingUp } from 'lucide-react';
+import { Copy, Users, UserCheck, TrendingUp, Award, ShieldCheck, Share2, Sparkles, Building2 } from 'lucide-react';
 import { InvitePageSkeleton } from '../components/Skeleton';
 
 export default function Invite() {
@@ -71,138 +71,146 @@ export default function Invite() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      
-      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal text-center">
-          Equipe
-        </h1>
+    <div className="w-full min-h-screen bg-[#F5F6F8] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header */}
+      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-2xs border-b border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-[20px] font-black italic text-[#FF5000]">1888</span>
+          <h1 className="text-[15px] font-bold text-gray-900 tracking-tight">
+            Programa de Parceiros & Comissões
+          </h1>
+        </div>
+        <span className="text-[10.5px] font-bold bg-orange-100 text-[#FF5000] px-2 py-0.5 rounded-full">
+          B2B VIP
+        </span>
       </header>
 
-      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
-        
-        <div className="bg-[#FFFFFF] rounded-none p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-3">
+      <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-3">
+        {/* Banner do Programa */}
+        <div className="bg-gradient-to-br from-[#FF6A00] via-[#FF5000] to-[#FF2500] rounded-2xl p-5 text-white shadow-sm relative overflow-hidden">
+          <div className="relative z-10 space-y-2">
+            <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-0.5 rounded-full w-fit">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-bold uppercase tracking-wider">Comissão Multinível 1888</span>
+            </div>
+            <h2 className="text-[18px] font-black leading-tight">
+              Indique novos compradores e ganhe bônus diários
+            </h2>
+            <p className="text-[12px] text-white/90 font-normal">
+              Receba comissões automáticas sempre que sua equipe encomendar lotes de fábrica.
+            </p>
+          </div>
+          <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-white/10 rounded-full blur-xl" />
+        </div>
+
+        {/* Caixa de Código e Link de Convite */}
+        <div className="bg-white rounded-2xl p-4 shadow-2xs border border-gray-100 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[13px] text-[#666666] font-normal">Código de Convite</span>
+            <span className="text-[13px] text-gray-500 font-medium">Seu Código de Convite</span>
             <div className="flex items-center gap-2">
-              <span className="text-[15px] font-mono font-medium text-[#202020] tracking-wide">{inviteCode}</span>
+              <span className="text-[16px] font-mono font-bold text-[#FF5000] tracking-wider bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
+                {inviteCode}
+              </span>
               <button
                 type="button"
                 onClick={() => copyToClipboard(inviteCode)}
-                className="p-1 text-[#888888] hover:text-[#FE384F] active:scale-90 transition-transform"
+                className="p-1.5 text-gray-500 hover:text-[#FF5000] active:scale-90 transition-transform cursor-pointer bg-gray-50 rounded-md"
                 title="Copiar código"
               >
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <div className="bg-[#F8F9FA] p-2.5 rounded-none flex items-center justify-between border border-gray-100">
-            <span className="text-[12px] text-[#777777] font-normal truncate mr-2">{inviteLink}</span>
+          <div className="bg-[#FAF8F5] p-3 rounded-xl flex items-center justify-between border border-orange-100">
+            <span className="text-[12px] text-gray-600 font-mono truncate mr-2">{inviteLink}</span>
             <button
               type="button"
               onClick={() => copyToClipboard(inviteLink)}
-              className="text-[12px] text-[#FE384F] font-medium shrink-0 hover:underline"
+              className="text-[12px] text-white font-bold bg-[#FF5000] hover:bg-[#E03E00] px-3 py-1 rounded-lg shrink-0 transition-colors shadow-2xs cursor-pointer"
             >
-              Copiar
+              Copiar Link
             </button>
           </div>
 
-          <p className="text-[11.5px] text-[#888888] leading-relaxed">
-            Partilhe o seu link exclusivo para construir a sua equipa e acumular comissões diárias.
-          </p>
+          <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+            <div className="bg-orange-50/60 p-2 rounded-xl border border-orange-100">
+              <span className="text-[10.5px] text-gray-500 block">Nível 1</span>
+              <span className="text-[13px] font-bold text-[#FF5000]">8%</span>
+            </div>
+            <div className="bg-orange-50/60 p-2 rounded-xl border border-orange-100">
+              <span className="text-[10.5px] text-gray-500 block">Nível 2</span>
+              <span className="text-[13px] font-bold text-[#FF5000]">3%</span>
+            </div>
+            <div className="bg-orange-50/60 p-2 rounded-xl border border-orange-100">
+              <span className="text-[10.5px] text-gray-500 block">Nível 3</span>
+              <span className="text-[13px] font-bold text-[#FF5000]">1%</span>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-[#FFFFFF] rounded-none p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] space-y-3">
+        {/* Membros da Equipe */}
+        <div className="bg-white rounded-2xl p-4 shadow-2xs border border-gray-100 space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[#202020]">
-              <Users className="w-4 h-4 text-[#FE384F]" />
-              <span className="text-[13.5px] font-medium">Membros da Equipe</span>
+            <div className="flex items-center gap-2">
+              <Users className="w-4.5 h-4.5 text-[#FF5000]" />
+              <span className="text-[14px] font-bold text-gray-900">Membros da Equipe</span>
             </div>
-            <span className="text-[12px] text-[#777777] font-normal">Total: {totalMembers}</span>
+            <span className="text-[12px] font-bold text-[#FF5000] bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">
+              Total: {totalMembers}
+            </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-1 bg-[#F2F2F2] p-0.5 rounded-none">
+          {/* Abas dos Níveis */}
+          <div className="grid grid-cols-3 gap-1.5 bg-[#F5F6F8] p-1 rounded-xl">
             {(['level1', 'level2', 'level3'] as const).map((lvl, idx) => (
               <button
                 key={lvl}
                 type="button"
                 onClick={() => setActiveLevel(lvl)}
                 className={cn(
-                  'py-2 text-[12px] font-normal transition-all rounded-none flex items-center justify-center gap-1 cursor-pointer',
+                  'py-2 text-[12px] font-bold transition-all rounded-lg flex items-center justify-center gap-1 cursor-pointer',
                   activeLevel === lvl
-                    ? 'bg-white text-[#FE384F] shadow-xs'
-                    : 'text-[#666666] hover:text-[#202020]'
+                    ? 'bg-white text-[#FF5000] shadow-xs'
+                    : 'text-gray-500 hover:text-gray-800'
                 )}
               >
                 <span>Nível {idx + 1}</span>
-                <span className="text-[10.5px] opacity-75">({teamData[lvl]?.length || 0})</span>
+                <span className="text-[11px] opacity-80">({teamData[lvl]?.length || 0})</span>
               </button>
             ))}
           </div>
 
-          <div className="space-y-2 min-h-[140px] pt-1">
+          {/* Lista de Membros */}
+          <div className="space-y-2 pt-1">
             {teamData[activeLevel].length > 0 ? (
-              teamData[activeLevel].map((person: any, i: number) => (
+              teamData[activeLevel].map((member, i) => (
                 <div
                   key={i}
-                  className="bg-[#FAFAFA] border border-gray-100 rounded-none p-3 flex items-center justify-between"
+                  className="flex items-center justify-between p-2.5 bg-[#FAFAFA] rounded-xl border border-gray-100 text-[12.5px]"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-none bg-red-50 flex items-center justify-center text-[#FE384F]">
-                      <UserCheck className="w-4 h-4" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-orange-100 text-[#FF5000] flex items-center justify-center font-bold text-[11px]">
+                      {i + 1}
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-[12.5px] font-medium text-[#202020]">
-                        {maskPhone(person.telefone)}
-                      </span>
-                      <span className="text-[11px] text-[#888888]">
-                        {new Date(person.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="text-right flex flex-col items-end gap-0.5">
-                    <span className="text-[12.5px] font-medium text-[#202020]">
-                      {Number(person.total_investido || 0).toLocaleString()} Kz
-                    </span>
-                    <span
-                      className={cn(
-                        'text-[10px] px-1.5 py-0.5 font-normal rounded-none',
-                        Number(person.total_investido) > 0
-                          ? 'bg-emerald-50 text-emerald-600'
-                          : 'bg-gray-100 text-gray-400'
-                      )}
-                    >
-                      {Number(person.total_investido) > 0 ? 'Ativo' : 'Inativo'}
+                    <span className="font-mono font-medium text-gray-800">
+                      {maskPhone(member.telefone || member.phone)}
                     </span>
                   </div>
+                  <span className="text-[11px] text-gray-400">
+                    {member.created_at ? new Date(member.created_at).toLocaleDateString('pt-AO') : 'Ativo'}
+                  </span>
                 </div>
               ))
             ) : (
-              <div className="p-6 flex flex-col items-center justify-center text-center space-y-2 text-[#888888]">
-                <TrendingUp className="w-5 h-5 text-gray-300" />
-                <p className="text-[12px] font-normal">Nenhum membro registrado neste nível.</p>
+              <div className="text-center py-8 text-gray-400 text-[13px]">
+                <p>Nenhum membro ativo neste nível</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">Compartilhe seu link para começar a expandir</p>
               </div>
             )}
           </div>
         </div>
-
       </main>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F2] p-3.5 z-40 flex justify-center border-t border-gray-200/50">
-        <div className="w-full max-w-[480px]">
-          <button
-            type="button"
-            onClick={() => copyToClipboard(inviteLink)}
-            className="w-full h-[40px] rounded-none bg-[#FE384F] hover:bg-[#E02E44] active:scale-[0.99] text-[#FFFFFF] font-normal text-[13.5px] transition-all shadow-none flex items-center justify-center gap-1.5 cursor-pointer"
-          >
-            <Copy className="w-3.5 h-3.5" />
-            <span>Copiar link de convite</span>
-          </button>
-        </div>
-      </div>
-
     </div>
   );
 }

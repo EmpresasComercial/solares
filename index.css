@@ -1,26 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-/* Design System Tokens */
+/* Design System Tokens - 1688 Official Theme */
 :root {
-  --font-sans: 'Inter', "Segoe UI", sans-serif;
-  --ms-blue: #0067b8;
-  --ms-bg: #FFFFFF;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Alibaba Sans", "Segoe UI", Roboto, sans-serif;
+  --color-1688-primary: #FF5000;
+  --color-1688-secondary: #FF6A00;
+  --color-1688-dark: #E03E00;
+  --color-1688-gradient: linear-gradient(135deg, #FF6000 0%, #FF2400 100%);
+  --color-1688-gradient-gold: linear-gradient(135deg, #FFE6C5 0%, #FFC885 100%);
+  --color-1688-gold: #FF9600;
+  --color-1688-bg: #F5F6F8;
+  --ms-blue: #FF5000;
+  --ms-bg: #F5F6F8;
   --ms-text-primary: #111827;
   --ms-text-secondary: #6B7280;
   --ms-border: #E5E7EB;
-  --background: #FFFFFF;
+  --background: #F5F6F8;
   --surface: #FFFFFF;
   --input-background: #FFFFFF;
-  --primary-orange: #E7540F;
-  --primary-purple: #5A1089;
-  --text-primary: #2D2324;
-  --button-text: #000000;
-  --placeholder: #A09AA5;
-  --required: #C51B18;
-  --surface-shadow: rgba(242,240,242,0.55);
-  --divider: #F4F4F4;
-  --header-surface: #E9EDF6;
+  --primary-orange: #FF5000;
+  --primary-purple: #FF5000;
+  --text-primary: #222222;
+  --button-text: #FFFFFF;
+  --placeholder: #999999;
+  --required: #FF4400;
+  --surface-shadow: rgba(0,0,0,0.04);
+  --divider: #EEEEEE;
+  --header-surface: #FFFFFF;
 }
 
 body {
@@ -194,3 +201,35 @@ html, body, * {
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
+/* Alibaba 1688 / 1888 Official UI Classes */
+.ali-card-shadow {
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.04);
+}
+
+.ali-card-hover {
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ali-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px 0 rgba(255, 80, 0, 0.12);
+}
+
+.ali-orange-gradient {
+  background: linear-gradient(135deg, #FF6000 0%, #FF2500 100%);
+}
+
+.ali-gold-gradient {
+  background: linear-gradient(135deg, #FFEBD1 0%, #FFCE93 100%);
+}
+
+.ali-badge-factory {
+  background: linear-gradient(90deg, #FF6A00 0%, #FF2500 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+

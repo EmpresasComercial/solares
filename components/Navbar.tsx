@@ -1,83 +1,76 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '../lib/utils';
-import { Check, ShoppingCart, Users, User } from 'lucide-react';
+import { Home, Factory, Users2, User } from 'lucide-react';
 
 export default function Navbar() {
   const navItems = [
     {
       name: 'Início',
+      subname: '首页',
       path: '/home',
-      renderIcon: (isActive: boolean) =>
-        isActive ? (
-          <div className="w-[26px] h-[24px] bg-[#FF2442] rounded-t-[10px] rounded-b-[6px] flex items-center justify-center shadow-xs">
-            <Check className="w-3.5 h-3.5 text-white stroke-[3.5]" />
-          </div>
-        ) : (
-          <svg className="w-[22px] h-[22px] text-[#202020]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
-            <polyline points="9 21 9 12 15 12 15 21" />
-          </svg>
-        )
+      icon: Home
     },
     {
-      name: 'Carrinha',
+      name: 'Fábricas',
+      subname: '找工厂',
       path: '/produtos',
-      renderIcon: (isActive: boolean) => (
-        <ShoppingCart 
-          className={cn("w-[22px] h-[22px] transition-colors stroke-[1.8]", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
-        />
-      )
+      icon: Factory
     },
     {
-      name: 'Equipe',
+      name: 'Parceiros',
+      subname: '合作',
       path: '/convite',
-      renderIcon: (isActive: boolean) => (
-        <Users 
-          className={cn("w-[22px] h-[22px] transition-colors stroke-[1.8]", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
-        />
-      )
+      icon: Users2
     },
     {
       name: 'Minha Conta',
+      subname: '我的',
       path: '/perfil',
-      renderIcon: (isActive: boolean) => (
-        <User 
-          className={cn("w-[22px] h-[22px] transition-colors stroke-[1.8]", isActive ? "text-[#FF2442]" : "text-[#202020]")} 
-        />
-      )
+      icon: User
     }
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200/60 h-[56px] flex items-center justify-around px-2 pb-safe shadow-[0_-2px_10px_rgba(0,0,0,0.03)] select-none">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200/80 h-[58px] flex items-center justify-around px-2 pb-safe shadow-[0_-3px_12px_rgba(0,0,0,0.04)] select-none">
       <div className="w-full max-w-[480px] flex items-center justify-around h-full">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }: { isActive: boolean }) =>
-              cn(
-                'flex flex-col items-center justify-center transition-all w-full h-full py-1',
-                isActive ? 'text-[#FF2442]' : 'text-[#202020]'
-              )
-            }
-          >
-            {({ isActive }: { isActive: boolean }) => (
-              <div className="flex flex-col items-center gap-0.5">
-                <div className="h-[26px] flex items-center justify-center">
-                  {item.renderIcon(isActive)}
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }: { isActive: boolean }) =>
+                cn(
+                  'flex flex-col items-center justify-center transition-all w-full h-full py-1',
+                  isActive ? 'text-[#FF5000]' : 'text-[#555555] hover:text-[#222222]'
+                )
+              }
+            >
+              {({ isActive }: { isActive: boolean }) => (
+                <div className="flex flex-col items-center gap-0.5 relative">
+                  {isActive && (
+                    <div className="absolute -top-1 w-6 h-0.5 bg-[#FF5000] rounded-full" />
+                  )}
+                  <div className="h-[24px] flex items-center justify-center relative">
+                    <Icon 
+                      className={cn(
+                        "w-[22px] h-[22px] transition-transform duration-200",
+                        isActive ? "scale-110 stroke-[2.2] text-[#FF5000]" : "stroke-[1.7]"
+                      )} 
+                    />
+                  </div>
+                  <span className={cn(
+                    'text-[11px] transition-all tracking-tight leading-none',
+                    isActive ? 'text-[#FF5000] font-bold' : 'text-[#666666] font-normal'
+                  )}>
+                    {item.name}
+                  </span>
                 </div>
-                <span className={cn(
-                  'text-[11px] transition-all tracking-tight leading-none mt-0.5',
-                  isActive ? 'text-[#FF2442] font-semibold' : 'text-[#202020] font-normal'
-                )}>
-                  {item.name}
-                </span>
-              </div>
-            )}
-          </NavLink>
-        ))}
+              )}
+            </NavLink>
+          );
+        })}
       </div>
     </nav>
   );
