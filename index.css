@@ -62,18 +62,19 @@ html, body, * {
   scrollbar-width: none;
 }
 
-/* Component Classes in Pure CSS */
+/* Component Classes in Pure Flat CSS (1688 Standard) */
 .ms-card {
   background-color: white;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-  border: 1px solid rgba(0,0,0,0.05);
-  border-radius: 8px;
+  border: 1px solid var(--ms-border);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .ms-flat-card {
   background-color: white;
   border: 1px solid var(--ms-border);
-  border-radius: 8px;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .ms-page-container {
@@ -89,7 +90,8 @@ html, body, * {
   display: flex;
   align-items: center;
   border: 1px solid var(--ms-border);
-  border-radius: 4px;
+  border-radius: 0;
+  box-shadow: none;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -103,16 +105,17 @@ html, body, * {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 400; /* Botão mais leve */
+  font-weight: 400;
   transition: all 0.2s ease;
-  border-radius: 4px;
+  border-radius: 0;
   border: none;
+  box-shadow: none;
   cursor: pointer;
 }
 
 .ms-btn-primary:active {
-  transform: scale(0.98);
-  filter: brightness(0.9);
+  transform: scale(0.99);
+  filter: brightness(0.95);
 }
 
 .input-field {
@@ -125,6 +128,7 @@ html, body, * {
   font-weight: 300;
   transition: all 0.2s ease;
   background-color: transparent;
+  border-radius: 0;
 }
 
 .input-field:focus {
@@ -135,9 +139,10 @@ html, body, * {
   background-color: #f3f4f6;
   padding: 2px 8px;
   font-size: 11px;
-  border-radius: 4px;
+  border-radius: 0;
   font-weight: 400;
   color: #4b5563;
+  box-shadow: none;
 }
 
 /* Animations */
@@ -160,7 +165,7 @@ html, body, * {
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #E5E7EB;
-  border-radius: 10px;
+  border-radius: 0;
 }
 
 .pb-safe {
@@ -202,34 +207,34 @@ html, body, * {
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
-/* Alibaba 1688 / 1888 Official UI Classes */
+/* Alibaba 1688 / 1888 Official UI Classes - Flat Strict */
 .ali-card-shadow {
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: none !important;
 }
 
 .ali-card-hover {
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: border-color 0.15s ease;
 }
 
 .ali-card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px 0 rgba(255, 80, 0, 0.12);
+  border-color: #FF5000;
 }
 
 .ali-orange-gradient {
-  background: linear-gradient(135deg, #FF6000 0%, #FF2500 100%);
+  background-color: #FF5000;
 }
 
 .ali-gold-gradient {
-  background: linear-gradient(135deg, #FFEBD1 0%, #FFCE93 100%);
+  background-color: #FF9600;
 }
 
 .ali-badge-factory {
-  background: linear-gradient(90deg, #FF6A00 0%, #FF2500 100%);
+  background-color: #FF5000;
   color: #FFFFFF;
   font-weight: 700;
-  border-radius: 4px;
+  border-radius: 0;
   padding: 1px 6px;
   font-size: 10px;
+  box-shadow: none;
 }
 
