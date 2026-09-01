@@ -78,8 +78,8 @@ export default function BankInfo() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8FA] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      {/* Header Banner com a imagem oficial */}
-      <HeaderBanner title="支付工具 · Conta Bancária (IBAN)" subtitle="Gestão de Contas Bancárias para Retiradas" />
+      {/* Header Banner com título padronizado */}
+      <HeaderBanner title="Conta Bancária (IBAN)" />
 
       <ConfirmDialog 
         isOpen={deleteDialog.isOpen}

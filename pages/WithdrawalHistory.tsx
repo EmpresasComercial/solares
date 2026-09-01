@@ -6,6 +6,7 @@ import { cn } from '../lib/utils';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ArrowDownRight, ArrowUpRight, History, Clock, ChevronLeft } from 'lucide-react';
 import { Skeleton } from '../components/Skeleton';
+import { HeaderBanner } from '../components/HeaderBanner';
 
 export default function WithdrawalHistory() {
   const navigate = useNavigate();
@@ -58,15 +59,15 @@ export default function WithdrawalHistory() {
   }, []);
 
   const formatFullDateWithSeconds = (dateStr: string | Date) => {
-    const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
-    return date.toLocaleString('pt-AO', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
   };
 
   const getApprovalDate = (createdAtStr: string) => {
@@ -78,10 +79,15 @@ export default function WithdrawalHistory() {
 
   const getWithdrawStatusStyle = (status: string) => {
     switch (status) {
-      case 'pendente':
-        return 'text-[#e1a32a] bg-amber-50';
       case 'aprovado':
+      case 'confirmado':
+      case 'completed':
         return 'text-[#16a34a] bg-emerald-50';
+      case 'pendente':
+      case 'pending':
+        return 'text-[#d97706] bg-amber-50';
+      case 'rejeitado':
+      case 'failed':
       default:
         return 'text-[#FE384F] bg-red-50';
     }
@@ -102,23 +108,11 @@ export default function WithdrawalHistory() {
   const currentList = activeTab === 'recarga' ? recharges : withdrawals;
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-24 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      <header className="w-full max-w-[480px] bg-white px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => navigate('/perfil')} 
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
-            aria-label="Voltar"
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
-          </button>
-          <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
-            {t('history.general_title')}
-          </h1>
-        </div>
-      </header>
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-24 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com título padronizado */}
+      <HeaderBanner title="Histórico de Transações" />
 
-      <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
+      <main className="w-full max-w-[480px] px-4 pt-3 space-y-3">
         <div className="flex w-full bg-white p-1 rounded-none shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <button
             onClick={() => setActiveTab('recarga')}

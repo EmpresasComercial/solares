@@ -152,7 +152,7 @@ export default function Withdraw() {
   if (isLoading) {
     return (
       <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans select-none flex flex-col items-center">
-        <HeaderBanner title="累计返利 · Solicitar Retirada" subtitle="Pagamento Direto em Conta Bancária" />
+        <HeaderBanner title="Retirar" />
         <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
           <Skeleton className="w-full h-14 rounded-none" />
           <Skeleton className="w-full h-14 rounded-none" />
@@ -164,13 +164,13 @@ export default function Withdraw() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      {/* Header Banner com a imagem oficial */}
-      <HeaderBanner title="累计返利 · Solicitar Retirada" subtitle="Pagamento Direto em Conta Bancária" />
+      {/* Header Banner com título padronizado */}
+      <HeaderBanner title="Retirar" />
 
       <main className="w-full max-w-[480px] px-4 pt-4 space-y-3">
-        <div className="bg-white rounded-none h-[48px] px-4 flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-          <span className="text-[13px] text-[#888888] font-normal">Saldo disponível</span>
-          <span className="text-[14px] font-medium text-[#202020]">{formatCurrency(balance, 'KZ')}</span>
+        <div className="bg-white rounded-none h-[48px] px-4 flex items-center justify-between border border-gray-200">
+          <span className="text-[13px] text-gray-500 font-medium">Saldo disponível:</span>
+          <span className="text-[15px] font-bold text-[#FF5000]">{formatCurrency(balance, 'KZ')}</span>
         </div>
 
         <form onSubmit={handleSubmit} id="withdraw-form" className="space-y-2.5">

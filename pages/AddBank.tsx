@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronDown, Loader2 } from 'lucide-react';
 import { useToast } from '../components/Toast';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../contexts/LanguageContext';
+import { HeaderBanner } from '../components/HeaderBanner';
 
 const CARD_NAMES = [
   'Banco BAI',
@@ -64,6 +65,21 @@ export default function AddBank() {
     loadExistingBank();
   }, [location.state]);
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleIbanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (val.startsWith('AO06')) {
+      val = val.substring(4);
+    }
+    val = val.replace(/\D/g, '');
+    if (val.length <= 21) {
+      handleInputChange('cardNumber', val);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     let sanitized = value;
@@ -80,18 +96,18 @@ export default function AddBank() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.cardNumber || formData.cardNumber.length < 5) {
-      showToast('Por favor, insira o número do cartão válido.', 'error');
-      return;
-    }
-
-    if (!formData.holderName.trim() || formData.holderName.trim().length < 3) {
-      showToast('Por favor, preencha o nome do titular.', 'error');
-      return;
-    }
-
     if (!formData.cardName) {
-      showToast('Por favor, selecione o nome do cartão.', 'error');
+      showToast('Por favor, selecione o banco.', 'error');
+      return;
+    }
+
+    if (!formData.holderName.trim()) {
+      showToast('Por favor, insira o nome do titular.', 'error');
+      return;
+    }
+
+    if (!formData.cardNumber || formData.cardNumber.length < 21) {
+      showToast('O IBAN deve conter 21 dígitos numéricos.', 'error');
       return;
     }
 
@@ -121,23 +137,12 @@ export default function AddBank() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F2F2] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      
-      <header className="w-full max-w-[480px] bg-[#FFFFFF] px-4 pt-4 pb-3 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(redirectPath || '/perfil')}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform"
-            aria-label={t('common.back')}
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
-          </button>
-          
-          <h1 className="text-[14.5px] font-medium text-[#202020] tracking-normal">
-            Cartão
-          </h1>
-        </div>
-      </header>
+    <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
+      {/* Header Banner com título padronizado */}
+      <HeaderBanner 
+        title="Adicionar Conta Bancária" 
+        onBack={() => navigate(redirectPath || '/informacao-bancaria')} 
+      />
 
       <main className="w-full max-w-[480px] px-4 pt-4 space-y-2.5">
         <form onSubmit={handleSubmit} id="add-card-form" className="space-y-2.5">

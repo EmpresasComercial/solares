@@ -74,8 +74,8 @@ export default function Invite() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8FA] pb-32 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      {/* Header Banner com a imagem oficial */}
-      <HeaderBanner title="我的展会 · Programa de Convites & Equipe" subtitle="Indique parceiros e receba comissões diárias de fábrica" />
+      {/* Header Banner com título padronizado */}
+      <HeaderBanner title="Convite & Equipe" />
 
       <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-3">
         {/* Banner do Programa */}

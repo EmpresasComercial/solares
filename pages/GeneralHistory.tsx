@@ -113,21 +113,10 @@ export default function GeneralHistory() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8FA] font-sans antialiased text-[#191919] select-none flex flex-col items-center pb-10">
-      {/* Header Banner com a imagem oficial */}
-      <HeaderBanner title="免息大派送 · Extrato Geral de Atividades" subtitle="Histórico completo de transações e créditos" />
+      {/* Header Banner com título padronizado */}
+      <HeaderBanner title="Extrato de Atividades" />
 
-      <div className="w-full max-w-[480px] bg-white px-4 pt-3 pb-3 sticky top-0 z-30 border-b border-gray-200">
-        <div className="flex items-center gap-2 mb-4">
-          <button
-            onClick={() => navigate('/perfil')}
-            className="p-1 text-[#191919] active:opacity-50 transition-opacity"
-            aria-label="Voltar"
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[2]" />
-          </button>
-          <h1 className="text-[15px] font-medium text-[#191919]">Registros</h1>
-        </div>
-
+      <div className="w-full max-w-[480px] bg-white px-4 pt-2 pb-2 sticky top-0 z-30 border-b border-gray-200">
         <div
           className="flex gap-2 overflow-x-auto pb-1 no-scrollbar [&::-webkit-scrollbar]:hidden touch-pan-x select-none"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
