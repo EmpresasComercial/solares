@@ -503,7 +503,7 @@ export default function Home() {
           </div>
           <div className="w-full max-w-[960px] bg-black rounded-none overflow-hidden border border-gray-200 relative aspect-video flex items-center justify-center">
             <video
-              src="https://www.canadiansolar.com/wp-content/uploads/2019/12/Low-Bitrate-6.09mb.mp4"
+              src="https://cloud.video.taobao.com/vod/IjWQQvJiBcsdzLUK--iliZu5j-bOev4FGAOBZsRBVUc.mp4"
               autoPlay
               loop
               muted
