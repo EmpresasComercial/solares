@@ -114,67 +114,40 @@ export default function Recharge() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8FA] pb-28 font-sans antialiased text-[#202020] select-none flex flex-col items-center">
-      {/* Header Banner com a imagem oficial */}
-      <HeaderBanner title="免费赊账 · Recarregar Saldo" subtitle="Canal Seguro de Pagamentos 1888" />
-
-      <header className="w-full max-w-[480px] bg-white px-4 pt-3.5 pb-3 shadow-none border-b border-gray-200">
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={handleBack}
-            className="p-1 -ml-1 text-[#202020] active:scale-95 transition-transform cursor-pointer"
-            aria-label={t('common.back')}
-          >
-            <ChevronLeft className="w-5 h-5 stroke-[1.8]" />
-          </button>
-          
-          <h1 className="text-[14.5px] font-bold text-[#222222] tracking-normal">
-            Recarregue em 3 etapas
-          </h1>
-        </div>
-
-        <div className="mt-3.5 px-3">
-          <div className="relative flex items-center justify-between">
-            <div className="absolute left-3 right-3 top-2 h-[1.5px] bg-[#E5E7EB] -translate-y-1/2 z-0" />
+      {/* Header Banner com a imagem oficial e indicador de etapas */}
+      <HeaderBanner title="Recarregar Saldo" onBack={handleBack}>
+        <div className="px-2 pt-1 pb-1">
+          <div className="relative flex items-center justify-between max-w-[320px] mx-auto">
+            <div className="absolute left-6 right-6 top-2.5 h-[1.5px] bg-gray-300/80 -translate-y-1/2 z-0" />
             <div 
-              className="absolute left-3 top-2 h-[1.5px] bg-[#FE384F] -translate-y-1/2 z-0 transition-all duration-300"
-              style={{ width: currentStep >= 2 ? '50%' : '0%' }}
+              className="absolute left-6 top-2.5 h-[1.5px] bg-[#FF5000] -translate-y-1/2 z-0 transition-all duration-300"
+              style={{ width: currentStep >= 2 ? '100%' : '0%' }}
             />
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-none bg-[#FE384F] text-white flex items-center justify-center text-[9.5px] font-normal">
-                {currentStep >= 2 || isStep1Valid ? <Check className="w-2.5 h-2.5 stroke-[2.5]" /> : '1'}
+              <div className={`w-[20px] h-[20px] rounded-none flex items-center justify-center text-[10.5px] font-bold text-white ${
+                currentStep >= 1 ? 'bg-[#FF5000]' : 'bg-gray-400'
+              }`}>
+                {currentStep >= 2 || isStep1Valid ? <Check className="w-3 h-3 stroke-[2.5]" /> : '1'}
               </div>
-              <span className="text-[10px] font-normal text-[#FE384F] mt-1 whitespace-nowrap">
-                Add valor
+              <span className={`text-[11px] font-bold mt-1 whitespace-nowrap ${currentStep >= 1 ? 'text-gray-900' : 'text-gray-500'}`}>
+                1. Adicionar valor
               </span>
             </div>
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className={`w-[17px] h-[17px] rounded-none flex items-center justify-center text-[9.5px] font-normal transition-colors ${
-                currentStep >= 2
-                  ? 'bg-[#FE384F] text-white'
-                  : 'bg-[#E5E7EB] text-[#888888]'
+              <div className={`w-[20px] h-[20px] rounded-none flex items-center justify-center text-[10.5px] font-bold text-white ${
+                currentStep >= 2 ? 'bg-[#FF5000]' : 'bg-gray-400'
               }`}>
                 2
               </div>
-              <span className={`text-[10px] font-normal mt-1 whitespace-nowrap ${
-                currentStep >= 2 ? 'text-[#FE384F]' : 'text-[#888888]'
-              }`}>
-                Selecionar banco
-              </span>
-            </div>
-
-            <div className="relative z-10 flex flex-col items-center">
-              <div className="w-[17px] h-[17px] rounded-none bg-[#E5E7EB] text-[#888888] flex items-center justify-center text-[9.5px] font-normal">
-                3
-              </div>
-              <span className="text-[10px] font-normal text-[#888888] mt-1 whitespace-nowrap">
-                Pagar
+              <span className={`text-[11px] font-bold mt-1 whitespace-nowrap ${currentStep >= 2 ? 'text-gray-900' : 'text-gray-500'}`}>
+                2. Selecionar banco
               </span>
             </div>
           </div>
         </div>
-      </header>
+      </HeaderBanner>
 
       <main className="w-full max-w-[480px] px-3.5 pt-3 space-y-3">
         {currentStep === 1 && (
