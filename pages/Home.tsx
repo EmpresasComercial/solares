@@ -298,7 +298,31 @@ export default function Home() {
       {/* ── CONTEÚDO PRINCIPAL (100% Responsivo no Celular e PC) ── */}
       <main className="w-full max-w-[1280px] px-2.5 sm:px-4 pt-2.5 space-y-2.5">
 
-        {/* ── 2. TICKER DE NOTÍCIAS ── */}
+        {/* ── 2. VÍDEO INSTITUCIONAL / TOUR DE FÁBRICA (Primeira informação) ── */}
+        <section className="bg-white border border-gray-200 flex flex-col items-center">
+          <div className="w-full flex items-center justify-between px-3 pt-3 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-3.5 bg-[#FF5000]" />
+              <h2 className="text-[13.5px] sm:text-[14px] font-bold text-[#191919]">
+                1888 工厂实拍 • Tour da Fábrica em Produção
+              </h2>
+            </div>
+            <span className="text-[11px] text-gray-400">Shenzhen • Yiwu Industrial Base</span>
+          </div>
+          <div className="w-full bg-black overflow-hidden border-t border-gray-200 relative aspect-video">
+            <video
+              src="https://cloud.video.taobao.com/vod/IjWQQvJiBcsdzLUK--iliZu5j-bOev4FGAOBZsRBVUc.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </section>
+
+        {/* ── 3. TICKER DE NOTÍCIAS ── */}
         <div className="w-full bg-[#FFF7F0] border border-orange-200/80 px-3 py-2 flex items-center justify-between select-none">
           <div
             onClick={() => navigate('/suporte')}
@@ -352,31 +376,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* ── 4. VÍDEO INSTITUCIONAL / TOUR DE FÁBRICA ── */}
-        <section className="bg-white border border-gray-200 flex flex-col items-center">
-          <div className="w-full flex items-center justify-between px-3 pt-3 pb-2">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-3.5 bg-[#FF5000]" />
-              <h2 className="text-[13.5px] sm:text-[14px] font-bold text-[#191919]">
-                1888 工厂实拍 • Tour da Fábrica em Produção
-              </h2>
-            </div>
-            <span className="text-[11px] text-gray-400">Shenzhen • Yiwu Industrial Base</span>
-          </div>
-          <div className="w-full bg-black overflow-hidden border-t border-gray-200 relative aspect-video flex items-center justify-center">
-            <video
-              src="https://cloud.video.taobao.com/vod/IjWQQvJiBcsdzLUK--iliZu5j-bOev4FGAOBZsRBVUc.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </section>
-
-        {/* ── 5. FEED DE PRODUTOS 1688 (Flat & 100% Responsivo) ── */}
+        {/* ── 4. FEED DE PRODUTOS 1688 (Flat & 100% Responsivo) ── */}
         <section className="w-full bg-white border border-gray-200">
           
           {/* Barra de Abas de Categorias */}
